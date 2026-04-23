@@ -378,6 +378,28 @@ canvas { display: block; border-radius: 6px; background: var(--surface2); }
 .iqs-a { color: #1e1b4b; }
 .iqs-a strong { color: #3730a3; }
 
+/* ── Practice Hub cards ─────────────────────────────── */
+.prac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+.prac-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: var(--surface); position: relative; display: flex; flex-direction: column; gap: 8px; }
+.prac-s5 { border-left: 4px solid #22c55e; }
+.prac-s4 { border-left: 4px solid #3b82f6; }
+.prac-s3 { border-left: 4px solid #f59e0b; }
+.prac-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.prac-title { font-weight: 700; font-size: 14.5px; color: var(--text-1); flex: 1; }
+.prac-meta { display: flex; gap: 6px; align-items: center; }
+.prac-rating { font-size: 13px; }
+.prac-badge { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 20px; white-space: nowrap; }
+.prac-badge.free { background: #dcfce7; color: #166534; }
+.prac-badge.paid { background: #fef9c3; color: #854d0e; }
+.prac-badge.freemium { background: #e0f2fe; color: #075985; }
+.prac-desc { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+.prac-why { background: #f0fdf4; border-radius: 6px; padding: 8px 10px; font-size: 12.5px; color: #166534; line-height: 1.5; }
+.prac-why-label { font-weight: 700; margin-right: 4px; }
+.prac-resume { background: #eff6ff; border-radius: 6px; padding: 8px 10px; font-size: 12.5px; color: #1e40af; line-height: 1.5; }
+.prac-resume-label { font-weight: 700; margin-right: 4px; }
+.prac-link { font-size: 12.5px; font-weight: 600; color: #6366f1; text-decoration: none; }
+.prac-link:hover { text-decoration: underline; }
+
 @media (max-width: 768px) {
   #sidebar { transform: translateX(-100%); transition: transform .2s; }
   #sidebar.open { transform: none; }
@@ -524,6 +546,19 @@ canvas { display: block; border-radius: 6px; background: var(--surface2); }
         <a href="#kaggle">Kaggle 项目</a>
         <a href="#causal">因果推断<span class="tag" style="background:#fef9ec;color:#b45309">必考</span></a>
         <a href="#interview">面试题库<span class="tag" style="background:#f5f3ff;color:#7c3aed">9题</span></a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label open" onclick="toggleGroup(this)"><span>练习专项</span><span class="caret">▶</span></div>
+      <div class="nav-items open">
+        <a href="#practice-sql">SQL 刷题</a>
+        <a href="#practice-python">Python 实操</a>
+        <a href="#practice-stats">统计概率</a>
+        <a href="#practice-biz">业务案例</a>
+        <a href="#practice-project">项目实战</a>
+        <a href="#practice-llm">LLM / AI</a>
+        <a href="#practice-sysdesign">系统设计</a>
+        <a href="#practice-causal">因果推断</a>
       </div>
     </div>
   </div>
@@ -4298,7 +4333,465 @@ FROM funnel;
 </textarea>
     <div class="code-output"></div>
   </div>
-</section>color:var(--text-3);font-size:13px;border-top:1px solid var(--border);font-family:system-ui;">
+</section>
+
+</section>
+
+<!-- ══════════ PRACTICE HUB ══════════ -->
+<section id="practice-hub" class="section">
+  <h2>练习专项 · 精选资源库</h2>
+  <div class="callout info">
+    <strong>使用说明</strong> — 本页按模块汇总市面上最值得花时间的免费/付费练习资源，每张卡片标注<strong>推荐等级</strong>（⭐⭐⭐⭐⭐ 必做）、<strong>免费/付费</strong>及<strong>面试包装话术</strong>，学完直接抄进简历或口述。建议优先攻打 ⭐⭐⭐⭐⭐ 绿边卡。
+  </div>
+  <table>
+    <tr><th>模块</th><th>推荐平台</th><th>适合阶段</th></tr>
+    <tr><td>SQL</td><td>StrataScratch · DataLemur · LeetCode</td><td>入门即可开始</td></tr>
+    <tr><td>Python/ML</td><td>Kaggle Learn · fast.ai · Google MLCC</td><td>看完P1后</td></tr>
+    <tr><td>统计/概率</td><td>StatQuest · Seeing Theory · 3B1B</td><td>随时补</td></tr>
+    <tr><td>业务案例</td><td>InterviewQuery · Exponent</td><td>P3 面试章节后</td></tr>
+    <tr><td>实战项目</td><td>Kaggle竞赛 · Towards Data Science</td><td>有基础后</td></tr>
+    <tr><td>LLM</td><td>Hugging Face Course · DeepLearning.AI</td><td>看完P2 LLM章节后</td></tr>
+    <tr><td>系统设计</td><td>Chip Huyen · Eugene Yan · Evidently</td><td>有工作经验后</td></tr>
+    <tr><td>因果推断</td><td>The Effect · Brave and True</td><td>看完P3 因果章节后</td></tr>
+  </table>
+</section>
+
+<!-- ── SQL 刷题 ────────────────────────────────────── -->
+<section id="practice-sql" class="section">
+  <h2>SQL 刷题平台</h2>
+  <div class="callout tip"><strong>建议顺序</strong>：DataLemur 入门 → StrataScratch 进阶 → LeetCode SQL 50 查漏 → HackerRank 加固 → pgexercises 冲刺</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">StrataScratch</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge freemium">免费+付费</span></span>
+      </div>
+      <p class="prac-desc">真实公司面试题（FAANG/Airbnb/Lyft），按公司/难度筛选，题目紧贴 DS 岗位，Python/SQL 双解。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>题库来自真实面试，难度梯度合理，免费题已够用。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"系统刷完 StrataScratch 300+ 题，覆盖 window function、cohort 留存、漏斗分析等高频考点。"</div>
+      <a class="prac-link" href="https://www.stratascratch.com" target="_blank">→ stratascratch.com</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">DataLemur</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge freemium">免费+付费</span></span>
+      </div>
+      <p class="prac-desc">Nick Singh 创办，专为数据岗设计，题目带详解和视频，涵盖 SQL、统计、概率。入门首选。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>解题思路讲解清晰，适合 0 基础快速建立 SQL 直觉。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"DataLemur SQL 路径全部通关，熟悉 CTE、self-join、lag/lead 等 DS 面试常用写法。"</div>
+      <a class="prac-link" href="https://datalemur.com" target="_blank">→ datalemur.com</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">LeetCode SQL 50</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge freemium">免费+付费</span></span>
+      </div>
+      <p class="prac-desc">LeetCode 官方 SQL 50 题学习计划，覆盖从 BASIC SELECT 到 ADVANCED QUERIES 全谱系。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>知名度高，代码面试官认可度最高，全刷约 20 小时。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"完成 LeetCode SQL 50，熟练运用子查询、窗口函数和多表 JOIN 解决复杂业务问题。"</div>
+      <a class="prac-link" href="https://leetcode.com/studyplan/top-sql-50/" target="_blank">→ leetcode.com/studyplan/top-sql-50</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">HackerRank SQL</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">完整从 Basic → Advanced 的刷题路径，可生成结业证书，适合背调或 LinkedIn 展示。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>全免费且有证书，适合简历背书。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"获得 HackerRank SQL Advanced 认证，题目涵盖聚合、子查询和窗口函数。"</div>
+      <a class="prac-link" href="https://www.hackerrank.com/domains/sql" target="_blank">→ hackerrank.com/domains/sql</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">pgexercises</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">PostgreSQL 专项，浏览器内即时运行，题目覆盖 recursive CTE、聚合窗口等高难度写法。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>PostgreSQL 是 DS 岗最常用方言，专项练习覆盖生产场景。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"系统完成 pgexercises 全部章节，掌握 PostgreSQL 高级特性，能处理递归树形数据和复杂时间序列分析。"</div>
+      <a class="prac-link" href="https://pgexercises.com" target="_blank">→ pgexercises.com</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Python / ML 练习 ────────────────────────────── -->
+<section id="practice-python" class="section">
+  <h2>Python / ML 实战练习</h2>
+  <div class="callout tip"><strong>建议顺序</strong>：Kaggle Learn 速成 → fast.ai 深潜 → Google MLCC 查漏 → Kaggle 竞赛实战</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Kaggle Learn</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">Micro-courses 覆盖 Python、Pandas、ML、特征工程、深度学习等，每课约 4-6 小时，有结业证书。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>官方出品，质量高，完全免费，每课配练习 Notebook 即时反馈。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"完成 Kaggle Learn 全部 ML 路径（Python/Pandas/ML/Feature Engineering），可独立从原始数据到模型部署。"</div>
+      <a class="prac-link" href="https://www.kaggle.com/learn" target="_blank">→ kaggle.com/learn</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">fast.ai Practical DL</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">Jeremy Howard 主讲，top-down 教学，直接跑最先进模型，不绕弯子讲数学。全球公认最实用 DL 课。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>动手优先，两周可训出竞赛级图像/文本模型，面试中随时有例子可举。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"完成 fast.ai Part1，独立训练图像分类/文本分类模型，在 Kaggle 竞赛中排名前 X%。"</div>
+      <a class="prac-link" href="https://course.fast.ai" target="_blank">→ course.fast.ai</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Kaggle 竞赛</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">真实数据 + 实际奖金 + 社区 discussion，Playground 系列适合入门，Featured 竞赛验证高水平。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>竞赛经历是 DS 简历最强信号之一，discussion 区能快速学到前沿技巧。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"参与 N 场 Kaggle 竞赛，其中 X 场进入前 X%，熟悉 ensemble、特征工程和 CV 调优流程。"</div>
+      <a class="prac-link" href="https://www.kaggle.com/competitions" target="_blank">→ kaggle.com/competitions</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Google ML Crash Course</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">Google 出品，15 小时，覆盖线性回归到神经网络，配备 TensorFlow Playground 互动练习。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>谷歌官方认证，适合补充理论直觉，图示清晰。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"完成 Google ML Crash Course，理解梯度下降、正则化和神经网络的核心原理。"</div>
+      <a class="prac-link" href="https://developers.google.com/machine-learning/crash-course" target="_blank">→ developers.google.com/ml/crash-course</a>
+    </div>
+
+    <div class="prac-card prac-s3">
+      <div class="prac-head">
+        <span class="prac-title">UCI ML Repository</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">660+ 经典数据集，自选项目练习完整 EDA → 建模 → 评估流程，适合准备作品集。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>有故事感的项目比刷题更能区分候选人，UCI 数据集可帮你找有意思的课题。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"基于 UCI XXX 数据集独立完成端到端 ML 项目，包含 EDA、特征工程、模型选择与评估。"</div>
+      <a class="prac-link" href="https://archive.ics.uci.edu" target="_blank">→ archive.ics.uci.edu</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 统计/概率 ────────────────────────────────────── -->
+<section id="practice-stats" class="section">
+  <h2>统计 / 概率 直觉训练</h2>
+  <div class="callout info">统计直觉是 DS 面试的隐性门槛——不用死记公式，但要能快速可视化一个概念。以下资源帮你建立这种直觉。</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">StatQuest with Josh Starmer</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">YouTube 频道，用最简单的语言讲统计/ML，覆盖贝叶斯、PCA、随机森林、UMAP 等，配套歌曲 BAAM。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>解释方式独树一帜，5 分钟视频能把别人讲一小时的内容讲清楚。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"系统学习统计/ML 基础，能清晰向非技术同事解释 PCA、随机森林等算法直觉。"</div>
+      <a class="prac-link" href="https://www.youtube.com/@statquest" target="_blank">→ youtube.com/@statquest</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Seeing Theory (Brown Univ)</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">布朗大学出品，概率论交互可视化网站，覆盖基础概率、分布、中心极限定理、贝叶斯推断。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>动画 + 交互，建立概率直觉最快的方式，20 分钟扫完胜过翻教材。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"通过可视化工具深度理解概率分布和贝叶斯推断，能在面试中快速画出直觉图示。"</div>
+      <a class="prac-link" href="https://seeing-theory.brown.edu" target="_blank">→ seeing-theory.brown.edu</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">3Blue1Brown</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">Grant Sanderson 的 Essence of Linear Algebra / Calculus / Neural Networks 系列，视觉化最强。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>矩阵运算、反向传播的几何直觉，一次看懂终生不忘。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"具备扎实的线性代数和微积分直觉，理解神经网络反向传播的几何本质。"</div>
+      <a class="prac-link" href="https://www.youtube.com/@3blue1brown" target="_blank">→ youtube.com/@3blue1brown</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Khan Academy 统计</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">AP Statistics 全路径，假设检验、置信区间、卡方检验，有练习题即时反馈。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>系统且免费，适合从零打牢统计基础。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"系统学习统计学核心概念，熟练运用假设检验和置信区间分析 A/B 测试结果。"</div>
+      <a class="prac-link" href="https://www.khanacademy.org/math/statistics-probability" target="_blank">→ khanacademy.org/statistics</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 业务案例 ────────────────────────────────────── -->
+<section id="practice-biz" class="section">
+  <h2>业务案例 / 产品感训练</h2>
+  <div class="callout tip">DS 面试越来越重视"分析师思维"：给你一个指标下降，你能不能结构化拆解？以下资源专门练这个。</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">InterviewQuery</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge paid">付费</span></span>
+      </div>
+      <p class="prac-desc">专为 DS 面试设计，覆盖 SQL/统计/ML/业务大题，题库 2000+，有公司专属题包（Netflix/Uber/Apple）。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>业务大题质量最高，"指标诊断""实验设计"类题目真实还原面试场景。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"系统练习 DS 综合面试题，能结构化拆解业务指标下降问题并给出可执行分析方案。"</div>
+      <a class="prac-link" href="https://www.interviewquery.com" target="_blank">→ interviewquery.com</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Exponent (PM/DS)</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge freemium">免费+付费</span></span>
+      </div>
+      <p class="prac-desc">Mock interview 平台，DS/MLE/PM 岗位，有 AI 模拟面试官，题库含真实 FAANG 面试题和讲解。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>模拟面试 + 即时反馈，弥补光刷题不开口练的缺陷。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"进行多轮模拟面试训练，熟练在限时内结构化阐述数据分析方案和产品直觉。"</div>
+      <a class="prac-link" href="https://www.tryexponent.com" target="_blank">→ tryexponent.com</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">DataLemur 统计/产品题</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge freemium">免费+付费</span></span>
+      </div>
+      <p class="prac-desc">除 SQL 外，DataLemur 还有概率脑筋急转弯和产品感测试题，配套解析质量高。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>一个平台打通 SQL + 统计 + 业务，免费部分已够用。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"全面覆盖 DS 面试技能树：SQL、统计推断、A/B 测试设计和产品分析框架。"</div>
+      <a class="prac-link" href="https://datalemur.com/questions" target="_blank">→ datalemur.com/questions</a>
+    </div>
+
+    <div class="prac-card prac-s3">
+      <div class="prac-head">
+        <span class="prac-title">Glassdoor DS 面经</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">真实候选人分享的面经，按公司/岗位搜索，了解特定公司考察风格和高频题型。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>信息差来源，目标公司面试前必查，10 分钟速读即可定向备考。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>（不适合直接引用，用于备考信息收集）</div>
+      <a class="prac-link" href="https://www.glassdoor.com/Interview/data-scientist-interview-questions-SRCH_KO0,14.htm" target="_blank">→ glassdoor.com/data-scientist-interviews</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 实战项目 ────────────────────────────────────── -->
+<section id="practice-project" class="section">
+  <h2>端到端实战项目</h2>
+  <div class="callout info">简历上最有说服力的不是证书，而是"我做过 X 项目，解决了 Y 问题，产生了 Z 结果"。以下资源帮你找到值得做的项目。</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Kaggle Featured 竞赛</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">真实奖金 + 真实数据 + 全球对手，进入银牌以上即可显著提升简历含金量。Discussion 区有完整解法分享。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>竞赛成绩是 DS 最客观的能力背书，面试官一眼认出含金量。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"参加 Kaggle [竞赛名] 竞赛（N 支队伍），最终排名前 X%，采用 [技术方案] 实现 [指标提升]。"</div>
+      <a class="prac-link" href="https://www.kaggle.com/competitions?listOption=active" target="_blank">→ kaggle.com/competitions</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Towards Data Science</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge freemium">免费+付费</span></span>
+      </div>
+      <p class="prac-desc">Medium 旗下 DS 专栏，项目教程 + 技术博客，搜索"end-to-end project tutorial"有大量可复现案例。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>高质量作者聚集地，找项目灵感和最佳实践首选。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"复现并改进 TDS 开源项目 [项目名]，新增 [X 功能]，结果发布于 GitHub/Kaggle。"</div>
+      <a class="prac-link" href="https://towardsdatascience.com" target="_blank">→ towardsdatascience.com</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Hugging Face Papers</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">每日最新 AI 论文 + Space 演示 + 模型库，可找到热点论文并快速复现，是进入前沿的最快入口。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>跟踪前沿 + 做复现项目 = 双倍简历加分，面试时"我复现了 XXX 论文"极具说服力。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"持续跟踪 Hugging Face Papers，复现 [论文名] 并在 [数据集] 上验证，撰写技术总结发布于 GitHub。"</div>
+      <a class="prac-link" href="https://huggingface.co/papers" target="_blank">→ huggingface.co/papers</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── LLM 专项 ────────────────────────────────────── -->
+<section id="practice-llm" class="section">
+  <h2>LLM / NLP 专项训练</h2>
+  <div class="callout tip">LLM 岗位现在要求"会用"（Prompt/RAG/Agent）+ "懂原理"（Transformer/Fine-tuning），两者缺一不可。</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Hugging Face LLM Course</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">Hugging Face 官方课程，覆盖 Transformers/RAG/Fine-tuning/RLHF，配套 Colab notebook 可直接运行。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>官方出品 + 实践导向，代码可直接搬进项目，面试中随时有可运行代码样例。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"完成 HF LLM Course，独立实现 RAG pipeline 和 LoRA 微调，在 [数据集] 上达到 [指标]。"</div>
+      <a class="prac-link" href="https://huggingface.co/learn/llm-course" target="_blank">→ huggingface.co/learn/llm-course</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">DeepLearning.AI Short Courses</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge freemium">免费+付费</span></span>
+      </div>
+      <p class="prac-desc">Andrew Ng 联合顶级公司推出的短课（每门 1-4 小时），覆盖 LangChain、RAG、Agent、Fine-tuning、Eval 等。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>和业界大厂联合出品，紧跟工程实践，学完即可直接做项目。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"完成 DeepLearning.AI [课程名]，掌握 [RAG/Agent/Fine-tuning] 工程实现，产出可运行 demo。"</div>
+      <a class="prac-link" href="https://www.deeplearning.ai/short-courses/" target="_blank">→ deeplearning.ai/short-courses</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">fast.ai Part 2 (From Scratch)</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">从零手写 Stable Diffusion / Transformers，不用任何高级 API，彻底理解底层机制。适合有 Part1 基础。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>"手写过 Transformer"是极强面试信号，直接提升技术深度印象分。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"从零手写 Transformer 架构，深度理解 attention mechanism 和 positional encoding 的实现细节。"</div>
+      <a class="prac-link" href="https://course.fast.ai/Lessons/part2.html" target="_blank">→ course.fast.ai/part2</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">LangChain Academy</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">LangChain 官方 LangGraph 课程，覆盖 Agent 构建、状态机、工具调用，面向工程落地。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>LangGraph 是目前 Agent 编排最主流框架，学完可独立搭建多步骤 AI workflow。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"使用 LangGraph 构建多步骤 AI Agent，实现 [业务场景] 的自动化数据处理 pipeline。"</div>
+      <a class="prac-link" href="https://academy.langchain.com" target="_blank">→ academy.langchain.com</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── ML 系统设计 ─────────────────────────────────── -->
+<section id="practice-sysdesign" class="section">
+  <h2>ML 系统设计资源</h2>
+  <div class="callout info">系统设计面试考察"你能不能把模型做成真正的产品"，Senior DS / MLE 必备，Junior 面试也开始出现。</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Chip Huyen — ML Interviews Book</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费（网页版）</span></span>
+      </div>
+      <p class="prac-desc">《Machine Learning Interviews》全文免费在线阅读，涵盖 ML 系统设计、统计、编程，覆盖 200+ 面试题。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>MLE/DS 面试圣经，大量真实 FAANG 面试题，Chip 本人入职过 NVIDIA/Netflix。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"系统研读 Chip Huyen ML 面试指南，掌握推荐系统/排序模型等 ML 系统设计 framework。"</div>
+      <a class="prac-link" href="https://huyenchip.com/ml-interviews-book/" target="_blank">→ huyenchip.com/ml-interviews-book</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Eugene Yan's Blog</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">Amazon Science DS，写推荐系统/LLM 应用/ML 工程实践，深入浅出，每篇都是项目级知识。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>工程经验 + 表达清晰，是 DS 进阶系统设计思维最好的范本之一。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"长期关注 Eugene Yan 等顶级 DS 技术博客，了解推荐系统/LLM 应用落地的工程实践。"</div>
+      <a class="prac-link" href="https://eugeneyan.com" target="_blank">→ eugeneyan.com</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Evidently AI Blog</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">专注 ML 监控/数据漂移检测，教程配套开源工具 Evidently，可直接用于生产环境模型监控。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>MLOps 和模型监控是 DS 岗晋升高级后必需的技能，这是入门该领域最好的资源。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"熟悉 ML 模型监控，使用 Evidently 实现数据漂移检测（PSI/KS），保障模型线上表现稳定。"</div>
+      <a class="prac-link" href="https://www.evidentlyai.com/blog" target="_blank">→ evidentlyai.com/blog</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Designing ML Systems (Chip Huyen)</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge paid">付费（书）</span></span>
+      </div>
+      <p class="prac-desc">O'Reilly 出版，从数据工程到特征存储到模型服务全链路，是目前最系统的 MLOps 教材。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>Senior MLE/DS 面试必备，系统设计轮答题框架直接来自此书。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"研读《Designing ML Systems》，理解特征存储/训练-服务偏差/模型部署的生产级实践。"</div>
+      <a class="prac-link" href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107963/" target="_blank">→ oreilly.com/designing-ml-systems</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 因果推断 ────────────────────────────────────── -->
+<section id="practice-causal" class="section">
+  <h2>因果推断学习资源</h2>
+  <div class="callout tip">因果推断是 DS 进阶必经之路，也是业界最缺人才的方向之一。以下资源从直觉到严格推导均有覆盖。</div>
+  <div class="prac-grid">
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">The Effect (Nick Huntington-Klein)</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费（网页版）</span></span>
+      </div>
+      <p class="prac-desc">全文免费的因果推断教材，覆盖 RCT/DID/IV/RDD，语言平易近人，有 R/Python/Stata 代码。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>目前最易读的因果推断入门书，没有之一。读完可独立设计准实验研究。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"系统学习因果推断方法（DID/IV/RDD），能设计准实验评估无法随机化的业务干预效果。"</div>
+      <a class="prac-link" href="https://theeffectbook.net" target="_blank">→ theeffectbook.net</a>
+    </div>
+
+    <div class="prac-card prac-s5">
+      <div class="prac-head">
+        <span class="prac-title">Causal Inference for the Brave and True</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">巴西 Nubank 数据科学家写的 Jupyter Book，Python + 可视化，代码即文档，覆盖倾向评分/DID/合成控制。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>Python 代码可直接运行，边读边跑出图，因果直觉建立极快。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"使用倾向评分匹配（PSM）和双重差分（DID）评估业务策略效果，结合 Python 实现可复现分析。"</div>
+      <a class="prac-link" href="https://matheusfacure.github.io/python-causality-handbook/" target="_blank">→ matheusfacure.github.io/python-causality-handbook</a>
+    </div>
+
+    <div class="prac-card prac-s4">
+      <div class="prac-head">
+        <span class="prac-title">Brady Neal — Causal Inference Course</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">YouTube + 讲义，从图模型（DAG）到结构因果模型，数学严谨，适合想深入理论的同学。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>如果想做因果 Research 或读 PhD，这门课建立的 DAG 思维是必备基础。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"掌握 DAG 和结构因果模型，能识别混淆变量并设计正确的调整策略。"</div>
+      <a class="prac-link" href="https://www.youtube.com/watch?v=5x_pPemAVxs&list=PLoazKTcS0RzZ1SUgeOgc6SWt51gfT80N0" target="_blank">→ Brady Neal Causal Inference (YouTube)</a>
+    </div>
+
+    <div class="prac-card prac-s3">
+      <div class="prac-head">
+        <span class="prac-title">Causal Inference in Python (Uber)</span>
+        <span class="prac-meta"><span class="prac-rating">⭐⭐⭐</span><span class="prac-badge free">免费</span></span>
+      </div>
+      <p class="prac-desc">Uber 开源的 CausalML 库 + 教程，覆盖 Uplift Modeling 和异质处理效应，工程落地导向。</p>
+      <div class="prac-why"><span class="prac-why-label">💡 为何推荐：</span>Uplift Modeling 在电商/广告/金融是高薪细分方向，有工程背景加持。</div>
+      <div class="prac-resume"><span class="prac-resume-label">📌 包装话术：</span>"熟悉 Uplift Modeling，使用 CausalML 实现个体因果效应估计，用于精准营销策略优化。"</div>
+      <a class="prac-link" href="https://github.com/uber/causalml" target="_blank">→ github.com/uber/causalml</a>
+    </div>
+
+  </div>
+</section>
+
+<div style="padding:40px 0;text-align:center;color:var(--text-3);font-size:13px;border-top:1px solid var(--border);font-family:system-ui;">
   数据科学全栈笔记 · 涵盖 ML / DL / LLM / Spark · 面向面试与工作
 </div>
 
