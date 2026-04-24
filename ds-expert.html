@@ -260,7 +260,7 @@ tr:hover td{background:var(--surface2)}
 <body>
 
 <!-- Password gate -->
-<div id="gate" style="display:none;position:fixed;inset:0;background:#f8fafc;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+<div id="gate" style="display:none;position:fixed;inset:0;background:#f8fafc;z-index:99999;align-items:center;justify-content:center;flex-direction:column;gap:16px">
   <div style="text-align:center;margin-bottom:8px">
     <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4f46e5;margin-bottom:10px">数据专家图谱 · Expert Map</div>
     <div style="font-size:28px;font-weight:800;color:#0f172a">访问验证</div>
@@ -283,8 +283,8 @@ tr:hover td{background:var(--surface2)}
     else{document.getElementById('gate-err').textContent='密码错误，请重试'}
   }
   window.checkGate=checkGate;
-  // Pass if either key is already set
   if(!KEYS.some(k=>sessionStorage.getItem(k))){document.getElementById('gate').style.display='flex';document.body.style.overflow='hidden'}
+  else{document.getElementById('gate').style.display='none'}
 })();
 </script>
 

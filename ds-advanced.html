@@ -117,12 +117,30 @@ tr:hover td{background:var(--surface2)}
 .bridge-prereq{font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:8px}
 .bridge-card a{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none}
 .bridge-card a:hover{text-decoration:underline}
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:16px}
+.concept-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;border-top:3px solid var(--accent)}
+.concept-card.c-llm{border-top-color:#6366f1}
+.concept-card.c-data{border-top-color:#0891b2}
+.concept-card.c-exp{border-top-color:#7c3aed}
+.concept-card.c-ops{border-top-color:#22c55e}
+.concept-area{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.ca-llm{background:rgba(99,102,241,.1);color:#4338ca}
+.ca-data{background:rgba(8,145,178,.1);color:#0e7490}
+.ca-exp{background:rgba(124,58,237,.1);color:#6d28d9}
+.ca-ops{background:rgba(22,163,74,.1);color:#15803d}
+.concept-title{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:8px}
+.concept-body{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:10px}
+.concept-body strong{color:var(--text)}
+.concept-pointer{font-size:11.5px;padding:6px 10px;background:var(--surface2);border-radius:6px;color:var(--text-3)}
+.concept-pointer a{color:var(--accent);text-decoration:none;font-weight:600}
+.concept-pointer a:hover{text-decoration:underline}
+.decision-table-wrap{margin-top:16px;overflow-x:auto}
 #hamburger{display:none;position:fixed;bottom:20px;right:20px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;color:white;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 @media(max-width:768px){#sidebar{transform:translateX(-100%);transition:transform .2s}#sidebar.open{transform:none}#main{margin-left:0;padding:0 16px 60px}#hamburger{display:grid;place-items:center}.hero h1{font-size:28px}.checklist-grid,.track-grid,.card-grid,.challenge-grid,.bridge-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div id="gate" style="display:none;position:fixed;inset:0;background:#f8fafc;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+<div id="gate" style="display:none;position:fixed;inset:0;background:#f8fafc;z-index:99999;align-items:center;justify-content:center;flex-direction:column;gap:16px">
   <div style="text-align:center;margin-bottom:8px">
     <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0891b2;margin-bottom:10px">数据进阶工程图谱 · Advanced Map</div>
     <div style="font-size:28px;font-weight:800;color:#0f172a">访问验证</div>
@@ -145,6 +163,7 @@ tr:hover td{background:var(--surface2)}
   }
   window.checkGate=checkGate;
   if(!KEYS.some(k=>sessionStorage.getItem(k))){document.getElementById('gate').style.display='flex';document.body.style.overflow='hidden'}
+  else{document.getElementById('gate').style.display='none'}
 })();
 </script>
 
@@ -160,10 +179,13 @@ tr:hover td{background:var(--surface2)}
       <div class="nav-group-label open" onclick="toggleGroup(this)"><span>导航</span><span class="caret">▶</span></div>
       <div class="nav-items open">
         <a href="#selfcheck">进阶前自检</a>
+        <a href="#concepts">核心概念速查</a>
         <a href="#roadmap">进阶路线图</a>
         <a href="#mlops">ML 工程化实战</a>
         <a href="#llmapp">LLM 应用工程</a>
+        <a href="#llmconcepts">LLM 核心原理</a>
         <a href="#experimentation">实验与度量深化</a>
+        <a href="#causal">因果方法选择指南</a>
         <a href="#troubleshoot">问题解法手册</a>
         <a href="#bridge">衔接专家图谱</a>
       </div>
@@ -218,6 +240,80 @@ tr:hover td{background:var(--surface2)}
   </div>
   <div class="callout tip"><strong>大部分勾选：</strong>继续读本页。你的下一个瓶颈通常不是模型算法，而是数据管道、评估体系、上线稳定性和跨团队协作。</div>
   <div class="callout warn"><strong>勾选少于一半：</strong>建议先回基础页补统计、SQL、ML 评估和实验设计，否则后面的工程化内容会变成背概念。</div>
+</section>
+
+<!-- ═══ 00.5 核心概念速查 ═══ -->
+<section id="concepts" class="section">
+  <div class="sec-head"><span class="sec-num">00.5</span><div class="sec-head-text"><h2>核心概念速查</h2><p>在读专家页之前，先把这些高频词语理解到"能用自己的话解释"的程度</p></div></div>
+
+  <div class="callout info">专家页假设你已经知道这些词是什么意思。这里不做深度推导，只帮你建立直觉——读完专家页的技术内容时，每遇到下面某个词，心里有个"对，我知道这是什么"的锚点就够了。</div>
+
+  <div class="concept-grid">
+
+    <div class="concept-card c-llm">
+      <span class="concept-area ca-llm">LLM 基础</span>
+      <div class="concept-title">Transformer / 注意力机制</div>
+      <p class="concept-body">现代所有大语言模型（GPT、Claude、Llama）的基础架构。核心思路：处理一段文字时，让模型对每个词都"看一遍"其他所有词，动态决定谁对谁更重要（这就是注意力权重）。相比之前的 RNN 逐步读入，Transformer 可以并行处理整段输入，训练效率大幅提升。<br><strong>为什么要知道：</strong>专家页的 FlashAttention、MoE、长上下文等内容都建立在 Transformer 上，不理解注意力就无法理解它们优化的是什么。</p>
+      <div class="concept-pointer">专家页深度：<a href="ds-expert.html#evolution">发展脉络 2017</a> · <a href="ds-expert.html#papers">FlashAttention 论文卡</a></div>
+    </div>
+
+    <div class="concept-card c-llm">
+      <span class="concept-area ca-llm">LLM 基础</span>
+      <div class="concept-title">预训练 / 微调 / RLHF</div>
+      <p class="concept-body"><strong>预训练</strong>：在海量文本上学习语言规律（"下一个词是什么"）——代价极高，只有大厂做。<br><strong>微调（Fine-tuning）</strong>：在预训练模型上继续训练，让它专注某个任务或风格——DS 可以做。<br><strong>RLHF（人类反馈强化学习）</strong>：让人类标注"哪个回答更好"，用这个偏好信号调整模型行为——ChatGPT 能"听话"的原因。<br><strong>为什么要知道：</strong>专家页的 DPO、GRPO、LoRA 都是微调/对齐方法的变种，知道三步骤才能理解它们各自省掉了什么。</p>
+      <div class="concept-pointer">专家页深度：<a href="ds-expert.html#evolution">发展脉络 2021-2022</a> · <a href="ds-expert.html#roadmap">Tier 1 InstructGPT</a></div>
+    </div>
+
+    <div class="concept-card c-llm">
+      <span class="concept-area ca-llm">LLM 基础</span>
+      <div class="concept-title">RAG（检索增强生成）</div>
+      <p class="concept-body">让 LLM 回答问题前，先从知识库里检索相关段落，把它塞进 prompt，再让模型作答。好处是答案有依据可验证、知识可更新、幻觉率低。<br>比喻：LLM 是开卷考试，RAG 是帮它找到要翻的那页书，而不是靠死记。<br><strong>为什么要知道：</strong>专家页技术雷达里 RAG Pipeline 是 Adopt 级别，LLM 落地最主流的架构，本进阶页第 03 节会深入工程细节。</p>
+      <div class="concept-pointer">本页深度：<a href="#llmapp">LLM 应用工程 §03</a> · 专家页：<a href="ds-expert.html#radar">技术雷达</a></div>
+    </div>
+
+    <div class="concept-card c-llm">
+      <span class="concept-area ca-llm">LLM 基础</span>
+      <div class="concept-title">Prompt Engineering vs. Fine-tuning</div>
+      <p class="concept-body"><strong>Prompt Engineering</strong>：通过精心设计输入文字来引导模型输出，不改变模型权重，零成本但效果有上限。<br><strong>Fine-tuning（微调）</strong>：用你自己的数据继续训练模型，改变权重，成本更高但能深度定制风格/知识。<br><strong>什么时候选哪个：</strong>先试 Prompt；如果 Prompt 已经到上限（格式总不稳、专有术语总出错、需要大量 few-shot 例子），再考虑 LoRA/QLoRA 微调。</p>
+      <div class="concept-pointer">专家页深度：<a href="ds-expert.html#radar">技术雷达 LoRA/QLoRA (Adopt)</a> · <a href="ds-expert.html#radar">手工 Prompt 调优 (Hold)</a></div>
+    </div>
+
+    <div class="concept-card c-data">
+      <span class="concept-area ca-data">数据工程</span>
+      <div class="concept-title">Lakehouse / 表格式（Iceberg）</div>
+      <p class="concept-body">传统数据湖（便宜、灵活但查询慢）和数据仓库（快速可查询但封闭昂贵）的折中。<strong>Lakehouse</strong> 在廉价对象存储上加了一层元数据，支持 ACID 事务（写入不会搞坏正在查询的人）、时间旅行（查昨天的数据）、schema 变更。<br><strong>Apache Iceberg</strong> 是 2025 年赢得"表格式战争"的标准，Snowflake、Flink、Spark 都支持。<br><strong>为什么要知道：</strong>专家页工具生态里 Apache Iceberg 是 Adopt，现代数据团队的基础设施选型。</p>
+      <div class="concept-pointer">专家页深度：<a href="ds-expert.html#tools">工具生态 数据存储</a> · <a href="ds-expert.html#papers">Lakehouse 论文</a></div>
+    </div>
+
+    <div class="concept-card c-exp">
+      <span class="concept-area ca-exp">因果推断</span>
+      <div class="concept-title">相关 vs. 因果 / 混淆变量</div>
+      <p class="concept-body">冰淇淋销量和溺水死亡人数正相关——但冰淇淋不会导致溺水，两者的共同原因是夏天（<strong>混淆变量</strong>）。<br>DS 工作中，直接回归得到的系数通常是"相关关系"，不能直接用于决策。比如"发优惠券的用户购买率高"可能只是因为本来就倾向购买的人才会去领券。<br><strong>为什么要知道：</strong>专家页的 DML、CUPED、DID、合成控制都是解决"怎么从相关性里提取因果效应"这一问题的工具。</p>
+      <div class="concept-pointer">本页深度：<a href="#causal">因果方法选择指南 §04.5</a> · 专家页：<a href="ds-expert.html#papers">因果推断论文</a></div>
+    </div>
+
+    <div class="concept-card c-exp">
+      <span class="concept-area ca-exp">因果推断</span>
+      <div class="concept-title">DID / 合成控制 / DML</div>
+      <p class="concept-body"><strong>DID（差分中差）</strong>：比较处置组和对照组在干预前后的变化差，抵消不随时间变的混淆。假设：如果没干预，两组趋势应该平行。<br><strong>合成控制</strong>：找不到好对照组时，用加权平均构造一个"假如没有干预会怎样"的反事实。<br><strong>DML（双重去偏机器学习）</strong>：高维特征场景下，用 ML 先把混淆因素的影响去掉，再做因果估计，比传统 OLS 更鲁棒。<br><strong>为什么要知道：</strong>专家页 Tier 1/2 论文都围绕这三类方法展开。</p>
+      <div class="concept-pointer">本页深度：<a href="#causal">因果方法选择指南</a> · 专家页：<a href="ds-expert.html#papers">因果论文精选</a></div>
+    </div>
+
+    <div class="concept-card c-ops">
+      <span class="concept-area ca-ops">MLOps</span>
+      <div class="concept-title">Training-Serving Skew / 数据漂移</div>
+      <p class="concept-body"><strong>Training-serving skew</strong>：训练时用了一种特征计算逻辑，线上服务用了另一种——结果模型拿到的输入和训练时不一样，性能骤降。最常见原因是 notebook 里随手处理缺失值、线上忘了同样处理。<br><strong>数据漂移（Data Drift）</strong>：随着时间推移，真实世界的数据分布变了（比如用户行为模式变了），但模型没更新。现象：离线指标好、线上越来越差。<br><strong>为什么要知道：</strong>专家页 MLOps 论文和工具（Evidently AI）都在解决这两类问题。</p>
+      <div class="concept-pointer">本页深度：<a href="#mlops">ML 工程化实战 §02</a> · 专家页：<a href="ds-expert.html#tools">监控/可观测性工具</a></div>
+    </div>
+
+    <div class="concept-card c-ops">
+      <span class="concept-area ca-ops">MLOps</span>
+      <div class="concept-title">MCP / Agent / LangGraph</div>
+      <p class="concept-body"><strong>AI Agent</strong>：不只是回答问题的 LLM，而是能调用工具（搜索、写文件、执行代码）自主完成多步任务的系统。<br><strong>MCP（模型上下文协议）</strong>：Anthropic 发布的开放标准，定义 Agent 如何与外部工具/数据源交互——类比 USB 接口，不同工具用同一套接口。<br><strong>LangGraph</strong>：基于状态机的 Agent 编排框架，适合有条件分支和人工介入的生产 Agent，2025 年的事实标准。<br><strong>为什么要知道：</strong>专家页技术雷达 MCP 和 LangGraph 都是 Adopt，是 2026 年 Agent 工程的基础层。</p>
+      <div class="concept-pointer">本页深度：<a href="#llmapp">LLM 应用工程 §03</a> · 专家页：<a href="ds-expert.html#radar">技术雷达 MCP/LangGraph</a></div>
+    </div>
+
+  </div>
 </section>
 
 <section id="roadmap" class="section">
@@ -306,6 +402,34 @@ tr:hover td{background:var(--surface2)}
   </div>
 </section>
 
+<section id="llmconcepts" class="section">
+  <div class="sec-head"><span class="sec-num">03.5</span><div class="sec-head-text"><h2>LLM 核心原理：从会调用 API 到看懂论文</h2><p>不用推公式，但要理解 expert 页里那些方法到底在解决什么问题</p></div></div>
+
+  <div class="callout info"><strong>学习目标：</strong>读完这一节，不要求你能训练大模型，但要能说清楚：为什么 Transformer 能工作、为什么 RAG 能减少幻觉、为什么 LoRA 能省显存、为什么推理模型更贵但更强。</div>
+
+  <div class="card-grid">
+    <div class="card"><h3>1. Token 与上下文窗口</h3><p>LLM 不直接读"字"或"词"，而是读 token。中文一个字可能是一个 token，英文一个词可能拆成多个 token。上下文窗口就是模型一次能看到的 token 数。长上下文不是越长越好：输入越长成本越高，模型也可能忽略中间证据（lost in the middle）。</p><ul><li><strong>工程判断：</strong>能检索就不要盲目塞全文。</li><li><strong>expert 连接：</strong>FlashAttention 优化的是长上下文注意力的计算/显存瓶颈。</li></ul></div>
+    <div class="card"><h3>2. Embedding 与向量检索</h3><p>Embedding 把文本变成一串数字向量，语义相近的文本向量距离更近。RAG 的第一步通常是把知识库切块后做 embedding，用户问题也做 embedding，再找距离最近的片段。</p><ul><li><strong>坑：</strong>向量相似不等于关键词匹配，产品名、数字、代码、时间容易漏。</li><li><strong>工程判断：</strong>生产 RAG 通常要混合检索：vector + BM25 + reranker。</li></ul></div>
+    <div class="card"><h3>3. LoRA / QLoRA 为什么省钱</h3><p>全量微调要更新模型所有参数，显存和数据成本很高。LoRA 的想法是：大模型原来的权重不动，只在关键矩阵旁边加一小组低秩参数，让这小组参数学习你的任务。QLoRA 再把底座模型量化到 4-bit，进一步降低显存。</p><ul><li><strong>适合：</strong>专有格式、稳定语气、领域术语、分类/抽取任务。</li><li><strong>不适合：</strong>事实知识频繁更新的问答；这类更适合 RAG。</li></ul></div>
+    <div class="card"><h3>4. DPO / GRPO 在优化什么</h3><p>SFT 让模型学会"按示例回答"，但不一定知道哪个回答更好。DPO 用成对偏好数据（A 比 B 好）直接优化模型偏好，比 PPO/RLHF 简化很多。GRPO 是 DeepSeek-R1 路线里用于推理训练的强化学习方法，核心是让模型通过多次尝试比较相对好坏，学习长链推理。</p><ul><li><strong>DPO：</strong>更像"偏好微调"，适合对齐风格/安全/有用性。</li><li><strong>GRPO：</strong>更像"训练模型思考过程"，适合数学、代码、可验证推理。</li></ul></div>
+    <div class="card"><h3>5. Test-Time Compute 为什么贵</h3><p>普通模型一次生成答案；推理模型会在回答前生成更长的思考链、尝试更多路径、做自我检查。能力提升来自"推理时花更多算力"，不是模型凭空变聪明。代价是 token 数、延迟和成本都大幅增加。</p><ul><li><strong>工程判断：</strong>不要所有问题都用推理模型；先做路由，简单问题走快模型，复杂问题才走 reasoning model。</li><li><strong>expert 连接：</strong>专家页的 Test-Time Compute 和成本曲线都围绕这个权衡。</li></ul></div>
+    <div class="card"><h3>6. LLM-as-Judge 为什么有偏差</h3><p>用强模型评估弱模型输出很实用，但它不是客观真理。常见偏差：更喜欢长答案（冗长偏差）、更喜欢第一个展示的答案（位置偏差）、更喜欢自己家模型的风格（自我偏好）。</p><ul><li><strong>工程判断：</strong>评估时随机化答案顺序；关键样本人工复核；不要只看 judge 分数。</li><li><strong>expert 连接：</strong>专家页的 LLM-as-Judge 论文卡专门讲这些偏差。</li></ul></div>
+  </div>
+
+  <div class="decision-table-wrap">
+    <table>
+      <thead><tr><th>你要解决的问题</th><th>优先方案</th><th>不要先做什么</th><th>为什么</th></tr></thead>
+      <tbody>
+        <tr><td>回答企业文档/知识库问题</td><td>RAG</td><td>直接微调</td><td>知识会更新，RAG 可溯源、可替换文档；微调记知识成本高且容易过期。</td></tr>
+        <tr><td>输出格式经常不稳定</td><td>结构化输出 + schema validation</td><td>无限改 prompt</td><td>格式属于系统边界，应该靠约束和验证，不靠模型自觉。</td></tr>
+        <tr><td>模型不懂内部术语/固定表达</td><td>先 RAG，必要时 LoRA</td><td>全量微调</td><td>术语解释可检索；只有风格/抽取模式长期稳定时才值得微调。</td></tr>
+        <tr><td>数学/代码推理题答错</td><td>推理模型 + 验证器</td><td>只加更多上下文</td><td>问题在推理过程，不在知识缺失；需要更多 test-time compute 或可执行验证。</td></tr>
+        <tr><td>Agent 工具误操作</td><td>最小权限 + 人工确认</td><td>相信 prompt 约束</td><td>工具调用是外部副作用，必须用系统权限和审批控制。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
 <section id="experimentation" class="section">
   <div class="sec-head"><span class="sec-num">04</span><div class="sec-head-text"><h2>实验与度量深化</h2><p>中阶 DS 的分水岭：不是跑出显著，而是知道结果为什么可信或不可信</p></div></div>
   <table><thead><tr><th>问题现象</th><th>根本原因</th><th>解法</th></tr></thead><tbody><tr><td>SRM：实验组比例不对</td><td>分流逻辑 bug、去重口径不一致、日志丢失</td><td>先停读实验结果；用 chi-square 检测；复查曝光日志和随机单元</td></tr><tr><td>首日效果特别大</td><td>新奇效应或学习效应</td><td>延长观察窗口，拆分 day 1 / day 7 / day 14 效果</td></tr><tr><td>每天看结果直到显著</td><td>p-hacking，提高假阳性率</td><td>预先固定分析时间，或使用序贯检验</td></tr><tr><td>对照组也被影响</td><td>网络效应或市场供需干扰</td><td>Cluster randomization、switchback experiment、准实验方法</td></tr><tr><td>很多指标总有一个显著</td><td>多重比较问题</td><td>预注册主指标，次级指标只做诊断，必要时校正 p-value</td></tr><tr><td>主指标涨，护栏指标跌</td><td>局部优化损害长期价值</td><td>设 OEC + guardrail，推动产品决策而非只报 p-value</td></tr></tbody></table>
@@ -313,7 +437,107 @@ tr:hover td{background:var(--surface2)}
   <div class="code-block">theta = cov(y, x_pre) / var(x_pre)
 y_cuped = y - theta * (x_pre - x_pre.mean())
 effect = y_cuped[treatment].mean() - y_cuped[control].mean()</div>
+
+  <div style="margin-top:16px">
+    <div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">样本量估算参考</div>
+    <table><thead><tr><th>效应量（MDE）</th><th>基础转化率</th><th>所需单侧样本量（α=0.05, power=0.8）</th><th>实际意义</th></tr></thead><tbody>
+      <tr><td>5% 相对提升</td><td>10%</td><td>~30,000 / 组</td><td>大厂核心漏斗，效应小，需要大量样本</td></tr>
+      <tr><td>10% 相对提升</td><td>10%</td><td>~7,700 / 组</td><td>中等效应，大多数产品实验的合理期望</td></tr>
+      <tr><td>20% 相对提升</td><td>10%</td><td>~2,000 / 组</td><td>重大改版，效应大，样本量要求低</td></tr>
+      <tr><td>5% 相对提升</td><td>2%</td><td>~155,000 / 组</td><td>低转化漏斗底部，极难做实验</td></tr>
+    </tbody></table>
+    <div class="callout warn" style="margin-top:8px"><strong>常见误区：</strong>先跑实验，样本量不够就延长时间——但延长会遇到季节效应和 p-hacking 问题。正确顺序：先算样本量 → 确认实验周期 → 开始实验。Python 工具：<code style="background:var(--surface2);padding:1px 5px;border-radius:3px">statsmodels.stats.power.tt_ind_solve_power</code></div>
+  </div>
   <div class="callout warn"><strong>实验不可行时：</strong>样本不够 → 用 CUPED/延长周期/改更敏感指标；不能随机 → 考虑 DML/匹配/IV；单元不可分或有干扰 → 考虑合成控制或 switchback。</div>
+</section>
+
+<!-- ═══ 04.5 因果方法选择指南 ═══ -->
+<section id="causal" class="section">
+  <div class="sec-head"><span class="sec-num">04.5</span><div class="sec-head-text"><h2>因果方法选择指南</h2><p>专家页里出现的 DML、DID、Synthetic DID、IV 在什么场景下该选哪个</p></div></div>
+
+  <div class="callout info"><strong>选方法的核心问题：</strong>你能不能做随机实验？如果不能，为什么不能？"为什么不能"决定了哪种准实验方法适合。</div>
+
+  <table>
+    <thead><tr><th>场景特征</th><th>推荐方法</th><th>核心假设</th><th>Python 实现</th><th>专家页</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>能做 A/B 实验，想提升灵敏度</td>
+        <td><strong>CUPED</strong></td>
+        <td>实验前协变量与结果相关；随机分组</td>
+        <td>5 行 numpy</td>
+        <td><a href="ds-expert.html#papers" style="color:var(--accent)">CUPED 论文</a></td>
+      </tr>
+      <tr>
+        <td>不能随机，有自然实验分组，分布平行</td>
+        <td><strong>DID（差分中差）</strong></td>
+        <td>平行趋势假设：如无干预，两组趋势相同</td>
+        <td>statsmodels OLS</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>DID 但产品是分阶段上线给不同用户</td>
+        <td><strong>Staggered DID（Sun-Abraham）</strong></td>
+        <td>同上，但允许异质处置时序</td>
+        <td>pyfixest</td>
+        <td><a href="ds-expert.html#papers" style="color:var(--accent)">Staggered DID 论文</a></td>
+      </tr>
+      <tr>
+        <td>平行趋势假设可疑，对照组难选</td>
+        <td><strong>Synthetic DID（SDID）</strong></td>
+        <td>有足够历史数据；可学习对照权重</td>
+        <td>SparseSC (~10行)</td>
+        <td><a href="ds-expert.html#papers" style="color:var(--accent)">SDID 论文</a></td>
+      </tr>
+      <tr>
+        <td>观测数据，高维混淆，有 ML 能力</td>
+        <td><strong>Double ML（DML）</strong></td>
+        <td>无未测混淆变量；Neyman 正交</td>
+        <td>EconML DMLEstimator</td>
+        <td><a href="ds-expert.html#papers" style="color:var(--accent)">Double ML 论文</a></td>
+      </tr>
+      <tr>
+        <td>有工具变量（影响处置但不直接影响结果）</td>
+        <td><strong>IV（工具变量）</strong></td>
+        <td>工具变量相关性 + 排他性</td>
+        <td>linearmodels IV2SLS</td>
+        <td>EconML 工具生态</td>
+      </tr>
+      <tr>
+        <td>预测哪些人干预效果最大（个性化）</td>
+        <td><strong>Uplift Modeling / HTE</strong></td>
+        <td>有随机实验数据；CATE 可估计</td>
+        <td>EconML CausalForest</td>
+        <td><a href="ds-expert.html#radar" style="color:var(--accent)">技术雷达 Assess</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card-grid" style="margin-top:16px">
+    <div class="card">
+      <h3>DID 的致命陷阱</h3>
+      <p>标准 2×2 DID（只有处置前/后 × 处置组/对照组四个格子）在分阶段上线的产品中会严重偏估。原因：不同时间上线的用户批次本来就不同，OLS 把这个差异当作处置效应。</p>
+      <div class="metric-row"><span class="metric-pill bad">高风险</span><span class="metric-pill">分阶段上线场景</span></div>
+      <p style="font-size:12px;color:var(--text-3);margin-top:8px">修复：用 Sun-Abraham 或 Callaway-Sant'Anna 方法，专家页 Tier 2 论文有详细说明。</p>
+    </div>
+    <div class="card">
+      <h3>为什么不先用 PSM（倾向得分匹配）</h3>
+      <p>PSM 匹配后的"干净样本"看上去平衡，但在高维特征场景下会引入选择偏差——被匹配掉的样本可能恰好是有异质处置效应的群体。DML 通过正交化保证高维场景下的无偏性，是比 PSM 更统计严格的选项。</p>
+      <div class="metric-row"><span class="metric-pill warn">常见误用</span><span class="metric-pill">高维混淆场景</span></div>
+    </div>
+    <div class="card">
+      <h3>DML 最小实现</h3>
+      <div class="code-block" style="margin-top:8px">from econml.dml import LinearDML
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+
+est = LinearDML(
+    model_y=RandomForestRegressor(),
+    model_t=RandomForestClassifier()
+)
+est.fit(Y, T, X=X, W=W)
+print(est.ate_, est.ate_interval())</div>
+      <p style="font-size:12px;color:var(--text-3);margin-top:6px">Y=结果，T=处置，X=调节变量（影响处置效应），W=混淆变量（需控制但不关心其效应）</p>
+    </div>
+  </div>
 </section>
 
 <section id="troubleshoot" class="section">
@@ -324,6 +548,8 @@ effect = y_cuped[treatment].mean() - y_cuped[control].mean()</div>
     <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">召回失败</div><p class="challenge-body">正确答案在知识库里，但检索阶段没有取出来。</p><div class="challenge-path"><strong>防御：</strong>混合检索、query rewrite、reranker、召回集人工抽检。</div></div>
     <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">Prompt 注入</div><p class="challenge-body">外部文本诱导模型忽略系统指令或滥用工具。</p><div class="challenge-path"><strong>防御：</strong>工具最小权限、隔离不可信内容、关键操作人工确认。</div></div>
     <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">成本失控</div><p class="challenge-body">长上下文、多轮 retry、推理模型路由不当导致 token 成本飙升。</p><div class="challenge-path"><strong>防御：</strong>缓存、模型路由、context 压缩、每用户预算上限。</div></div>
+    <div class="challenge-card"><div class="challenge-label">ML 失效</div><div class="challenge-title">过拟合到验证集</div><p class="challenge-body">频繁在同一验证集上调参，导致参数选择已经"记住"了验证集的特点，线上泛化差。</p><div class="challenge-path"><strong>防御：</strong>预先保留 holdout 集，只在最终评估时用一次；调参过程只看 CV 结果。</div></div>
+    <div class="challenge-card"><div class="challenge-label">实验失效</div><div class="challenge-title">因果解读错误</div><p class="challenge-body">把 A/B 实验的相关性当因果用于决策（如用实验结果预测个人用户干预效果），或在非实验数据上直接做 OLS 得出因果结论。</p><div class="challenge-path"><strong>防御：</strong>实验只能估计 ATE，个体效应需要 HTE/Uplift；观测数据用因果图 + DoWhy 明确假设。</div></div>
   </div>
 </section>
 
