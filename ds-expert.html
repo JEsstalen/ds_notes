@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据专家图谱 · Expert Map</title>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --surface2: #263248; --border: #334155;
+  --accent: #6366f1; --accent-light: rgba(99,102,241,.15);
+  --green: #22c55e; --green-light: rgba(34,197,94,.12);
+  --amber: #f59e0b; --amber-light: rgba(245,158,11,.12);
+  --red: #ef4444; --red-light: rgba(239,68,68,.12);
+  --purple: #a855f7; --purple-light: rgba(168,85,247,.12);
+  --cyan: #06b6d4; --cyan-light: rgba(6,182,212,.12);
+  --text: #f1f5f9; --text-2: #94a3b8; --text-3: #64748b;
+  --nav-w: 260px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.7}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--cyan));z-index:9999;transition:width .1s}
+
+/* Sidebar */
+#sidebar{position:fixed;top:0;left:0;width:var(--nav-w);height:100vh;background:#111827;border-right:1px solid var(--border);overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+#sidebar-head{padding:18px 16px 12px;border-bottom:1px solid var(--border)}
+#sidebar-head .site-badge{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
+#sidebar-head h1{font-size:13px;font-weight:700;color:var(--text)}
+#sidebar-head p{font-size:11px;color:var(--text-3);margin-top:2px}
+#nav-tree{flex:1;padding:8px 0 20px;overflow-y:auto}
+.nav-group{margin-bottom:2px}
+.nav-group-label{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);cursor:pointer;user-select:none}
+.nav-group-label:hover{color:var(--text)}
+.nav-group-label .caret{font-size:9px;transition:transform .15s}
+.nav-group-label.open .caret{transform:rotate(90deg)}
+.nav-items{display:none}
+.nav-items.open{display:block}
+.nav-items a{display:flex;align-items:center;gap:6px;padding:5px 16px 5px 24px;font-size:12.5px;color:var(--text-2);text-decoration:none;border-left:2px solid transparent;transition:all .12s}
+.nav-items a:hover{color:var(--accent);background:var(--accent-light)}
+.nav-items a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-light);font-weight:600}
+.nav-items a .ntag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:auto;background:var(--accent-light);color:var(--accent)}
+#sidebar-foot{padding:12px 16px;border-top:1px solid var(--border)}
+#sidebar-foot a{font-size:12px;color:var(--text-3);text-decoration:none;display:flex;align-items:center;gap:6px}
+#sidebar-foot a:hover{color:var(--accent)}
+
+/* Main */
+#main{margin-left:var(--nav-w);padding:0 48px 80px}
+.content-wrap{max-width:860px;margin:0 auto}
+
+/* Hero */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border);margin-bottom:56px;position:relative}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.hero h1{font-size:42px;font-weight:800;line-height:1.15;letter-spacing:-1px;color:var(--text)}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{margin-top:12px;font-size:16px;color:var(--text-2);max-width:560px;line-height:1.6}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.chip{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;border:1px solid}
+.chip.llm{background:var(--accent-light);color:#a5b4fc;border-color:rgba(99,102,241,.3)}
+.chip.mlops{background:var(--green-light);color:#86efac;border-color:rgba(34,197,94,.3)}
+.chip.causal{background:var(--purple-light);color:#d8b4fe;border-color:rgba(168,85,247,.3)}
+.chip.sys{background:var(--cyan-light);color:#67e8f9;border-color:rgba(6,182,212,.3)}
+.chip.lead{background:var(--amber-light);color:#fcd34d;border-color:rgba(245,158,11,.3)}
+.hero-notice{margin-top:24px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-2);line-height:1.6}
+.hero-notice strong{color:var(--text)}
+
+/* Section */
+.section{margin-bottom:72px;scroll-margin-top:24px}
+.sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.sec-num{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:3px 8px;border-radius:4px;letter-spacing:.5px;flex-shrink:0;margin-top:4px}
+.sec-head-text h2{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--text)}
+.sec-head-text p{font-size:13px;color:var(--text-3);margin-top:3px}
+
+/* Callouts */
+.callout{display:flex;gap:10px;padding:12px 16px;border-radius:8px;margin:16px 0;font-size:13px;line-height:1.55}
+.callout.info{background:var(--accent-light);border-left:3px solid var(--accent)}
+.callout.tip{background:var(--green-light);border-left:3px solid var(--green)}
+.callout.warn{background:var(--amber-light);border-left:3px solid var(--amber)}
+
+/* Tech Radar */
+#radar-wrap{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;margin-top:16px}
+#radar-svg-container{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;overflow:hidden}
+#radar-legend{display:flex;flex-direction:column;gap:8px}
+.radar-ring-label{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.radar-ring-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.radar-detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:12px;display:none}
+.radar-detail-panel.show{display:block}
+.rdp-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.rdp-ring{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.rdp-desc{font-size:13px;color:var(--text-2);line-height:1.55}
+.rdp-why{font-size:12px;color:var(--text-3);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.radar-items-list{margin-top:16px}
+.radar-cat{margin-bottom:16px}
+.radar-cat-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:8px}
+.radar-pills{display:flex;flex-wrap:wrap;gap:6px}
+.radar-pill{font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer;border:1px solid;transition:all .15s;font-weight:600}
+.radar-pill:hover{opacity:.85}
+.rp-adopt{background:rgba(34,197,94,.15);color:#86efac;border-color:rgba(34,197,94,.3)}
+.rp-trial{background:rgba(99,102,241,.15);color:#a5b4fc;border-color:rgba(99,102,241,.3)}
+.rp-assess{background:rgba(245,158,11,.15);color:#fcd34d;border-color:rgba(245,158,11,.3)}
+.rp-hold{background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)}
+
+/* Paper cards */
+.tab-row{display:flex;gap:3px;margin-bottom:16px;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab-btn{padding:8px 16px;border:none;background:transparent;font-size:13px;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;white-space:nowrap;font-family:inherit}
+.tab-btn:hover{color:var(--text);background:var(--surface2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.paper-grid{display:flex;flex-direction:column;gap:12px}
+.paper-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;border-left:4px solid var(--accent);transition:border-color .12s}
+.paper-card.llm{border-left-color:#6366f1}
+.paper-card.mlops{border-left-color:#22c55e}
+.paper-card.causal{border-left-color:#a855f7}
+.paper-card.recsys{border-left-color:#f59e0b}
+.paper-card.de{border-left-color:#06b6d4}
+.paper-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.paper-title{font-size:14.5px;font-weight:700;color:var(--text);line-height:1.4}
+.paper-meta-row{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.pmeta{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--surface2);color:var(--text-3)}
+.pmeta.year{color:var(--accent);background:var(--accent-light)}
+.pmeta.venue{color:var(--green);background:var(--green-light)}
+.pmeta.stars{color:var(--amber);background:var(--amber-light)}
+.paper-why{font-size:13px;color:var(--text-2);margin-bottom:8px;line-height:1.55}
+.paper-impact{font-size:12px;color:var(--text-3);padding:8px 10px;background:var(--surface2);border-radius:6px;margin-bottom:8px;line-height:1.5}
+.paper-impact strong{color:var(--text-2)}
+.paper-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.paper-link{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;padding:3px 10px;border:1px solid rgba(99,102,241,.4);border-radius:5px}
+.paper-link:hover{background:var(--accent-light)}
+.paper-tag{font-size:10.5px;padding:2px 7px;border-radius:4px;background:var(--surface2);color:var(--text-3)}
+
+/* Tool ecosystem */
+.tool-landscape{display:flex;flex-direction:column;gap:12px}
+.tool-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.tool-row-head{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.tool-row-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3)}
+.tool-cards{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px}
+.tool-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;min-width:130px;flex:1;max-width:200px}
+.tool-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tool-desc{font-size:11.5px;color:var(--text-3);line-height:1.4;margin-bottom:6px}
+.tool-badge{font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;display:inline-block}
+.tb-mature{background:rgba(34,197,94,.15);color:#86efac}
+.tb-growing{background:var(--accent-light);color:#a5b4fc}
+.tb-emerging{background:var(--amber-light);color:#fcd34d}
+.tb-standard{background:rgba(6,182,212,.15);color:#67e8f9}
+
+/* Feed cards */
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:8px}
+.feed-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.feed-top{display:flex;align-items:center;gap:8px}
+.feed-icon{font-size:20px;flex-shrink:0}
+.feed-name{font-size:14px;font-weight:700;color:var(--text)}
+.feed-freq{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--surface2);color:var(--text-3);margin-left:auto;flex-shrink:0}
+.feed-by{font-size:11.5px;color:var(--text-3)}
+.feed-desc{font-size:12.5px;color:var(--text-2);line-height:1.5}
+.feed-link{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none}
+.feed-link:hover{text-decoration:underline}
+.feed-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin:20px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* OSS cards */
+.oss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.oss-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.oss-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.oss-name{font-size:15px;font-weight:700;color:var(--text)}
+.oss-stars{font-size:11px;color:var(--amber);font-weight:600}
+.oss-domain{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px}
+.od-llm{background:var(--accent-light);color:#a5b4fc}
+.od-mlops{background:var(--green-light);color:#86efac}
+.od-causal{background:var(--purple-light);color:#d8b4fe}
+.od-exp{background:var(--cyan-light);color:#67e8f9}
+.od-agent{background:var(--amber-light);color:#fcd34d}
+.oss-desc{font-size:13px;color:var(--text-2);line-height:1.5}
+.oss-how{font-size:12px;padding:6px 10px;border-radius:6px;background:var(--surface2)}
+.oss-how strong{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+.oh-fork strong{color:#22c55e}
+.oh-contribute strong{color:#6366f1}
+.oh-build strong{color:#f59e0b}
+.oss-links{display:flex;gap:8px;flex-wrap:wrap}
+.oss-link{font-size:11.5px;font-weight:600;color:var(--accent);text-decoration:none;padding:2px 8px;border:1px solid rgba(99,102,241,.3);border-radius:4px}
+.oss-link:hover{background:var(--accent-light)}
+
+/* Timeline */
+.timeline{position:relative;margin-top:8px}
+.timeline::before{content:'';position:absolute;left:22px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{display:flex;gap:20px;margin-bottom:28px;position:relative}
+.tl-dot{width:46px;height:46px;border-radius:50%;border:2px solid var(--border);background:var(--surface);display:grid;place-items:center;font-size:18px;flex-shrink:0;z-index:1}
+.tl-item.active .tl-dot{border-color:var(--accent);background:var(--accent-light)}
+.tl-body{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.tl-item.active .tl-body{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.05)}
+.tl-stage{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:4px}
+.tl-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+.tl-yoe{font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:10px}
+.tl-skills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.tl-skill{font-size:11px;padding:2px 8px;border-radius:4px;background:var(--surface2);color:var(--text-3)}
+.tl-outputs{font-size:12.5px;color:var(--text-2);margin-bottom:8px;padding-left:16px}
+.tl-outputs li{margin-bottom:3px}
+.tl-reads{font-size:12px;padding:8px 10px;background:var(--surface2);border-radius:6px;margin-bottom:8px}
+.tl-reads a{color:var(--accent);text-decoration:none;font-weight:600}
+.tl-reads a:hover{text-decoration:underline}
+.tl-check{font-size:12px;color:var(--amber);font-style:italic;padding:6px 10px;background:var(--amber-light);border-radius:6px}
+
+/* Weekly picks */
+.picks-list{display:flex;flex-direction:column;gap:10px}
+.pick-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
+.pick-num{font-size:22px;font-weight:800;color:var(--surface2);flex-shrink:0;line-height:1;min-width:28px}
+.pick-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:5px}
+.pt-paper{background:var(--accent-light);color:#a5b4fc}
+.pt-tool{background:var(--green-light);color:#86efac}
+.pt-blog{background:var(--amber-light);color:#fcd34d}
+.pt-discuss{background:var(--purple-light);color:#d8b4fe}
+.pick-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.pick-body{font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:6px}
+.pick-link{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none}
+.pick-link:hover{text-decoration:underline}
+.pick-date{font-size:10.5px;color:var(--text-3);margin-top:4px}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--surface2);padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border)}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top}
+tr:hover td{background:var(--surface2)}
+
+/* Hamburger */
+#hamburger{display:none;position:fixed;bottom:20px;right:20px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;color:white;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);transition:transform .2s}
+  #sidebar.open{transform:none}
+  #main{margin-left:0;padding:0 16px 60px}
+  #hamburger{display:grid;place-items:center}
+  #radar-wrap{grid-template-columns:1fr}
+  .feed-grid{grid-template-columns:1fr}
+  .oss-grid{grid-template-columns:1fr}
+  .hero h1{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- Password gate -->
+<div id="gate" style="display:none;position:fixed;inset:0;background:#0f172a;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+  <div style="text-align:center;margin-bottom:8px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6366f1;margin-bottom:10px">数据专家图谱 · Expert Map</div>
+    <div style="font-size:28px;font-weight:800;color:#f1f5f9">访问验证</div>
+    <div style="font-size:13px;color:#64748b;margin-top:6px">请输入访问密码</div>
+  </div>
+  <input id="gate-input" type="password" placeholder="密码" onkeydown="if(event.key==='Enter')checkGate()"
+    style="padding:12px 18px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f1f5f9;font-size:15px;width:280px;outline:none;text-align:center">
+  <button onclick="checkGate()" style="padding:10px 32px;background:#6366f1;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">进入</button>
+  <div id="gate-err" style="color:#f87171;font-size:13px;min-height:20px"></div>
+</div>
+<script>
+(function(){
+  const HASH='f11a231e9cf870fb29f2145fee0e2374ff673f3d907bb06d253caff91b8d1623';
+  const KEY='ds_expert_auth';
+  async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+  async function checkGate(){
+    const v=document.getElementById('gate-input').value;
+    const h=await sha256(v);
+    if(h===HASH){sessionStorage.setItem(KEY,'1');document.getElementById('gate').style.display='none';document.body.style.overflow=''}
+    else{document.getElementById('gate-err').textContent='密码错误，请重试'}
+  }
+  window.checkGate=checkGate;
+  if(!sessionStorage.getItem(KEY)){document.getElementById('gate').style.display='flex';document.body.style.overflow='hidden'}
+})();
+</script>
+
+<div id="progress-bar"></div>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div id="sidebar-head">
+    <div class="site-badge">Expert Map</div>
+    <h1>数据专家图谱</h1>
+    <p>前沿 · 深度 · 影响力</p>
+  </div>
+  <div id="nav-tree">
+    <div class="nav-group">
+      <div class="nav-group-label open" onclick="toggleGroup(this)"><span>导航</span><span class="caret">▶</span></div>
+      <div class="nav-items open">
+        <a href="#radar">🎯 技术雷达</a>
+        <a href="#papers">📄 前沿论文精选</a>
+        <a href="#tools">🔧 工具生态图谱</a>
+        <a href="#feeds">📡 资讯订阅渠道</a>
+        <a href="#oss">⚙️ 开源项目实战</a>
+        <a href="#trajectory">🚀 专家成长路径</a>
+        <a href="#picks">✨ 本期精选</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-foot">
+    <a href="index.html">← 返回基础笔记</a>
+  </div>
+</nav>
+
+<button id="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<!-- Main -->
+<main id="main">
+<div class="content-wrap">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">数据专家图谱 · Expert Map · 2025</div>
+  <h1>从 DS 到<em>数据专家</em>的<br>完整跃迁路径</h1>
+  <p class="hero-sub">本页面不重复基础知识。面向已工作的数据从业者，精选前沿论文、工具雷达、信息渠道和开源项目，帮你建立专业判断力与技术影响力。</p>
+  <div class="chip-row">
+    <span class="chip llm">LLM Systems</span>
+    <span class="chip mlops">MLOps / Production</span>
+    <span class="chip causal">Causal AI</span>
+    <span class="chip sys">ML 系统设计</span>
+    <span class="chip lead">Data Leadership</span>
+  </div>
+  <div class="hero-notice">
+    <strong>使用方式：</strong>每个模块独立成体系，可按需跳读。技术雷达帮你判断"现在该学什么"，论文精选帮你理解"为什么"，资讯渠道让你持续跟进，开源项目让你动手验证。
+  </div>
+</div>
+
+<!-- ═══ 1. TECH RADAR ═══ -->
+<section id="radar" class="section">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <div class="sec-head-text">
+      <h2>技术雷达</h2>
+      <p>参考 ThoughtWorks Tech Radar — 帮你在噪音中判断"现在该用什么、观察什么、远离什么"</p>
+    </div>
+  </div>
+
+  <div class="callout info">四个环的含义：<strong>Adopt</strong>（现在就用，生产可信）· <strong>Trial</strong>（值得实验，有成熟案例）· <strong>Assess</strong>（持续关注，尚未成熟）· <strong>Hold</strong>（暂缓投入，存在显著问题）</div>
+
+  <div id="radar-detail" class="radar-detail-panel"></div>
+
+  <div class="radar-items-list">
+    <div class="radar-cat">
+      <div class="radar-cat-label">🟢 Adopt — 现在就用</div>
+      <div class="radar-pills">
+        <span class="radar-pill rp-adopt" onclick="showRadar('vllm','Adopt','vLLM','LLM 推理引擎，PagedAttention 实现高吞吐，已成推理服务事实标准。AWS/Azure 均原生支持。','为什么是 Adopt：生产稳定性高，社区迭代快，替代自研推理成本极低。')">vLLM</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('mlflow','Adopt','MLflow','ML 实验追踪 + 模型注册，几乎所有 MLOps 平台的基础组件。','为什么是 Adopt：已有 Databricks 背书，API 稳定，学习成本低，替换成本高。')">MLflow</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('rag','Adopt','RAG Pipeline','检索增强生成，2024 年 LLM 应用落地的主流架构。','为什么是 Adopt：幻觉率显著低于 vanilla LLM，可解释，知识可更新，工程模式成熟。')">RAG Pipeline</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('feat','Adopt','Feature Store','在线+离线特征统一存储（Feast/Tecton），解决 training-serving skew 的关键。','为什么是 Adopt：中大型 DS 团队已成标配，避免重复计算和特征不一致。')">Feature Store</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('lora','Adopt','LoRA / QLoRA','低秩微调，允许在消费级 GPU 上微调 7B+ 模型。','为什么是 Adopt：资源效率极高，效果接近全量微调，已有大量生产案例。')">LoRA / QLoRA</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('cuped','Adopt','CUPED / 方差减少','A/B 测试中通过协变量控制减少方差，显著提升实验灵敏度。','为什么是 Adopt：Netflix/Microsoft/Booking 均已实施，数学严谨，实现简单。')">CUPED</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('duckdb','Adopt','DuckDB','嵌入式 OLAP 引擎，适合本地分析大规模 Parquet/CSV，替代 Spark 小数据场景。','为什么是 Adopt：极快，无依赖，SQL 接口完整，Notebook 友好。')">DuckDB</span>
+      </div>
+    </div>
+    <div class="radar-cat">
+      <div class="radar-cat-label">🔵 Trial — 值得实验</div>
+      <div class="radar-pills">
+        <span class="radar-pill rp-trial" onclick="showRadar('dspy','Trial','DSPy','LLM 编程范式，用优化器自动调 prompt/few-shot，替代手工 prompt engineering。','为什么是 Trial：概念强大，但调试复杂，适合有 LLM pipeline 工程经验的团队。')">DSPy</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('lg','Trial','LangGraph','基于状态机的 Agent 编排，比 LangChain chains 更可控。','为什么是 Trial：复杂 Agent 场景的最优解，但简单场景过重。')">LangGraph</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('econml','Trial','EconML / DoWhy','因果推断库，Double ML、IV、PSM 等方法的工业级实现。','为什么是 Trial：方法论成熟，但因果推断本身需要领域专业判断，不能无脑用。')">EconML / DoWhy</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('sdid','Trial','Synthetic DID','合成控制 + DID 的结合，Uber/Airbnb 使用的准实验方法。','为什么是 Trial：适合对照组难以选择的业务场景，但需要较强统计基础。')">Synthetic DID</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('mamba','Trial','Mamba / SSM','状态空间模型，O(n) 复杂度替代 Transformer，长序列友好。','为什么是 Trial：理论优势明显，但生态和工程支持仍不如 Transformer 完善。')">Mamba / SSM</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('growthbook','Trial','GrowthBook','开源实验平台，Feature Flag + A/B 测试一体化。','为什么是 Trial：小团队自建实验平台的最佳选择，但大型组织可能需要更多定制。')">GrowthBook</span>
+      </div>
+    </div>
+    <div class="radar-cat">
+      <div class="radar-cat-label">🟡 Assess — 持续关注</div>
+      <div class="radar-pills">
+        <span class="radar-pill rp-assess" onclick="showRadar('moe','Assess','MoE 架构','Mixture of Experts 在推理时只激活部分参数，成本效率高。','为什么是 Assess：GPT-4/Mixtral 已验证，但自训练 MoE 门槛极高，关注开源进展即可。')">MoE 架构</span>
+        <span class="radar-pill rp-assess" onclick="showRadar('multimodal','Assess','多模态 LLM','GPT-4o/Gemini 等，图文音视频统一模型。','为什么是 Assess：应用场景正在成熟，但工程落地成本仍高，持续关注 API 成熟度。')">多模态 LLM</span>
+        <span class="radar-pill rp-assess" onclick="showRadar('iceberg','Assess','Apache Iceberg','表格式 Lakehouse 格式，支持 ACID + 时间旅行。','为什么是 Assess：Databricks/Snowflake 均已支持，但迁移成本需评估。')">Apache Iceberg</span>
+        <span class="radar-pill rp-assess" onclick="showRadar('uplift','Assess','Uplift Modeling','预测个体处置效应，精准营销/政策评估的前沿方法。','为什么是 Assess：方法论成熟（CausalML），但落地需要严格实验设计配合。')">Uplift Modeling</span>
+        <span class="radar-pill rp-assess" onclick="showRadar('streamml','Assess','Streaming ML','流式数据上的在线学习（River/Faust）。','为什么是 Assess：实时场景有需求，但工程复杂度高，大多数场景 batch 够用。')">Streaming ML</span>
+      </div>
+    </div>
+    <div class="radar-cat">
+      <div class="radar-cat-label">🔴 Hold — 暂缓投入</div>
+      <div class="radar-pills">
+        <span class="radar-pill rp-hold" onclick="showRadar('automl','Hold','全自动 AutoML','无人监督的端到端 AutoML 平台用于生产。','为什么是 Hold：结果不可解释，调试困难，特征工程往往需要领域知识，不能替代 DS 判断。')">全自动 AutoML</span>
+        <span class="radar-pill rp-hold" onclick="showRadar('vectoronly','Hold','纯向量数据库方案','完全依赖向量相似度做 RAG，不加任何混合检索。','为什么是 Hold：召回率不如混合检索（向量+BM25），已有大量生产案例证明混合更优。')">纯向量 RAG</span>
+        <span class="radar-pill rp-hold" onclick="showRadar('prompthack','Hold','手工 Prompt 调优','靠人工反复试 prompt 优化 LLM 输出质量。','为什么是 Hold：无法系统化，不可复现，应迁移到 DSPy/评估驱动优化等系统化方法。')">手工 Prompt 调优</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2. PAPERS ═══ -->
+<section id="papers" class="section">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <div class="sec-head-text">
+      <h2>前沿论文精选</h2>
+      <p>每个方向 5-8 篇必读，附一句话点评和实践影响，按领域分 Tab</p>
+    </div>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('papers',this,'tab-llm')">LLM / Foundation</button>
+    <button class="tab-btn" onclick="switchTab('papers',this,'tab-mlops')">MLOps / Systems</button>
+    <button class="tab-btn" onclick="switchTab('papers',this,'tab-causal')">因果 / 实验</button>
+    <button class="tab-btn" onclick="switchTab('papers',this,'tab-recsys')">推荐系统</button>
+    <button class="tab-btn" onclick="switchTab('papers',this,'tab-de')">数据工程</button>
+  </div>
+
+  <div id="tab-llm" class="tab-content active">
+    <div class="paper-grid">
+
+      <div class="paper-card llm">
+        <div class="paper-top">
+          <div class="paper-title">FlashAttention-2: Faster Attention with Better Parallelism</div>
+          <div class="paper-meta-row"><span class="pmeta year">2023</span><span class="pmeta venue">ICLR 2024</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">重写了 attention 的 IO 模式，通过分块计算避免 HBM 读写，训练速度提升 2-4×，长上下文成为可能。几乎所有现代训练框架已默认集成。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>你的 GPU 训练慢？先确认有没有开 Flash Attention。理解它的分块思路，是理解 LLM 训练优化的基础。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2307.08691" target="_blank">arXiv</a>
+          <span class="paper-tag">IO感知计算</span><span class="paper-tag">注意力优化</span><span class="paper-tag">长上下文</span>
+        </div>
+      </div>
+
+      <div class="paper-card llm">
+        <div class="paper-top">
+          <div class="paper-title">Mixtral of Experts (Mistral AI)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2024</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">8×7B MoE，推理时只激活 2 个专家（实际激活 13B），性能超越 Llama 2 70B，重新点燃了 MoE 在 LLM 的讨论。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>证明"参数量不等于推理成本"，帮助你评估 MoE 架构在成本敏感场景的价值。GPT-4 疑似也是 MoE 结构。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2401.04088" target="_blank">arXiv</a>
+          <span class="paper-tag">MoE</span><span class="paper-tag">效率</span><span class="paper-tag">开源</span>
+        </div>
+      </div>
+
+      <div class="paper-card llm">
+        <div class="paper-top">
+          <div class="paper-title">DeepSeek-R1: Incentivizing Reasoning via RL</div>
+          <div class="paper-meta-row"><span class="pmeta year">2025</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">纯强化学习（GRPO）训练出 o1 级推理能力，无需 SFT 监督数据，颠覆了"必须大量标注数据"的假设，同时技术报告完全公开。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>重新定义 reasoning model 的训练范式，理解 GRPO 对比 PPO 的差异是理解下一代 LLM 的关键。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2501.12948" target="_blank">arXiv</a>
+          <span class="paper-tag">RLHF / GRPO</span><span class="paper-tag">推理能力</span><span class="paper-tag">开源</span>
+        </div>
+      </div>
+
+      <div class="paper-card llm">
+        <div class="paper-top">
+          <div class="paper-title">Mamba: Linear-Time Sequence Modeling with SSMs</div>
+          <div class="paper-meta-row"><span class="pmeta year">2023</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">状态空间模型以 O(n) 时间复杂度处理序列，硬件感知的选择性状态更新，在长序列任务上速度优于 Transformer。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>未来架构不一定是 Transformer，理解 SSM 帮你判断下一轮基础架构演进的方向。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2312.00752" target="_blank">arXiv</a>
+          <span class="paper-tag">SSM</span><span class="paper-tag">线性复杂度</span><span class="paper-tag">架构探索</span>
+        </div>
+      </div>
+
+      <div class="paper-card llm">
+        <div class="paper-top">
+          <div class="paper-title">Constitutional AI: Harmlessness from AI Feedback</div>
+          <div class="paper-meta-row"><span class="pmeta year">2022</span><span class="pmeta venue">Anthropic</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">用 AI 生成的批评/修订替代人工标注实现对齐，大幅降低 RLHF 的人力成本，是 Claude 的核心训练方法。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>做 LLM 应用的对齐和安全层，理解 CAI 比读 RLHF 原版更实用。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2212.08073" target="_blank">arXiv</a>
+          <span class="paper-tag">对齐</span><span class="paper-tag">RLAIF</span><span class="paper-tag">安全</span>
+        </div>
+      </div>
+
+      <div class="paper-card llm">
+        <div class="paper-top">
+          <div class="paper-title">Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</div>
+          <div class="paper-meta-row"><span class="pmeta year">2023</span><span class="pmeta venue">NeurIPS 2023</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">系统验证了用强 LLM 评估弱 LLM 输出的可行性，与人类偏好一致性高达 85%+，是 RAGAS 等评估框架的理论基础。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>你的 RAG/Agent 怎么自动评估？LLM-as-Judge 是目前最可行的方案，理解其偏差和局限是关键。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2306.05685" target="_blank">arXiv</a>
+          <span class="paper-tag">自动评估</span><span class="paper-tag">LLM评估</span><span class="paper-tag">基准</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="tab-mlops" class="tab-content">
+    <div class="paper-grid">
+
+      <div class="paper-card mlops">
+        <div class="paper-top">
+          <div class="paper-title">Hidden Technical Debt in Machine Learning Systems</div>
+          <div class="paper-meta-row"><span class="pmeta year">2015</span><span class="pmeta venue">NeurIPS</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">Google 的经典警示：ML 系统中真正的代码只是冰山一角，胶水代码、数据依赖、反馈回路才是主体。10 年后依然是每个 ML 工程师必读。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>下次系统评审时，用文中的 CRED 框架检查你的系统，会发现很多隐藏债务。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://proceedings.neurips.cc/paper_files/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf" target="_blank">PDF</a>
+          <span class="paper-tag">技术债</span><span class="paper-tag">ML工程</span><span class="paper-tag">系统设计</span>
+        </div>
+      </div>
+
+      <div class="paper-card mlops">
+        <div class="paper-top">
+          <div class="paper-title">Towards ML Engineering: Lessons from TFX (Google)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2021</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">Google 内部 TFX 平台的设计经验总结，系统化定义了 ML Pipeline 的各个组件和最佳实践，是 MLOps 领域的工程圣经。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>设计自己团队的 ML 平台前，先读这篇了解 Google 踩过的坑和解决方案。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2101.05175" target="_blank">arXiv</a>
+          <span class="paper-tag">MLOps</span><span class="paper-tag">Pipeline</span><span class="paper-tag">Google</span>
+        </div>
+      </div>
+
+      <div class="paper-card mlops">
+        <div class="paper-top">
+          <div class="paper-title">Data Management Challenges in Production ML (Schelter et al.)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2018</span><span class="pmeta venue">SIGMOD</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">系统化分析生产 ML 中的数据管理挑战：schema 漂移、分布偏移、数据血缘追踪，奠定了数据质量监控的理论框架。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>实现数据质量检测时，用文中的数据期望（data expectations）框架，对应开源工具是 Great Expectations。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://dl.acm.org/doi/10.1145/3209889.3209891" target="_blank">ACM DL</a>
+          <span class="paper-tag">数据质量</span><span class="paper-tag">数据漂移</span><span class="paper-tag">监控</span>
+        </div>
+      </div>
+
+      <div class="paper-card mlops">
+        <div class="paper-top">
+          <div class="paper-title">Scaling Laws for Neural Language Models (Kaplan et al.)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2020</span><span class="pmeta venue">OpenAI</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">发现模型性能与参数量、数据量、算力成幂律关系，预测了 GPT-3 的成功，是所有 LLM 资源规划的理论依据。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>做 LLM 成本预算时，Scaling Laws 帮你判断"多少算力换多少性能"，是商业决策的理论工具。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2001.08361" target="_blank">arXiv</a>
+          <span class="paper-tag">Scaling</span><span class="paper-tag">资源规划</span><span class="paper-tag">基础理论</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="tab-causal" class="tab-content">
+    <div class="paper-grid">
+
+      <div class="paper-card causal">
+        <div class="paper-top">
+          <div class="paper-title">Double/Debiased Machine Learning (Chernozhukov et al.)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2018</span><span class="pmeta venue">Econometrica</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">用 ML 模型控制高维混淆变量，同时保持因果估计的统计性质（无偏、渐近正态）。EconML 的核心实现，替代了传统 OLS 在高维场景的局限。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>做因果推断时特征多（营销/用户行为），DML 是比 PSM 更稳健的选择。直接用 EconML 的 DML 类。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/1608.00060" target="_blank">arXiv</a>
+          <span class="paper-tag">Double ML</span><span class="paper-tag">高维因果</span><span class="paper-tag">EconML</span>
+        </div>
+      </div>
+
+      <div class="paper-card causal">
+        <div class="paper-top">
+          <div class="paper-title">Synthetic Difference-in-Differences (Arkhangelsky et al.)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2021</span><span class="pmeta venue">AER</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">合成控制 + DID 的结合：自动学习对照单元的权重，比传统 DID 对平行趋势假设更宽松，Uber/Airbnb 广泛使用。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>当你的 DID 平行趋势假设站不住脚时，SDID 是首选替代。Python 实现在 SparseSC 库中。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/1812.09970" target="_blank">arXiv</a>
+          <span class="paper-tag">Synthetic DID</span><span class="paper-tag">准实验</span><span class="paper-tag">面板数据</span>
+        </div>
+      </div>
+
+      <div class="paper-card causal">
+        <div class="paper-top">
+          <div class="paper-title">Improving the Sensitivity of Online Controlled Experiments: CUPED</div>
+          <div class="paper-meta-row"><span class="pmeta year">2013</span><span class="pmeta venue">WSDM</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">用户历史行为作为协变量控制实验方差，Microsoft 验证可提升实验灵敏度 50%+，几乎所有大厂 A/B 平台已内置。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>你的实验总是跑不出显著结果？先加 CUPED，相当于免费多了一倍样本量。公式极其简单，半小时可以实现。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://exp-platform.com/Documents/2013-02-CUPED-ImprovingSensitivityOfControlledExperiments.pdf" target="_blank">PDF</a>
+          <span class="paper-tag">CUPED</span><span class="paper-tag">方差减少</span><span class="paper-tag">A/B测试</span>
+        </div>
+      </div>
+
+      <div class="paper-card causal">
+        <div class="paper-top">
+          <div class="paper-title">Network Effects in Experiments: Measuring and Correcting</div>
+          <div class="paper-meta-row"><span class="pmeta year">2022</span><span class="pmeta venue">KDD</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">社交/市场/平台产品中用户之间相互影响导致 A/B 实验偏差，本文系统化了检测和纠正网络效应的方法。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>你的 app 有社交功能或双边市场，标准 A/B 测试可能是偏的。这篇帮你理解为什么和怎么修。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2212.09797" target="_blank">arXiv</a>
+          <span class="paper-tag">网络效应</span><span class="paper-tag">双边市场</span><span class="paper-tag">实验设计</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="tab-recsys" class="tab-content">
+    <div class="paper-grid">
+
+      <div class="paper-card recsys">
+        <div class="paper-top">
+          <div class="paper-title">Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations (Google)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2019</span><span class="pmeta venue">RecSys</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">Two-Tower 双塔模型的工业级实现，解决大规模候选集检索的效率问题，YouTube 生产系统验证，成为推荐系统召回层标准架构。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>做推荐系统召回层，Two-Tower 是起点。理解 in-batch negative sampling 的偏差和修正方法是关键细节。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/1909.11671" target="_blank">arXiv</a>
+          <span class="paper-tag">Two-Tower</span><span class="paper-tag">召回</span><span class="paper-tag">负采样</span>
+        </div>
+      </div>
+
+      <div class="paper-card recsys">
+        <div class="paper-top">
+          <div class="paper-title">Search-based User Interest Modeling (SIM, Alibaba)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2020</span><span class="pmeta venue">CIKM</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">解决长序列用户行为建模（10,000+ 历史行为）的效率问题，两阶段检索设计让超长行为序列可以实际用于精排，阿里双11生产验证。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>做精排时，用户历史行为截断会损失信息，SIM 的检索-建模两阶段设计是工程可行的解法。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2006.05639" target="_blank">arXiv</a>
+          <span class="paper-tag">长序列</span><span class="paper-tag">精排</span><span class="paper-tag">用户兴趣</span>
+        </div>
+      </div>
+
+      <div class="paper-card recsys">
+        <div class="paper-top">
+          <div class="paper-title">Wide & Deep Learning for Recommender Systems (Google)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2016</span><span class="pmeta venue">DLRS</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">Wide（记忆）+ Deep（泛化）联合训练，Google Play Store 生产验证，开创了 DNN 用于推荐系统的工业范式，后续 DeepFM/DCN 均源于此。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>理解 Wide&Deep 的架构思想，才能看懂后续所有深度推荐模型的演进逻辑。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/1606.07792" target="_blank">arXiv</a>
+          <span class="paper-tag">Wide&Deep</span><span class="paper-tag">记忆+泛化</span><span class="paper-tag">精排经典</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="tab-de" class="tab-content">
+    <div class="paper-grid">
+
+      <div class="paper-card de">
+        <div class="paper-top">
+          <div class="paper-title">Lakehouse: A New Generation of Open Platforms (Databricks)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2021</span><span class="pmeta venue">CIDR</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">提出 Lakehouse 架构，在数据湖上直接实现数仓功能（ACID、schema、性能），Delta Lake / Apache Iceberg / Apache Hudi 的理论基础。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>现代数据架构讨论的起点。理解它才能判断你的团队是否需要迁移到 Lakehouse，以及选哪个表格式。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf" target="_blank">PDF</a>
+          <span class="paper-tag">Lakehouse</span><span class="paper-tag">Delta Lake</span><span class="paper-tag">数据架构</span>
+        </div>
+      </div>
+
+      <div class="paper-card de">
+        <div class="paper-top">
+          <div class="paper-title">Flink: Stateful Computations over Data Streams</div>
+          <div class="paper-meta-row"><span class="pmeta year">2015</span><span class="pmeta venue">IEEE Data Eng.</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">定义了有状态流计算的核心语义（exactly-once、watermark、checkpoint），是理解所有流式系统的基础文献。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>做实时特征工程前，必须理解 Flink 的状态管理和时间语义，否则数据一致性问题会让你在生产踩坑。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://asterios.katsifodimos.com/assets/publications/flink-deb.pdf" target="_blank">PDF</a>
+          <span class="paper-tag">流计算</span><span class="paper-tag">状态管理</span><span class="paper-tag">实时特征</span>
+        </div>
+      </div>
+
+      <div class="paper-card de">
+        <div class="paper-top">
+          <div class="paper-title">The Data Cards Playbook (Google PAIR)</div>
+          <div class="paper-meta-row"><span class="pmeta year">2022</span><span class="pmeta venue">FAccT</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
+        </div>
+        <p class="paper-why">系统化的数据集文档方法，帮助团队记录数据来源、限制、偏见和使用约束，是负责任的 AI 实践的基础。</p>
+        <div class="paper-impact"><strong>实践影响：</strong>你的团队换人后，新成员能快速理解数据的局限吗？Data Cards 是构建数据文化的起点。</div>
+        <div class="paper-foot">
+          <a class="paper-link" href="https://arxiv.org/abs/2204.01075" target="_blank">arXiv</a>
+          <span class="paper-tag">数据治理</span><span class="paper-tag">文档化</span><span class="paper-tag">负责任AI</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3. TOOLS ═══ -->
+<section id="tools" class="section">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <div class="sec-head-text">
+      <h2>工具生态图谱</h2>
+      <p>2025 年 DS / MLE 完整技术栈，聚焦"为什么选它"的判断维度</p>
+    </div>
+  </div>
+
+  <div class="tool-landscape">
+
+    <div class="tool-row">
+      <div class="tool-row-head"><span class="tool-row-label">📥 数据摄取 / 存储</span></div>
+      <div class="tool-cards">
+        <div class="tool-card"><div class="tool-name">Delta Lake</div><div class="tool-desc">开放格式 Lakehouse，ACID + 时间旅行</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Apache Iceberg</div><div class="tool-desc">Snowflake/Flink 原生支持的表格式标准</div><span class="tool-badge tb-growing">快速增长</span></div>
+        <div class="tool-card"><div class="tool-name">DuckDB</div><div class="tool-desc">嵌入式 OLAP，本地分析 100GB 内</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Apache Kafka</div><div class="tool-desc">分布式事件流，实时数据管道标准</div><span class="tool-badge tb-standard">行业标准</span></div>
+        <div class="tool-card"><div class="tool-name">Airbyte</div><div class="tool-desc">开源 ELT，300+ 连接器，替代 Fivetran</div><span class="tool-badge tb-growing">快速增长</span></div>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div class="tool-row-head"><span class="tool-row-label">⚙️ 特征工程 / 向量</span></div>
+      <div class="tool-cards">
+        <div class="tool-card"><div class="tool-name">Feast</div><div class="tool-desc">开源 Feature Store，在线+离线统一</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Tecton</div><div class="tool-desc">企业级 Feature Platform，实时特征</div><span class="tool-badge tb-mature">商业成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Qdrant</div><div class="tool-desc">高性能向量数据库，Rust 实现</div><span class="tool-badge tb-growing">快速增长</span></div>
+        <div class="tool-card"><div class="tool-name">pgvector</div><div class="tool-desc">PostgreSQL 向量扩展，简单场景首选</div><span class="tool-badge tb-growing">快速增长</span></div>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div class="tool-row-head"><span class="tool-row-label">🏋️ 训练平台 / 实验追踪</span></div>
+      <div class="tool-cards">
+        <div class="tool-card"><div class="tool-name">MLflow</div><div class="tool-desc">实验追踪 + 模型注册，Databricks 支持</div><span class="tool-badge tb-standard">行业标准</span></div>
+        <div class="tool-card"><div class="tool-name">W&B</div><div class="tool-desc">可视化丰富，sweep 调参，LLM 追踪</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Ray Train</div><div class="tool-desc">分布式训练框架，多 GPU/节点扩展</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Hugging Face Hub</div><div class="tool-desc">模型/数据集托管，训练结果分享</div><span class="tool-badge tb-standard">行业标准</span></div>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div class="tool-row-head"><span class="tool-row-label">🚀 模型服务 / 推理</span></div>
+      <div class="tool-cards">
+        <div class="tool-card"><div class="tool-name">vLLM</div><div class="tool-desc">PagedAttention，LLM 推理事实标准</div><span class="tool-badge tb-standard">行业标准</span></div>
+        <div class="tool-card"><div class="tool-name">TorchServe</div><div class="tool-desc">PyTorch 官方模型服务，通用 ML</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">BentoML</div><div class="tool-desc">ML 服务封装，云原生部署友好</div><span class="tool-badge tb-growing">快速增长</span></div>
+        <div class="tool-card"><div class="tool-name">Triton Inference Server</div><div class="tool-desc">NVIDIA，多框架 GPU 推理服务器</div><span class="tool-badge tb-mature">生产成熟</span></div>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div class="tool-row-head"><span class="tool-row-label">📊 监控 / 可观测性</span></div>
+      <div class="tool-cards">
+        <div class="tool-card"><div class="tool-name">Evidently AI</div><div class="tool-desc">数据漂移 + 模型监控，开源</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Arize AI</div><div class="tool-desc">LLM + 传统 ML 全链路监控</div><span class="tool-badge tb-growing">快速增长</span></div>
+        <div class="tool-card"><div class="tool-name">Great Expectations</div><div class="tool-desc">数据质量验证，Pipeline 内置</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">Prometheus + Grafana</div><div class="tool-desc">通用指标监控，ML 服务 SLA</div><span class="tool-badge tb-standard">行业标准</span></div>
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div class="tool-row-head"><span class="tool-row-label">🤖 LLM 工具链</span></div>
+      <div class="tool-cards">
+        <div class="tool-card"><div class="tool-name">LangGraph</div><div class="tool-desc">状态机 Agent 编排，生产级</div><span class="tool-badge tb-growing">快速增长</span></div>
+        <div class="tool-card"><div class="tool-name">DSPy</div><div class="tool-desc">LLM 编程+自动优化，替代手工 prompt</div><span class="tool-badge tb-growing">快速增长</span></div>
+        <div class="tool-card"><div class="tool-name">LlamaIndex</div><div class="tool-desc">RAG 构建框架，知识库问答</div><span class="tool-badge tb-mature">生产成熟</span></div>
+        <div class="tool-card"><div class="tool-name">RAGAS</div><div class="tool-desc">RAG 系统自动评估（4个维度）</div><span class="tool-badge tb-growing">快速增长</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ 4. FEEDS ═══ -->
+<section id="feeds" class="section">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <div class="sec-head-text">
+      <h2>资讯订阅渠道</h2>
+      <p>信噪比优先——这里的每个推荐，都是值得花时间的信号源</p>
+    </div>
+  </div>
+
+  <div class="callout tip">选择标准：作者本人是实践者（不只是写手）、内容有原创洞察（不只转发）、更新频率稳定。以下渠道合计阅读时间约 2-3 小时/周，覆盖前沿足够。</div>
+
+  <div class="feed-section-label">📰 Newsletter</div>
+  <div class="feed-grid">
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">📮</span><span class="feed-name">Ahead of AI</span><span class="feed-freq">月更</span></div>
+      <div class="feed-by">Sebastian Raschka · Machine Intelligence</div>
+      <p class="feed-desc">每期深度回顾 LLM 进展，有自己的分析视角而不只是摘要。质量极高，月更值得等待。</p>
+      <a class="feed-link" href="https://magazine.sebastianraschka.com" target="_blank">→ magazine.sebastianraschka.com</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">📬</span><span class="feed-name">Import AI</span><span class="feed-freq">周更</span></div>
+      <div class="feed-by">Jack Clark · 前 OpenAI 政策总监</div>
+      <p class="feed-desc">每期必有 1-2 篇前沿研究解读，政策和安全视角独特，能帮你看到技术以外的影响。</p>
+      <a class="feed-link" href="https://jack-clark.net" target="_blank">→ jack-clark.net</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">📧</span><span class="feed-name">The Batch</span><span class="feed-freq">周更</span></div>
+      <div class="feed-by">Andrew Ng · deeplearning.ai</div>
+      <p class="feed-desc">理论+实践均衡，Andrew Ng 亲自写编辑信，适合追踪 AI 整体进展而不只是 LLM。</p>
+      <a class="feed-link" href="https://www.deeplearning.ai/the-batch/" target="_blank">→ deeplearning.ai/the-batch</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">⚡</span><span class="feed-name">TLDR AI</span><span class="feed-freq">日更</span></div>
+      <div class="feed-by">TLDR Newsletter</div>
+      <p class="feed-desc">5分钟读完，信噪比高，适合每日快速扫描 AI/ML 动态，不深但覆盖广。</p>
+      <a class="feed-link" href="https://tldr.tech/ai" target="_blank">→ tldr.tech/ai</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🔬</span><span class="feed-name">Data Elixir</span><span class="feed-freq">周更</span></div>
+      <div class="feed-by">Data Elixir</div>
+      <p class="feed-desc">数据工程 + ML 混合，适合全栈 DS，覆盖工具、论文、职业话题，不局限 LLM。</p>
+      <a class="feed-link" href="https://dataelixir.com" target="_blank">→ dataelixir.com</a>
+    </div>
+  </div>
+
+  <div class="feed-section-label">✍️ 技术博客（必须收藏）</div>
+  <div class="feed-grid">
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🧠</span><span class="feed-name">Lilian Weng's Blog</span><span class="feed-freq">不定期</span></div>
+      <div class="feed-by">OpenAI Safety Team Lead</div>
+      <p class="feed-desc">每篇都是领域综述级别——RLHF、Diffusion、Agent、LLM Alignment，必读必收藏。</p>
+      <a class="feed-link" href="https://lilianweng.github.io" target="_blank">→ lilianweng.github.io</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">⚙️</span><span class="feed-name">Chip Huyen</span><span class="feed-freq">不定期</span></div>
+      <div class="feed-by">Verta AI CEO / ex-NVIDIA</div>
+      <p class="feed-desc">ML 系统设计最好的写作者，每篇都是给工程师的，直接指导实践。</p>
+      <a class="feed-link" href="https://huyenchip.com/blog/" target="_blank">→ huyenchip.com/blog</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🎓</span><span class="feed-name">Andrej Karpathy</span><span class="feed-freq">不定期</span></div>
+      <div class="feed-by">ex-OpenAI / Tesla AI Director</div>
+      <p class="feed-desc">从零手写 GPT/nano-GPT，深度学习底层最好的入门材料，YouTube + GitHub。</p>
+      <a class="feed-link" href="https://karpathy.ai" target="_blank">→ karpathy.ai</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🏬</span><span class="feed-name">Eugene Yan</span><span class="feed-freq">月更</span></div>
+      <div class="feed-by">Amazon Science DS</div>
+      <p class="feed-desc">推荐系统 + LLM 应用 + 工程实践，每篇都有具体数字和系统图，接地气。</p>
+      <a class="feed-link" href="https://eugeneyan.com/writing/" target="_blank">→ eugeneyan.com/writing</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🛠️</span><span class="feed-name">Hamel Husain</span><span class="feed-freq">不定期</span></div>
+      <div class="feed-by">Independent AI Consultant</div>
+      <p class="feed-desc">LLM 应用工程实战，fine-tuning/evaluation/evals-driven 开发，最接近真实工程的写作。</p>
+      <a class="feed-link" href="https://hamel.dev" target="_blank">→ hamel.dev</a>
+    </div>
+  </div>
+
+  <div class="feed-section-label">🎙️ 播客</div>
+  <div class="feed-grid">
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🎧</span><span class="feed-name">Practical AI</span><span class="feed-freq">周更</span></div>
+      <div class="feed-by">Changelog Media</div>
+      <p class="feed-desc">聚焦可落地的 AI 应用，访谈工程师多于研究员，实用性强。</p>
+      <a class="feed-link" href="https://changelog.com/practicalai" target="_blank">→ changelog.com/practicalai</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🎙️</span><span class="feed-name">TWIML AI Podcast</span><span class="feed-freq">周更</span></div>
+      <div class="feed-by">Sam Charrington</div>
+      <p class="feed-desc">采访顶级研究者（DeepMind/OpenAI/Berkeley），技术深度最高的 AI 播客。</p>
+      <a class="feed-link" href="https://twimlai.com" target="_blank">→ twimlai.com</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🔬</span><span class="feed-name">Data Skeptic</span><span class="feed-freq">双周更</span></div>
+      <div class="feed-by">Kyle Polich</div>
+      <p class="feed-desc">统计/ML 方法论的批判性视角，训练你问"这个结论真的成立吗"。</p>
+      <a class="feed-link" href="https://dataskeptic.com" target="_blank">→ dataskeptic.com</a>
+    </div>
+  </div>
+
+  <div class="feed-section-label">📚 arXiv 追踪策略</div>
+  <div class="callout warn">每天直接上 arXiv 容易被信息量淹没。推荐策略：用 <strong>Hugging Face Daily Papers</strong>（huggingface.co/papers）做过滤层，编辑已筛去噪音；或订阅 <strong>arxiv-sanity-lite</strong>（arxiv-sanity-lite.com）基于你的历史偏好推荐。</div>
+  <div class="feed-grid">
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">📄</span><span class="feed-name">HF Daily Papers</span><span class="feed-freq">日更</span></div>
+      <div class="feed-by">Hugging Face 编辑精选</div>
+      <p class="feed-desc">每天 5-10 篇，有社区讨论，是最高效的论文追踪入口。</p>
+      <a class="feed-link" href="https://huggingface.co/papers" target="_blank">→ huggingface.co/papers</a>
+    </div>
+    <div class="feed-card">
+      <div class="feed-top"><span class="feed-icon">🗂️</span><span class="feed-name">Papers With Code</span><span class="feed-freq">日更</span></div>
+      <div class="feed-by">Meta AI</div>
+      <p class="feed-desc">论文 + 代码 + Benchmark，State-of-the-Art 追踪，按任务/领域筛选。</p>
+      <a class="feed-link" href="https://paperswithcode.com" target="_blank">→ paperswithcode.com</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5. OSS ═══ -->
+<section id="oss" class="section">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <div class="sec-head-text">
+      <h2>开源项目实战雷达</h2>
+      <p>按参与深度分级：读代码学习 · 提 PR 贡献 · 作为底层构建自己的系统</p>
+    </div>
+  </div>
+
+  <div class="oss-grid">
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">vLLM</span><span class="oss-stars">★ 42k+</span></div>
+      <span class="oss-domain od-llm">LLM 推理</span>
+      <p class="oss-desc">PagedAttention 实现，LLM 推理引擎事实标准。读 attention_backend/ 和 worker/ 可以深度理解 GPU 显存管理。</p>
+      <div class="oss-how oh-fork"><strong>Fork & Learn</strong> — 跑 benchmark，读 PagedAttention 源码理解显存分页机制</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/vllm-project/vllm" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://docs.vllm.ai" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">DSPy</span><span class="oss-stars">★ 22k+</span></div>
+      <span class="oss-domain od-llm">LLM 编程</span>
+      <p class="oss-desc">用优化器自动调 prompt/few-shot，替代手工 prompt engineering，Stanford NLP Group 出品。</p>
+      <div class="oss-how oh-build"><strong>Build On Top</strong> — 用 DSPy 重构你现有的 LLM pipeline，对比效果提升</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/stanfordnlp/dspy" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://dspy.ai" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">LangGraph</span><span class="oss-stars">★ 12k+</span></div>
+      <span class="oss-domain od-agent">Agent</span>
+      <p class="oss-desc">基于状态机的 Agent 编排框架，支持循环、条件分支、人工介入，比 LangChain chains 更适合生产。</p>
+      <div class="oss-how oh-build"><strong>Build On Top</strong> — 构建多步骤数据分析 Agent，或把现有 RAG 升级为 Agentic RAG</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/langchain-ai/langgraph" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://langchain-ai.github.io/langgraph/" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">MLflow</span><span class="oss-stars">★ 19k+</span></div>
+      <span class="oss-domain od-mlops">MLOps</span>
+      <p class="oss-desc">实验追踪 + 模型注册 + 部署一体化，Databricks 收购背书，API 稳定，是搭建 ML 平台的基础组件。</p>
+      <div class="oss-how oh-contribute"><strong>Contribute</strong> — 提 good-first-issue，添加新的 LLM 追踪集成或 UI 改进</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/mlflow/mlflow" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://mlflow.org/docs/latest/index.html" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">Feast</span><span class="oss-stars">★ 5.5k+</span></div>
+      <span class="oss-domain od-mlops">Feature Store</span>
+      <p class="oss-desc">开源 Feature Store，统一在线（低延迟）和离线（批量）特征，解决 training-serving skew 的核心工具。</p>
+      <div class="oss-how oh-contribute"><strong>Contribute</strong> — 添加新的 data source 集成（如 Iceberg），社区活跃，PR 合并快</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/feast-dev/feast" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://docs.feast.dev" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">EconML</span><span class="oss-stars">★ 4k+</span></div>
+      <span class="oss-domain od-causal">因果推断</span>
+      <p class="oss-desc">微软出品，Double ML、IV、DML-IV 等方法的工业级实现，文档附有完整理论推导，是学习高级因果方法的最佳工具。</p>
+      <div class="oss-how oh-fork"><strong>Fork & Learn</strong> — 在自己的业务数据上跑 DML，理解 nuisance functions 的作用</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/py-why/EconML" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://econml.azurewebsites.net" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">DoWhy</span><span class="oss-stars">★ 7k+</span></div>
+      <span class="oss-domain od-causal">因果图模型</span>
+      <p class="oss-desc">微软出品，基于 DAG 的因果推断框架，识别-估计-反驳三步流程，强制你明确因果假设。</p>
+      <div class="oss-how oh-fork"><strong>Fork & Learn</strong> — 用 DoWhy 的 refutation 方法检验你现有分析的因果假设是否成立</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/py-why/dowhy" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://www.pywhy.org/dowhy" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">GrowthBook</span><span class="oss-stars">★ 6k+</span></div>
+      <span class="oss-domain od-exp">实验平台</span>
+      <p class="oss-desc">开源 A/B 测试 + Feature Flag 平台，有 CUPED 方差减少内置，可自部署，替代商业实验平台。</p>
+      <div class="oss-how oh-build"><strong>Build On Top</strong> — 自部署 GrowthBook，搭建团队的实验平台，对接现有数据仓库</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/growthbook/growthbook" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://docs.growthbook.io" target="_blank">文档</a>
+      </div>
+    </div>
+
+    <div class="oss-card">
+      <div class="oss-top"><span class="oss-name">Evidently AI</span><span class="oss-stars">★ 5k+</span></div>
+      <span class="oss-domain od-mlops">ML 监控</span>
+      <p class="oss-desc">数据漂移 + 模型性能监控，支持 PSI/KS/Wasserstein 等距离度量，可生成 HTML 报告或集成到 Pipeline。</p>
+      <div class="oss-how oh-contribute"><strong>Contribute</strong> — 添加新的漂移检测指标或数据连接器，好的 good-first-issue 数量多</div>
+      <div class="oss-links">
+        <a class="oss-link" href="https://github.com/evidentlyai/evidently" target="_blank">GitHub</a>
+        <a class="oss-link" href="https://docs.evidentlyai.com" target="_blank">文档</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ 6. TRAJECTORY ═══ -->
+<section id="trajectory" class="section">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <div class="sec-head-text">
+      <h2>专家成长路径</h2>
+      <p>从 DS 到 Principal DS / Staff MLE 的能力跃迁地图</p>
+    </div>
+  </div>
+
+  <div class="callout info">每个阶段的跃迁不只是技术深度的增加，更是<strong>影响范围</strong>和<strong>判断力</strong>的提升。高亮框是当前大多数 DS 所处阶段。</div>
+
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot">🌱</div>
+      <div class="tl-body">
+        <div class="tl-stage">阶段 1</div>
+        <div class="tl-title">Junior / DS I</div>
+        <div class="tl-yoe">0–2 年经验</div>
+        <div class="tl-skills">
+          <span class="tl-skill">SQL</span><span class="tl-skill">Python</span><span class="tl-skill">sklearn</span><span class="tl-skill">EDA</span><span class="tl-skill">基础统计</span>
+        </div>
+        <ul class="tl-outputs">
+          <li>独立完成 ad-hoc 分析报告</li>
+          <li>能搭建并评估监督学习模型</li>
+          <li>在 mentor 指导下设计简单 A/B 实验</li>
+        </ul>
+        <div class="tl-reads">📖 推荐读：<a href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/" target="_blank">Hands-On ML (Géron)</a> + <a href="https://www.statlearning.com" target="_blank">ISLR (James et al.)</a></div>
+      </div>
+    </div>
+
+    <div class="tl-item active">
+      <div class="tl-dot">⚡</div>
+      <div class="tl-body">
+        <div class="tl-stage">阶段 2 — 你可能在这里</div>
+        <div class="tl-title">Mid-Level DS / DS II</div>
+        <div class="tl-yoe">2–4 年经验</div>
+        <div class="tl-skills">
+          <span class="tl-skill">特征工程</span><span class="tl-skill">A/B 测试</span><span class="tl-skill">因果入门</span><span class="tl-skill">XGBoost/LightGBM</span><span class="tl-skill">基础 DL</span><span class="tl-skill">SQL 进阶</span>
+        </div>
+        <ul class="tl-outputs">
+          <li>独立拥有一条业务指标，能发现和量化问题</li>
+          <li>设计并分析中等复杂度 A/B 实验（CUPED/SRM 检测）</li>
+          <li>产出进入生产的 ML 模型（不只是 notebook）</li>
+        </ul>
+        <div class="tl-reads">📖 推荐读：<a href="https://huyenchip.com/ml-interviews-book/" target="_blank">ML Interviews (Chip Huyen)</a> + <a href="https://matheusfacure.github.io/python-causality-handbook/" target="_blank">Causal Inference (Matheus Facure)</a></div>
+        <div class="tl-check">🔍 自检：你的模型上线后，有没有做过在线监控？指标出问题能不能追溯到数据还是模型？</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">🔥</div>
+      <div class="tl-body">
+        <div class="tl-stage">阶段 3</div>
+        <div class="tl-title">Senior DS</div>
+        <div class="tl-yoe">4–7 年经验</div>
+        <div class="tl-skills">
+          <span class="tl-skill">MLOps 实践</span><span class="tl-skill">因果推断进阶</span><span class="tl-skill">LLM 应用</span><span class="tl-skill">实验平台设计</span><span class="tl-skill">数据策略</span>
+        </div>
+        <ul class="tl-outputs">
+          <li>设计并推动跨团队的数据/模型系统（不只是单个模型）</li>
+          <li>能识别业务中的因果推断陷阱并设计正确研究</li>
+          <li>给 Junior DS 做技术 review 和方向把关</li>
+          <li>影响产品 roadmap 的数据决策</li>
+        </ul>
+        <div class="tl-reads">📖 推荐读：<a href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107963/" target="_blank">Designing ML Systems (Huyen)</a> + <a href="https://theeffectbook.net" target="_blank">The Effect (Huntington-Klein)</a></div>
+        <div class="tl-check">🔍 自检：你能向非技术的业务负责人解释"为什么这个实验结果不可信"，并提出可行替代方案吗？</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">🌟</div>
+      <div class="tl-body">
+        <div class="tl-stage">阶段 4</div>
+        <div class="tl-title">Staff / Principal DS</div>
+        <div class="tl-yoe">7+ 年经验</div>
+        <div class="tl-skills">
+          <span class="tl-skill">研究能力</span><span class="tl-skill">系统架构</span><span class="tl-skill">组织影响力</span><span class="tl-skill">技术判断力</span><span class="tl-skill">战略思维</span>
+        </div>
+        <ul class="tl-outputs">
+          <li>定义团队 / 公司的数据方法论和最佳实践</li>
+          <li>输出可发表的研究或开源项目</li>
+          <li>参与技术方向决策（平台选型/人才培养/技术债管理）</li>
+          <li>影响范围跨组织/跨公司（演讲/写作/开源贡献）</li>
+        </ul>
+        <div class="tl-reads">📖 推荐读：<a href="https://staffeng.com/book" target="_blank">Staff Engineer (Will Larson)</a> + 持续追踪 arXiv + 写公开博客</div>
+        <div class="tl-check">🔍 自检：过去一年，你的工作有没有影响到你自己团队以外的人？</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ 7. PICKS ═══ -->
+<section id="picks" class="section">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <div class="sec-head-text">
+      <h2>本期精选</h2>
+      <p>编辑推荐 · 更新于 2025年4月 · 5条值得花时间的内容</p>
+    </div>
+  </div>
+
+  <div class="picks-list">
+
+    <div class="pick-item">
+      <div class="pick-num">01</div>
+      <div>
+        <span class="pick-type pt-paper">论文</span>
+        <div class="pick-title">DeepSeek-R1: Incentivizing Reasoning Capability via RL (2025)</div>
+        <p class="pick-body">纯 RL 训练出 o1 级推理能力，技术报告完全公开。最重要的不是结果，而是 GRPO 训练过程和"思维链自发涌现"的现象——它对你理解下一代模型的训练范式至关重要。建议读技术报告而不只是看评测分数。</p>
+        <a class="pick-link" href="https://arxiv.org/abs/2501.12948" target="_blank">→ arxiv.org/abs/2501.12948</a>
+        <div class="pick-date">2025年1月 · arXiv</div>
+      </div>
+    </div>
+
+    <div class="pick-item">
+      <div class="pick-num">02</div>
+      <div>
+        <span class="pick-type pt-blog">博客</span>
+        <div class="pick-title">Patterns for LLM Systems — Eugene Yan</div>
+        <p class="pick-body">把 LLM 应用分解为 Evals、RAG、Fine-tuning、Caching、Guardrails 等模式，每个模式有 when to use 和 tradeoffs。如果你在做 LLM 落地，这是目前最好的工程模式参考。</p>
+        <a class="pick-link" href="https://eugeneyan.com/writing/llm-patterns/" target="_blank">→ eugeneyan.com/writing/llm-patterns</a>
+        <div class="pick-date">2024 · eugeneyan.com</div>
+      </div>
+    </div>
+
+    <div class="pick-item">
+      <div class="pick-num">03</div>
+      <div>
+        <span class="pick-type pt-tool">工具</span>
+        <div class="pick-title">DSPy 2.0 — 从 Prompt Engineering 到 LLM 程序优化</div>
+        <p class="pick-body">DSPy 2.0 引入了 optimizer 可以自动找到最优 prompt 策略，类似 ML 中用优化器替代手调超参。如果你还在手工调 prompt，DSPy 代表的方向是你下一步应该去的地方。文档中的 Intro Tutorial 是最好的起点。</p>
+        <a class="pick-link" href="https://dspy.ai/tutorials/intro/" target="_blank">→ dspy.ai/tutorials/intro</a>
+        <div class="pick-date">2025 · Stanford NLP</div>
+      </div>
+    </div>
+
+    <div class="pick-item">
+      <div class="pick-num">04</div>
+      <div>
+        <span class="pick-type pt-paper">论文</span>
+        <div class="pick-title">Synthetic Difference-in-Differences — 业界最低估的因果方法</div>
+        <p class="pick-body">大多数 DS 做 DID 时默认平行趋势假设成立，但实际上这个假设经常被违反。SDID 通过自动学习权重，在不假设平行趋势的情况下得到更可信的因果估计。Python 实现只需 10 行，但方法论价值极高。</p>
+        <a class="pick-link" href="https://arxiv.org/abs/1812.09970" target="_blank">→ arxiv.org/abs/1812.09970</a>
+        <div class="pick-date">2021 · AER · Uber/Airbnb 生产验证</div>
+      </div>
+    </div>
+
+    <div class="pick-item">
+      <div class="pick-num">05</div>
+      <div>
+        <span class="pick-type pt-discuss">讨论</span>
+        <div class="pick-title">The First Rule of ML: Start Without ML — Eugene Yan</div>
+        <p class="pick-body">反直觉的工程智慧：先用规则/启发式方法，建立 baseline 和评估框架，再引入 ML。这不是反对 ML，而是关于什么时候 ML 真的有价值的判断力训练。Senior DS 和 Junior DS 最大的区别之一就是这种判断力。</p>
+        <a class="pick-link" href="https://eugeneyan.com/writing/first-rule-of-ml/" target="_blank">→ eugeneyan.com/writing/first-rule-of-ml</a>
+        <div class="pick-date">2023 · eugeneyan.com</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div style="padding:40px 0;text-align:center;color:var(--text-3);font-size:12px;border-top:1px solid var(--border);font-family:system-ui">
+  数据专家图谱 · Expert Map · 面向已工作的数据人 · 2025<br>
+  <a href="index.html" style="color:var(--accent);text-decoration:none;margin-top:6px;display:inline-block">← 返回基础笔记</a>
+</div>
+
+</div>
+</main>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+// Sidebar nav group toggle
+function toggleGroup(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// Sidebar active link
+const navLinks = document.querySelectorAll('.nav-items a[href^="#"]');
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`.nav-items a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// Tab switching
+function switchTab(group, btn, targetId) {
+  const container = btn.closest('section') || document;
+  container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(targetId).classList.add('active');
+}
+
+// Tech Radar detail panel
+const RING_COLORS = { Adopt: '#22c55e', Trial: '#6366f1', Assess: '#f59e0b', Hold: '#ef4444' };
+const RING_BG = { Adopt: 'rgba(34,197,94,.15)', Trial: 'rgba(99,102,241,.15)', Assess: 'rgba(245,158,11,.15)', Hold: 'rgba(239,68,68,.15)' };
+const RING_TEXT = { Adopt: '#86efac', Trial: '#a5b4fc', Assess: '#fcd34d', Hold: '#fca5a5' };
+
+function showRadar(id, ring, name, desc, why) {
+  const panel = document.getElementById('radar-detail');
+  panel.innerHTML = `
+    <div class="rdp-title">${name}</div>
+    <span class="rdp-ring" style="background:${RING_BG[ring]};color:${RING_TEXT[ring]};border:1px solid ${RING_COLORS[ring]}40">${ring}</span>
+    <p class="rdp-desc">${desc}</p>
+    <p class="rdp-why">${why}</p>
+  `;
+  panel.classList.add('show');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Mobile sidebar close on link click
+navLinks.forEach(a => a.addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+}));
+</script>
+</body>
+</html>
