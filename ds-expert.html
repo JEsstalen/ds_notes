@@ -6,15 +6,18 @@
 <title>数据专家图谱 · Expert Map</title>
 <style>
 :root {
-  --bg: #0f172a; --surface: #1e293b; --surface2: #263248; --border: #334155;
-  --accent: #6366f1; --accent-light: rgba(99,102,241,.15);
-  --green: #22c55e; --green-light: rgba(34,197,94,.12);
-  --amber: #f59e0b; --amber-light: rgba(245,158,11,.12);
-  --red: #ef4444; --red-light: rgba(239,68,68,.12);
-  --purple: #a855f7; --purple-light: rgba(168,85,247,.12);
-  --cyan: #06b6d4; --cyan-light: rgba(6,182,212,.12);
-  --text: #f1f5f9; --text-2: #94a3b8; --text-3: #64748b;
+  /* Light journal theme — easy on the eyes */
+  --bg: #f8fafc; --surface: #ffffff; --surface2: #f1f5f9; --border: #e2e8f0;
+  --accent: #4f46e5; --accent-light: rgba(79,70,229,.08);
+  --green: #16a34a; --green-light: rgba(22,163,74,.08);
+  --amber: #d97706; --amber-light: rgba(217,119,6,.08);
+  --red: #dc2626; --red-light: rgba(220,38,38,.08);
+  --purple: #7c3aed; --purple-light: rgba(124,58,237,.08);
+  --cyan: #0891b2; --cyan-light: rgba(8,145,178,.08);
+  --text: #0f172a; --text-2: #334155; --text-3: #64748b;
   --nav-w: 260px;
+  /* Sidebar stays dark for contrast */
+  --nav-bg: #1e293b; --nav-border: #334155; --nav-text: #e2e8f0; --nav-text3: #94a3b8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -22,26 +25,26 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 #progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--cyan));z-index:9999;transition:width .1s}
 
 /* Sidebar */
-#sidebar{position:fixed;top:0;left:0;width:var(--nav-w);height:100vh;background:#111827;border-right:1px solid var(--border);overflow-y:auto;z-index:100;display:flex;flex-direction:column}
-#sidebar-head{padding:18px 16px 12px;border-bottom:1px solid var(--border)}
-#sidebar-head .site-badge{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
-#sidebar-head h1{font-size:13px;font-weight:700;color:var(--text)}
-#sidebar-head p{font-size:11px;color:var(--text-3);margin-top:2px}
+#sidebar{position:fixed;top:0;left:0;width:var(--nav-w);height:100vh;background:var(--nav-bg);border-right:1px solid var(--nav-border);overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+#sidebar-head{padding:18px 16px 12px;border-bottom:1px solid var(--nav-border)}
+#sidebar-head .site-badge{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#818cf8;background:rgba(99,102,241,.2);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
+#sidebar-head h1{font-size:13px;font-weight:700;color:#f1f5f9}
+#sidebar-head p{font-size:11px;color:var(--nav-text3);margin-top:2px}
 #nav-tree{flex:1;padding:8px 0 20px;overflow-y:auto}
 .nav-group{margin-bottom:2px}
-.nav-group-label{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);cursor:pointer;user-select:none}
-.nav-group-label:hover{color:var(--text)}
+.nav-group-label{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--nav-text3);cursor:pointer;user-select:none}
+.nav-group-label:hover{color:#f1f5f9}
 .nav-group-label .caret{font-size:9px;transition:transform .15s}
 .nav-group-label.open .caret{transform:rotate(90deg)}
 .nav-items{display:none}
 .nav-items.open{display:block}
-.nav-items a{display:flex;align-items:center;gap:6px;padding:5px 16px 5px 24px;font-size:12.5px;color:var(--text-2);text-decoration:none;border-left:2px solid transparent;transition:all .12s}
-.nav-items a:hover{color:var(--accent);background:var(--accent-light)}
-.nav-items a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-light);font-weight:600}
-.nav-items a .ntag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:auto;background:var(--accent-light);color:var(--accent)}
-#sidebar-foot{padding:12px 16px;border-top:1px solid var(--border)}
-#sidebar-foot a{font-size:12px;color:var(--text-3);text-decoration:none;display:flex;align-items:center;gap:6px}
-#sidebar-foot a:hover{color:var(--accent)}
+.nav-items a{display:flex;align-items:center;gap:6px;padding:5px 16px 5px 24px;font-size:12.5px;color:var(--nav-text3);text-decoration:none;border-left:2px solid transparent;transition:all .12s}
+.nav-items a:hover{color:#818cf8;background:rgba(99,102,241,.15)}
+.nav-items a.active{color:#818cf8;border-left-color:#818cf8;background:rgba(99,102,241,.15);font-weight:600}
+.nav-items a .ntag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:auto;background:rgba(99,102,241,.2);color:#818cf8}
+#sidebar-foot{padding:12px 16px;border-top:1px solid var(--nav-border)}
+#sidebar-foot a{font-size:12px;color:var(--nav-text3);text-decoration:none;display:flex;align-items:center;gap:6px}
+#sidebar-foot a:hover{color:#818cf8}
 
 /* Main */
 #main{margin-left:var(--nav-w);padding:0 48px 80px}
@@ -55,11 +58,11 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .hero-sub{margin-top:12px;font-size:16px;color:var(--text-2);max-width:560px;line-height:1.6}
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
 .chip{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;border:1px solid}
-.chip.llm{background:var(--accent-light);color:#a5b4fc;border-color:rgba(99,102,241,.3)}
-.chip.mlops{background:var(--green-light);color:#86efac;border-color:rgba(34,197,94,.3)}
-.chip.causal{background:var(--purple-light);color:#d8b4fe;border-color:rgba(168,85,247,.3)}
-.chip.sys{background:var(--cyan-light);color:#67e8f9;border-color:rgba(6,182,212,.3)}
-.chip.lead{background:var(--amber-light);color:#fcd34d;border-color:rgba(245,158,11,.3)}
+.chip.llm{background:rgba(79,70,229,.08);color:#4338ca;border-color:rgba(79,70,229,.25)}
+.chip.mlops{background:rgba(22,163,74,.08);color:#15803d;border-color:rgba(22,163,74,.25)}
+.chip.causal{background:rgba(124,58,237,.08);color:#6d28d9;border-color:rgba(124,58,237,.25)}
+.chip.sys{background:rgba(8,145,178,.08);color:#0e7490;border-color:rgba(8,145,178,.25)}
+.chip.lead{background:rgba(217,119,6,.08);color:#b45309;border-color:rgba(217,119,6,.25)}
 .hero-notice{margin-top:24px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-2);line-height:1.6}
 .hero-notice strong{color:var(--text)}
 
@@ -94,10 +97,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .radar-pills{display:flex;flex-wrap:wrap;gap:6px}
 .radar-pill{font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer;border:1px solid;transition:all .15s;font-weight:600}
 .radar-pill:hover{opacity:.85}
-.rp-adopt{background:rgba(34,197,94,.15);color:#86efac;border-color:rgba(34,197,94,.3)}
-.rp-trial{background:rgba(99,102,241,.15);color:#a5b4fc;border-color:rgba(99,102,241,.3)}
-.rp-assess{background:rgba(245,158,11,.15);color:#fcd34d;border-color:rgba(245,158,11,.3)}
-.rp-hold{background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)}
+.rp-adopt{background:rgba(22,163,74,.1);color:#15803d;border-color:rgba(22,163,74,.3)}
+.rp-trial{background:rgba(79,70,229,.1);color:#4338ca;border-color:rgba(79,70,229,.3)}
+.rp-assess{background:rgba(217,119,6,.1);color:#b45309;border-color:rgba(217,119,6,.3)}
+.rp-hold{background:rgba(220,38,38,.1);color:#b91c1c;border-color:rgba(220,38,38,.3)}
 
 /* Paper cards */
 .tab-row{display:flex;gap:3px;margin-bottom:16px;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -138,10 +141,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .tool-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
 .tool-desc{font-size:11.5px;color:var(--text-3);line-height:1.4;margin-bottom:6px}
 .tool-badge{font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;display:inline-block}
-.tb-mature{background:rgba(34,197,94,.15);color:#86efac}
-.tb-growing{background:var(--accent-light);color:#a5b4fc}
-.tb-emerging{background:var(--amber-light);color:#fcd34d}
-.tb-standard{background:rgba(6,182,212,.15);color:#67e8f9}
+.tb-mature{background:rgba(22,163,74,.1);color:#15803d}
+.tb-growing{background:var(--accent-light);color:#4338ca}
+.tb-emerging{background:var(--amber-light);color:#b45309}
+.tb-standard{background:rgba(8,145,178,.1);color:#0e7490}
 
 /* Feed cards */
 .feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:8px}
@@ -163,17 +166,17 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .oss-name{font-size:15px;font-weight:700;color:var(--text)}
 .oss-stars{font-size:11px;color:var(--amber);font-weight:600}
 .oss-domain{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px}
-.od-llm{background:var(--accent-light);color:#a5b4fc}
-.od-mlops{background:var(--green-light);color:#86efac}
-.od-causal{background:var(--purple-light);color:#d8b4fe}
-.od-exp{background:var(--cyan-light);color:#67e8f9}
-.od-agent{background:var(--amber-light);color:#fcd34d}
+.od-llm{background:rgba(79,70,229,.1);color:#4338ca}
+.od-mlops{background:rgba(22,163,74,.1);color:#15803d}
+.od-causal{background:rgba(124,58,237,.1);color:#6d28d9}
+.od-exp{background:rgba(8,145,178,.1);color:#0e7490}
+.od-agent{background:rgba(217,119,6,.1);color:#b45309}
 .oss-desc{font-size:13px;color:var(--text-2);line-height:1.5}
 .oss-how{font-size:12px;padding:6px 10px;border-radius:6px;background:var(--surface2)}
 .oss-how strong{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
-.oh-fork strong{color:#22c55e}
-.oh-contribute strong{color:#6366f1}
-.oh-build strong{color:#f59e0b}
+.oh-fork strong{color:#15803d}
+.oh-contribute strong{color:#4338ca}
+.oh-build strong{color:#b45309}
 .oss-links{display:flex;gap:8px;flex-wrap:wrap}
 .oss-link{font-size:11.5px;font-weight:600;color:var(--accent);text-decoration:none;padding:2px 8px;border:1px solid rgba(99,102,241,.3);border-radius:4px}
 .oss-link:hover{background:var(--accent-light)}
@@ -196,17 +199,17 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .tl-reads{font-size:12px;padding:8px 10px;background:var(--surface2);border-radius:6px;margin-bottom:8px}
 .tl-reads a{color:var(--accent);text-decoration:none;font-weight:600}
 .tl-reads a:hover{text-decoration:underline}
-.tl-check{font-size:12px;color:var(--amber);font-style:italic;padding:6px 10px;background:var(--amber-light);border-radius:6px}
+.tl-check{font-size:12px;color:#92400e;font-style:italic;padding:6px 10px;background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.2);border-radius:6px}
 
 /* Weekly picks */
 .picks-list{display:flex;flex-direction:column;gap:10px}
 .pick-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
-.pick-num{font-size:22px;font-weight:800;color:var(--surface2);flex-shrink:0;line-height:1;min-width:28px}
+.pick-num{font-size:22px;font-weight:800;color:#cbd5e1;flex-shrink:0;line-height:1;min-width:28px}
 .pick-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:5px}
-.pt-paper{background:var(--accent-light);color:#a5b4fc}
-.pt-tool{background:var(--green-light);color:#86efac}
-.pt-blog{background:var(--amber-light);color:#fcd34d}
-.pt-discuss{background:var(--purple-light);color:#d8b4fe}
+.pt-paper{background:rgba(79,70,229,.1);color:#4338ca}
+.pt-tool{background:rgba(22,163,74,.1);color:#15803d}
+.pt-blog{background:rgba(217,119,6,.1);color:#b45309}
+.pt-discuss{background:rgba(124,58,237,.1);color:#6d28d9}
 .pick-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
 .pick-body{font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:6px}
 .pick-link{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none}
@@ -237,30 +240,31 @@ tr:hover td{background:var(--surface2)}
 <body>
 
 <!-- Password gate -->
-<div id="gate" style="display:none;position:fixed;inset:0;background:#0f172a;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+<div id="gate" style="display:none;position:fixed;inset:0;background:#f8fafc;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
   <div style="text-align:center;margin-bottom:8px">
-    <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6366f1;margin-bottom:10px">数据专家图谱 · Expert Map</div>
-    <div style="font-size:28px;font-weight:800;color:#f1f5f9">访问验证</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4f46e5;margin-bottom:10px">数据专家图谱 · Expert Map</div>
+    <div style="font-size:28px;font-weight:800;color:#0f172a">访问验证</div>
     <div style="font-size:13px;color:#64748b;margin-top:6px">请输入访问密码</div>
   </div>
   <input id="gate-input" type="password" placeholder="密码" onkeydown="if(event.key==='Enter')checkGate()"
-    style="padding:12px 18px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f1f5f9;font-size:15px;width:280px;outline:none;text-align:center">
-  <button onclick="checkGate()" style="padding:10px 32px;background:#6366f1;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">进入</button>
-  <div id="gate-err" style="color:#f87171;font-size:13px;min-height:20px"></div>
+    style="padding:12px 18px;border-radius:8px;border:1px solid #cbd5e1;background:#ffffff;color:#0f172a;font-size:15px;width:280px;outline:none;text-align:center">
+  <button onclick="checkGate()" style="padding:10px 32px;background:#4f46e5;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">进入</button>
+  <div id="gate-err" style="color:#dc2626;font-size:13px;min-height:20px"></div>
 </div>
 <script>
 (function(){
   const HASH='f11a231e9cf870fb29f2145fee0e2374ff673f3d907bb06d253caff91b8d1623';
-  const KEY='ds_expert_auth';
+  const KEYS=['ds_notes_auth','ds_expert_auth'];
   async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
   async function checkGate(){
     const v=document.getElementById('gate-input').value;
     const h=await sha256(v);
-    if(h===HASH){sessionStorage.setItem(KEY,'1');document.getElementById('gate').style.display='none';document.body.style.overflow=''}
+    if(h===HASH){KEYS.forEach(k=>sessionStorage.setItem(k,'1'));document.getElementById('gate').style.display='none';document.body.style.overflow=''}
     else{document.getElementById('gate-err').textContent='密码错误，请重试'}
   }
   window.checkGate=checkGate;
-  if(!sessionStorage.getItem(KEY)){document.getElementById('gate').style.display='flex';document.body.style.overflow='hidden'}
+  // Pass if either key is already set
+  if(!KEYS.some(k=>sessionStorage.getItem(k))){document.getElementById('gate').style.display='flex';document.body.style.overflow='hidden'}
 })();
 </script>
 
@@ -300,7 +304,7 @@ tr:hover td{background:var(--surface2)}
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-eyebrow">数据专家图谱 · Expert Map · 2025</div>
+  <div class="hero-eyebrow">数据专家图谱 · Expert Map · 2026</div>
   <h1>从 DS 到<em>数据专家</em>的<br>完整跃迁路径</h1>
   <p class="hero-sub">本页面不重复基础知识。面向已工作的数据从业者，精选前沿论文、工具雷达、信息渠道和开源项目，帮你建立专业判断力与技术影响力。</p>
   <div class="chip-row">
@@ -311,7 +315,7 @@ tr:hover td{background:var(--surface2)}
     <span class="chip lead">Data Leadership</span>
   </div>
   <div class="hero-notice">
-    <strong>使用方式：</strong>每个模块独立成体系，可按需跳读。技术雷达帮你判断"现在该学什么"，论文精选帮你理解"为什么"，资讯渠道让你持续跟进，开源项目让你动手验证。
+    <strong>内容说明：</strong>本页为 2026年4月策展快照，工具成熟度和论文选取基于该时间点的判断。AI领域演进极快，建议结合<a href="#feeds" style="color:var(--accent)">资讯订阅渠道</a>持续追踪最新进展。使用方式：每个模块独立成体系，可按需跳读。技术雷达帮你判断"现在该学什么"，论文精选帮你理解"为什么"，资讯渠道让你持续跟进。
   </div>
 </div>
 
@@ -340,6 +344,7 @@ tr:hover td{background:var(--surface2)}
         <span class="radar-pill rp-adopt" onclick="showRadar('lora','Adopt','LoRA / QLoRA','低秩微调，允许在消费级 GPU 上微调 7B+ 模型。','为什么是 Adopt：资源效率极高，效果接近全量微调，已有大量生产案例。')">LoRA / QLoRA</span>
         <span class="radar-pill rp-adopt" onclick="showRadar('cuped','Adopt','CUPED / 方差减少','A/B 测试中通过协变量控制减少方差，显著提升实验灵敏度。','为什么是 Adopt：Netflix/Microsoft/Booking 均已实施，数学严谨，实现简单。')">CUPED</span>
         <span class="radar-pill rp-adopt" onclick="showRadar('duckdb','Adopt','DuckDB','嵌入式 OLAP 引擎，适合本地分析大规模 Parquet/CSV，替代 Spark 小数据场景。','为什么是 Adopt：极快，无依赖，SQL 接口完整，Notebook 友好。')">DuckDB</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('mcp','Adopt','MCP (Model Context Protocol)','AI Agent 与外部工具/数据交互的开放标准协议，Claude/Cursor/VS Code 均已支持。','为什么是 Adopt：2026年已成 Agent 生态事实标准，构建任何 AI 工作流都应基于 MCP，而非自研接口层。')">MCP</span>
       </div>
     </div>
     <div class="radar-cat">
@@ -361,6 +366,7 @@ tr:hover td{background:var(--surface2)}
         <span class="radar-pill rp-assess" onclick="showRadar('iceberg','Assess','Apache Iceberg','表格式 Lakehouse 格式，支持 ACID + 时间旅行。','为什么是 Assess：Databricks/Snowflake 均已支持，但迁移成本需评估。')">Apache Iceberg</span>
         <span class="radar-pill rp-assess" onclick="showRadar('uplift','Assess','Uplift Modeling','预测个体处置效应，精准营销/政策评估的前沿方法。','为什么是 Assess：方法论成熟（CausalML），但落地需要严格实验设计配合。')">Uplift Modeling</span>
         <span class="radar-pill rp-assess" onclick="showRadar('streamml','Assess','Streaming ML','流式数据上的在线学习（River/Faust）。','为什么是 Assess：实时场景有需求，但工程复杂度高，大多数场景 batch 够用。')">Streaming ML</span>
+        <span class="radar-pill rp-assess" onclick="showRadar('agentmem','Assess','Agent Memory 系统','为 AI Agent 持久化记忆：短期上下文 + 长期向量记忆 + 工具状态（mem0、Zep 等框架）。','为什么是 Assess：Agent 应用走向生产的关键瓶颈，但最佳实践尚在形成，值得持续关注。')">Agent Memory</span>
       </div>
     </div>
     <div class="radar-cat">
@@ -689,7 +695,7 @@ tr:hover td{background:var(--surface2)}
     <span class="sec-num">03</span>
     <div class="sec-head-text">
       <h2>工具生态图谱</h2>
-      <p>2025 年 DS / MLE 完整技术栈，聚焦"为什么选它"的判断维度</p>
+      <p>2026 年 DS / MLE 完整技术栈，聚焦"为什么选它"的判断维度</p>
     </div>
   </div>
 
@@ -892,7 +898,7 @@ tr:hover td{background:var(--surface2)}
   <div class="oss-grid">
 
     <div class="oss-card">
-      <div class="oss-top"><span class="oss-name">vLLM</span><span class="oss-stars">★ 42k+</span></div>
+      <div class="oss-top"><span class="oss-name">vLLM</span><span class="oss-stars">★ 50k+</span></div>
       <span class="oss-domain od-llm">LLM 推理</span>
       <p class="oss-desc">PagedAttention 实现，LLM 推理引擎事实标准。读 attention_backend/ 和 worker/ 可以深度理解 GPU 显存管理。</p>
       <div class="oss-how oh-fork"><strong>Fork & Learn</strong> — 跑 benchmark，读 PagedAttention 源码理解显存分页机制</div>
@@ -903,7 +909,7 @@ tr:hover td{background:var(--surface2)}
     </div>
 
     <div class="oss-card">
-      <div class="oss-top"><span class="oss-name">DSPy</span><span class="oss-stars">★ 22k+</span></div>
+      <div class="oss-top"><span class="oss-name">DSPy</span><span class="oss-stars">★ 25k+</span></div>
       <span class="oss-domain od-llm">LLM 编程</span>
       <p class="oss-desc">用优化器自动调 prompt/few-shot，替代手工 prompt engineering，Stanford NLP Group 出品。</p>
       <div class="oss-how oh-build"><strong>Build On Top</strong> — 用 DSPy 重构你现有的 LLM pipeline，对比效果提升</div>
@@ -914,7 +920,7 @@ tr:hover td{background:var(--surface2)}
     </div>
 
     <div class="oss-card">
-      <div class="oss-top"><span class="oss-name">LangGraph</span><span class="oss-stars">★ 12k+</span></div>
+      <div class="oss-top"><span class="oss-name">LangGraph</span><span class="oss-stars">★ 15k+</span></div>
       <span class="oss-domain od-agent">Agent</span>
       <p class="oss-desc">基于状态机的 Agent 编排框架，支持循环、条件分支、人工介入，比 LangChain chains 更适合生产。</p>
       <div class="oss-how oh-build"><strong>Build On Top</strong> — 构建多步骤数据分析 Agent，或把现有 RAG 升级为 Agentic RAG</div>
@@ -925,7 +931,7 @@ tr:hover td{background:var(--surface2)}
     </div>
 
     <div class="oss-card">
-      <div class="oss-top"><span class="oss-name">MLflow</span><span class="oss-stars">★ 19k+</span></div>
+      <div class="oss-top"><span class="oss-name">MLflow</span><span class="oss-stars">★ 20k+</span></div>
       <span class="oss-domain od-mlops">MLOps</span>
       <p class="oss-desc">实验追踪 + 模型注册 + 部署一体化，Databricks 收购背书，API 稳定，是搭建 ML 平台的基础组件。</p>
       <div class="oss-how oh-contribute"><strong>Contribute</strong> — 提 good-first-issue，添加新的 LLM 追踪集成或 UI 改进</div>
@@ -1093,7 +1099,7 @@ tr:hover td{background:var(--surface2)}
     <span class="sec-num">07</span>
     <div class="sec-head-text">
       <h2>本期精选</h2>
-      <p>编辑推荐 · 更新于 2025年4月 · 5条值得花时间的内容</p>
+      <p>编辑推荐 · 更新于 2026年4月 · 5条值得花时间的内容</p>
     </div>
   </div>
 
@@ -1104,9 +1110,9 @@ tr:hover td{background:var(--surface2)}
       <div>
         <span class="pick-type pt-paper">论文</span>
         <div class="pick-title">DeepSeek-R1: Incentivizing Reasoning Capability via RL (2025)</div>
-        <p class="pick-body">纯 RL 训练出 o1 级推理能力，技术报告完全公开。最重要的不是结果，而是 GRPO 训练过程和"思维链自发涌现"的现象——它对你理解下一代模型的训练范式至关重要。建议读技术报告而不只是看评测分数。</p>
+        <p class="pick-body">纯 RL（GRPO）训练出 o1 级推理能力，技术报告完全公开，掀起了 2025 年最重要的开源 LLM 浪潮。2026 年这条路线已成主流——了解 R1 是理解 Qwen3、Llama 4 等后续 reasoning model 训练思路的基础。建议读技术报告本身，不只看评测分数。</p>
         <a class="pick-link" href="https://arxiv.org/abs/2501.12948" target="_blank">→ arxiv.org/abs/2501.12948</a>
-        <div class="pick-date">2025年1月 · arXiv</div>
+        <div class="pick-date">2025年1月 · arXiv · 已成 reasoning model 训练范式参考</div>
       </div>
     </div>
 
@@ -1115,9 +1121,9 @@ tr:hover td{background:var(--surface2)}
       <div>
         <span class="pick-type pt-blog">博客</span>
         <div class="pick-title">Patterns for LLM Systems — Eugene Yan</div>
-        <p class="pick-body">把 LLM 应用分解为 Evals、RAG、Fine-tuning、Caching、Guardrails 等模式，每个模式有 when to use 和 tradeoffs。如果你在做 LLM 落地，这是目前最好的工程模式参考。</p>
+        <p class="pick-body">把 LLM 应用分解为 Evals、RAG、Fine-tuning、Caching、Guardrails 等模式，每个模式有 when to use 和 tradeoffs。2026 年 Agent 模式进一步完善，但这篇的基础框架依然是 LLM 落地工程的最佳入门路径。</p>
         <a class="pick-link" href="https://eugeneyan.com/writing/llm-patterns/" target="_blank">→ eugeneyan.com/writing/llm-patterns</a>
-        <div class="pick-date">2024 · eugeneyan.com</div>
+        <div class="pick-date">持续更新 · eugeneyan.com</div>
       </div>
     </div>
 
@@ -1125,10 +1131,10 @@ tr:hover td{background:var(--surface2)}
       <div class="pick-num">03</div>
       <div>
         <span class="pick-type pt-tool">工具</span>
-        <div class="pick-title">DSPy 2.0 — 从 Prompt Engineering 到 LLM 程序优化</div>
-        <p class="pick-body">DSPy 2.0 引入了 optimizer 可以自动找到最优 prompt 策略，类似 ML 中用优化器替代手调超参。如果你还在手工调 prompt，DSPy 代表的方向是你下一步应该去的地方。文档中的 Intro Tutorial 是最好的起点。</p>
-        <a class="pick-link" href="https://dspy.ai/tutorials/intro/" target="_blank">→ dspy.ai/tutorials/intro</a>
-        <div class="pick-date">2025 · Stanford NLP</div>
+        <div class="pick-title">MCP（Model Context Protocol）— AI Agent 的"USB接口"</div>
+        <p class="pick-body">Anthropic 2024 年底开源的协议，定义了 LLM Agent 如何与外部工具/数据源交互的标准接口。到 2026 年已被 Claude、Cursor、VS Code、Zed 等主流工具广泛支持。如果你在做任何 Agent 或 AI 工作流，MCP 是你必须理解的基础层——它正在成为 AI 工具生态的事实标准。</p>
+        <a class="pick-link" href="https://modelcontextprotocol.io" target="_blank">→ modelcontextprotocol.io</a>
+        <div class="pick-date">2024年底开源 · 2026年已成 Agent 生态标配</div>
       </div>
     </div>
 
@@ -1137,7 +1143,7 @@ tr:hover td{background:var(--surface2)}
       <div>
         <span class="pick-type pt-paper">论文</span>
         <div class="pick-title">Synthetic Difference-in-Differences — 业界最低估的因果方法</div>
-        <p class="pick-body">大多数 DS 做 DID 时默认平行趋势假设成立，但实际上这个假设经常被违反。SDID 通过自动学习权重，在不假设平行趋势的情况下得到更可信的因果估计。Python 实现只需 10 行，但方法论价值极高。</p>
+        <p class="pick-body">大多数 DS 做 DID 时默认平行趋势假设成立，但实际上这个假设经常被违反。SDID 通过自动学习权重，在不假设平行趋势的情况下得到更可信的因果估计。Python 实现只需 10 行，但方法论价值极高。在精细化运营和平台政策评估场景，这是 2026 年仍然被低估的利器。</p>
         <a class="pick-link" href="https://arxiv.org/abs/1812.09970" target="_blank">→ arxiv.org/abs/1812.09970</a>
         <div class="pick-date">2021 · AER · Uber/Airbnb 生产验证</div>
       </div>
@@ -1148,9 +1154,9 @@ tr:hover td{background:var(--surface2)}
       <div>
         <span class="pick-type pt-discuss">讨论</span>
         <div class="pick-title">The First Rule of ML: Start Without ML — Eugene Yan</div>
-        <p class="pick-body">反直觉的工程智慧：先用规则/启发式方法，建立 baseline 和评估框架，再引入 ML。这不是反对 ML，而是关于什么时候 ML 真的有价值的判断力训练。Senior DS 和 Junior DS 最大的区别之一就是这种判断力。</p>
+        <p class="pick-body">反直觉的工程智慧：先用规则/启发式方法，建立 baseline 和评估框架，再引入 ML。AI Agent 时代这条原则更重要——很多人直接上 Agent，但连 baseline 评估指标都没定义清楚。Senior DS 和 Junior DS 最大的区别之一就是这种判断力。</p>
         <a class="pick-link" href="https://eugeneyan.com/writing/first-rule-of-ml/" target="_blank">→ eugeneyan.com/writing/first-rule-of-ml</a>
-        <div class="pick-date">2023 · eugeneyan.com</div>
+        <div class="pick-date">经典常青 · eugeneyan.com</div>
       </div>
     </div>
 
@@ -1158,7 +1164,7 @@ tr:hover td{background:var(--surface2)}
 </section>
 
 <div style="padding:40px 0;text-align:center;color:var(--text-3);font-size:12px;border-top:1px solid var(--border);font-family:system-ui">
-  数据专家图谱 · Expert Map · 面向已工作的数据人 · 2025<br>
+  数据专家图谱 · Expert Map · 面向已工作的数据人 · 2026<br>
   <a href="index.html" style="color:var(--accent);text-decoration:none;margin-top:6px;display:inline-block">← 返回基础笔记</a>
 </div>
 
