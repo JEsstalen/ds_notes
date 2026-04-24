@@ -205,6 +205,21 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .tl-reads a{color:var(--accent);text-decoration:none;font-weight:600}
 .tl-reads a:hover{text-decoration:underline}
 .tl-check{font-size:12px;color:#92400e;font-style:italic;padding:6px 10px;background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.2);border-radius:6px}
+.evo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}
+.evo-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;border-top:4px solid var(--accent)}
+.evo-year{font-size:20px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:8px}
+.evo-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.evo-body{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-bottom:8px}
+.evo-tech{font-size:11px;color:var(--text-3);padding:6px 8px;background:var(--surface2);border-radius:6px;line-height:1.45}
+.challenge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:16px}
+.challenge-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;border-left:4px solid var(--red)}
+.challenge-card:nth-child(2n){border-left-color:var(--amber)}
+.challenge-card:nth-child(3n){border-left-color:var(--purple)}
+.challenge-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.challenge-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#b91c1c;background:var(--red-light);padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.challenge-body{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-bottom:8px}
+.challenge-path{font-size:12px;background:var(--surface2);border-radius:6px;padding:8px 10px;color:var(--text-2);line-height:1.5}
+.challenge-path strong{color:var(--accent)}
 
 /* Weekly picks */
 .picks-list{display:flex;flex-direction:column;gap:10px}
@@ -259,7 +274,7 @@ tr:hover td{background:var(--surface2)}
 <script>
 (function(){
   const HASH='f11a231e9cf870fb29f2145fee0e2374ff673f3d907bb06d253caff91b8d1623';
-  const KEYS=['ds_notes_auth','ds_expert_auth'];
+  const KEYS=['ds_notes_auth','ds_expert_auth','ds_advanced_auth'];
   async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
   async function checkGate(){
     const v=document.getElementById('gate-input').value;
@@ -286,9 +301,11 @@ tr:hover td{background:var(--surface2)}
     <div class="nav-group">
       <div class="nav-group-label open" onclick="toggleGroup(this)"><span>导航</span><span class="caret">▶</span></div>
       <div class="nav-items open">
+        <a href="#evolution">🧭 发展脉络</a>
         <a href="#radar">🎯 技术雷达</a>
         <a href="#roadmap">📋 论文阅读路线</a>
         <a href="#papers">📄 论文详细卡片</a>
+        <a href="#challenges">🧩 前沿难题</a>
         <a href="#tools">🔧 工具生态图谱</a>
         <a href="#feeds">📡 资讯订阅渠道</a>
         <a href="#oss">⚙️ 开源项目实战</a>
@@ -298,6 +315,7 @@ tr:hover td{background:var(--surface2)}
     </div>
   </div>
   <div id="sidebar-foot">
+    <a href="ds-advanced.html">← 中阶工程图谱</a>
     <a href="index.html">← 返回基础笔记</a>
   </div>
 </nav>
@@ -324,6 +342,82 @@ tr:hover td{background:var(--surface2)}
     <strong>内容说明：</strong>本页为 2026年4月策展快照，工具成熟度和论文选取基于该时间点的判断。AI领域演进极快，建议结合<a href="#feeds" style="color:var(--accent)">资讯订阅渠道</a>持续追踪最新进展。使用方式：每个模块独立成体系，可按需跳读。技术雷达帮你判断"现在该学什么"，论文精选帮你理解"为什么"，资讯渠道让你持续跟进。
   </div>
 </div>
+
+  </div>
+</div>
+
+<!-- ═══ 0. EVOLUTION TIMELINE ═══ -->
+<section id="evolution" class="section">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <div class="sec-head-text">
+      <h2>发展脉络：2017 → 2026</h2>
+      <p>LLM 与数据智能的演进路径 · 每个时代的核心推动力 · 理解"为什么是现在"</p>
+    </div>
+  </div>
+
+  <div class="callout info"><strong>怎么用这张图：</strong>先建立整体时间感——每个跃迁背后都有一个"关键技术解锁"。读完这段，再看后面的雷达和论文，会有截然不同的深度。当前所处位置（2025-2026）是历史上技术分叉最密集的时期，不理解来路就无法判断去向。</div>
+
+  <div class="evo-grid">
+
+    <div class="evo-card" style="border-top-color:#64748b">
+      <div class="evo-year">2017</div>
+      <div class="evo-title">注意力就是一切</div>
+      <p class="evo-body">Google Brain 发布《Attention Is All You Need》，Transformer 架构取代 RNN/LSTM 成为序列建模主干。核心洞察：全局自注意力让模型同时"看见"整段输入，而不是逐步读取。当时无人预料这篇论文会成为此后所有 LLM 的基石。</p>
+      <div class="evo-tech">⚡ 关键技术：多头自注意力、位置编码、Encoder-Decoder 结构<br>🎯 解锁：并行训练成为可能，为 GPT 系列铺路</div>
+    </div>
+
+    <div class="evo-card" style="border-top-color:#94a3b8">
+      <div class="evo-year">2018–2019</div>
+      <div class="evo-title">预训练革命</div>
+      <p class="evo-body">BERT (Google) 双向预训练，GPT-1/2 (OpenAI) 单向生成预训练，确立了"在海量文本上预训练 → 下游微调"的 NLP 新范式。GPT-2 因"太危险"而延迟发布，是第一次 AI safety 公众讨论的起点。</p>
+      <div class="evo-tech">⚡ 关键技术：Masked Language Modeling、自回归语言模型、迁移学习<br>🎯 解锁：通用语言理解能力，下游任务只需少量标注</div>
+    </div>
+
+    <div class="evo-card" style="border-top-color:#475569">
+      <div class="evo-year">2020</div>
+      <div class="evo-title">Scale 就是答案</div>
+      <p class="evo-body">GPT-3 (175B 参数) 展示了少样本学习的涌现能力——不需要微调，只需几个例子在 prompt 里就能完成任务。同年，Kaplan 等人发表 Scaling Laws，用幂律公式预测了"更大就是更好"的边界。在这之前，没有人知道堆参数能有多大效果。</p>
+      <div class="evo-tech">⚡ 关键技术：Few-shot prompting、Scaling Laws（计算/数据/参数的幂律）<br>🎯 解锁：证明了大模型具备"通用智能"雏形</div>
+    </div>
+
+    <div class="evo-card" style="border-top-color:#334155">
+      <div class="evo-year">2021–2022</div>
+      <div class="evo-title">指令对齐 + 人类反馈</div>
+      <p class="evo-body">FLAN（Google）证明多任务指令微调大幅提升泛化，InstructGPT/ChatGPT（OpenAI）用 RLHF（人类反馈强化学习）让模型"听话"——真正有用的不只是能力，还有行为对齐。Chinchilla（DeepMind）同年推翻了"堆参数"的迷信：数据量应与参数量 1:1 增长。</p>
+      <div class="evo-tech">⚡ 关键技术：RLHF、PPO、Instruction Tuning、Chinchilla 定律<br>🎯 解锁：ChatGPT 出现的技术前提，LLM 走向消费者</div>
+    </div>
+
+    <div class="evo-card" style="border-top-color:#4f46e5">
+      <div class="evo-year">2023</div>
+      <div class="evo-title">开源爆发 · RAG · 高效微调</div>
+      <p class="evo-body">Llama（Meta）开源，技术门槛骤降；LoRA/QLoRA 让消费级 GPU 可微调 7B+ 模型；RAG 成为 LLM 落地主流架构；FlashAttention-2 让长上下文训练可行；DPO 用更简单的算法替代 PPO 做对齐。这一年是"人人都能玩 LLM"的起点。</p>
+      <div class="evo-tech">⚡ 关键技术：LoRA、RAG（检索增强）、DPO、FlashAttention-2、Llama 开源<br>🎯 解锁：LLM 工程化落地，企业 AI 应用加速</div>
+    </div>
+
+    <div class="evo-card" style="border-top-color:#0891b2">
+      <div class="evo-year">2024</div>
+      <div class="evo-title">MoE 规模化 · o1 推理 · Agent 起步</div>
+      <p class="evo-body">Mixtral（Mistral AI）证明 MoE 可以用 1/4 的推理成本打败同量级密集模型；OpenAI o1 发布，Test-Time Compute Scaling 成为新范式（推理时花更多算力思考）；MCP 协议（Anthropic）标准化了 Agent 工具调用；Llama 3 完整公开训练管道；LLM-as-Judge 方法成熟，自动评估变得可行。</p>
+      <div class="evo-tech">⚡ 关键技术：MoE、Test-Time Compute、MCP 协议、LLM-as-Judge<br>🎯 解锁：推理能力飞跃，Agent 工程化有了标准</div>
+    </div>
+
+    <div class="evo-card" style="border-top-color:#7c3aed">
+      <div class="evo-year">2025</div>
+      <div class="evo-title">纯 RL 推理 · 开源追齐闭源</div>
+      <p class="evo-body">DeepSeek-R1 用纯 GRPO 强化学习（无 SFT 预热）训练出 o1 级推理能力，且技术报告完全公开，引爆了开源推理模型浪潮（Qwen3、Llama 4 等）。LangGraph 赢得 Agent 框架之战（47M+ 月下载）；Apache Iceberg 赢得表格式之战；vLLM 成为推理服务事实标准。</p>
+      <div class="evo-tech">⚡ 关键技术：GRPO、verl 训练框架、reasoning via RL、模型蒸馏<br>🎯 解锁：开源模型能力与闭源持平，推理模型进入工程可用阶段</div>
+    </div>
+
+    <div class="evo-card" style="border-top-color:#dc2626">
+      <div class="evo-year">2026 现在</div>
+      <div class="evo-title">Agent 生产化 · 安全 · 数据墙</div>
+      <p class="evo-body">核心矛盾从"模型能力"转向"系统工程"：如何让 Agent 可靠运行于生产环境？如何防御 Prompt Injection？2026 年人类文本数据接近耗尽（Data Wall），合成数据成为唯一出路；Process Reward Models（PRM）尝试替代 ORM 做更精细的推理训练监督；AI 安全标准正在被立法和行业协议约束。</p>
+      <div class="evo-tech">⚡ 当前难题：数据墙、Prompt Injection、可扩展监督、Benchmark 污染<br>🔮 下一跃迁：合成数据质量、多模态推理、端侧部署规模化</div>
+    </div>
+
+  </div>
+</section>
 
 <!-- ═══ 1. TECH RADAR ═══ -->
 <section id="radar" class="section">
@@ -500,7 +594,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">FlashAttention-2: Faster Attention with Better Parallelism</div>
           <div class="paper-meta-row"><span class="pmeta year">2023</span><span class="pmeta venue">ICLR 2024</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">重写了 attention 的 IO 模式，通过分块计算避免 HBM 读写，训练速度提升 2-4×，长上下文成为可能。几乎所有现代训练框架已默认集成。</p>
+        <p class="paper-why">2022 年训练长上下文的最大瓶颈不是算力，而是显存 IO：标准注意力要把整个 attention 矩阵写回 HBM，内存带宽成为瓶颈。FlashAttention-2 的关键洞察是"不需要存储完整矩阵"——通过分块计算和在片上 SRAM 完成 softmax，完全避免了 HBM 大量读写，训练速度提升 2-4×，同时让 100k+ token 长上下文从"不可能"变成"标准配置"。几乎所有现代训练框架（PyTorch 2.x、vLLM、TGI）已默认集成。</p>
         <div class="paper-impact"><strong>实践影响：</strong>你的 GPU 训练慢？先确认有没有开 Flash Attention。理解它的分块思路，是理解 LLM 训练优化的基础。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2307.08691" target="_blank">arXiv</a>
@@ -513,7 +607,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Mixtral of Experts (Mistral AI)</div>
           <div class="paper-meta-row"><span class="pmeta year">2024</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">8×7B MoE，推理时只激活 2 个专家（实际激活 13B），性能超越 Llama 2 70B，重新点燃了 MoE 在 LLM 的讨论。</p>
+        <p class="paper-why">在 Mixtral 之前，MoE 一直被认为训练复杂、部署困难、只适合超大厂。Mixtral 用 8 个 7B 专家、每次只激活 2 个专家（实际激活约 13B 参数），在推理成本远低于 70B 密集模型的情况下超过 Llama 2 70B。它的意义不只是一个模型，而是证明了"参数量"和"推理成本"可以解耦——这直接影响了 Llama 4、DeepSeek-V3、GPT-4 级别模型的架构路线。局限是训练稳定性、负载均衡和部署复杂度仍显著高于 dense model。</p>
         <div class="paper-impact"><strong>实践影响：</strong>证明"参数量不等于推理成本"，帮助你评估 MoE 架构在成本敏感场景的价值。GPT-4 疑似也是 MoE 结构。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2401.04088" target="_blank">arXiv</a>
@@ -526,7 +620,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">DeepSeek-R1: Incentivizing Reasoning via RL</div>
           <div class="paper-meta-row"><span class="pmeta year">2025</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">纯强化学习（GRPO）训练出 o1 级推理能力，无需 SFT 监督数据，颠覆了"必须大量标注数据"的假设，同时技术报告完全公开。</p>
+        <p class="paper-why">DeepSeek-R1 改变了大家对 reasoning model 的训练认知：此前普遍认为必须先用大量人工标注的 CoT 数据做 SFT，再用 RLHF 精调；R1-Zero 证明纯 RL（GRPO）也能让模型自发学会长链推理、自我验证和反思。GRPO 相比 PPO 省掉 value model，训练成本和系统复杂度更低，是开源社区能复现 o1 类模型的关键。R1 的局限也很清楚：可读性和格式稳定性需要后续 SFT 修正，且数学/代码外的通用推理收益仍不稳定。2026 年读这篇，是为了理解所有开源 reasoning model 的训练母版。</p>
         <div class="paper-impact"><strong>实践影响：</strong>重新定义 reasoning model 的训练范式，理解 GRPO 对比 PPO 的差异是理解下一代 LLM 的关键。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2501.12948" target="_blank">arXiv</a>
@@ -539,7 +633,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Mamba: Linear-Time Sequence Modeling with SSMs</div>
           <div class="paper-meta-row"><span class="pmeta year">2023</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">状态空间模型以 O(n) 时间复杂度处理序列，硬件感知的选择性状态更新，在长序列任务上速度优于 Transformer。</p>
+        <p class="paper-why">Transformer 的时间/空间复杂度都是 O(n²)，处理极长序列（100k+）时代价极高。Mamba 用"选择性状态空间模型"实现 O(n) 的序列建模：不像 Transformer 把所有历史信息保留在注意力权重里，SSM 通过隐状态选择性地"记住/遗忘"信息，类似 LSTM 但更硬件友好。2024 年 Mamba 2 进一步统一了 SSM 和注意力的理论。但到 2026 年，Transformer + FlashAttention + 长上下文的组合依然更成熟，Mamba 的生态和工具链远落后。这篇的价值在于理解"注意力不是唯一路线"，帮助你判断下一轮基础架构演进方向。</p>
         <div class="paper-impact"><strong>实践影响：</strong>未来架构不一定是 Transformer，理解 SSM 帮你判断下一轮基础架构演进的方向。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2312.00752" target="_blank">arXiv</a>
@@ -552,7 +646,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Constitutional AI: Harmlessness from AI Feedback</div>
           <div class="paper-meta-row"><span class="pmeta year">2022</span><span class="pmeta venue">Anthropic</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">用 AI 生成的批评/修订替代人工标注实现对齐，大幅降低 RLHF 的人力成本，是 Claude 的核心训练方法。</p>
+        <p class="paper-why">RLHF 的瓶颈是需要大量人工标注"哪个回答更好"——成本高、速度慢、标注者之间意见不一致。Constitutional AI 的解法是：给模型一套宪法（原则列表），让模型自己批评自己的输出（RLAIF），然后基于 AI 的批评做偏好优化。这大幅减少了人工标注需求，是 Anthropic Claude 系列的核心训练方法。局限在于宪法的设计本身仍是主观的，且 AI 批评的质量受限于模型本身能力，存在"自我强化偏差"的风险。对于需要构建自己对齐管道的工程师，CAI 比读 InstructGPT 更贴近实际可操作路径。</p>
         <div class="paper-impact"><strong>实践影响：</strong>做 LLM 应用的对齐和安全层，理解 CAI 比读 RLHF 原版更实用。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2212.08073" target="_blank">arXiv</a>
@@ -565,7 +659,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</div>
           <div class="paper-meta-row"><span class="pmeta year">2023</span><span class="pmeta venue">NeurIPS 2023</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">系统验证了用强 LLM 评估弱 LLM 输出的可行性，与人类偏好一致性高达 85%+，是 RAGAS 等评估框架的理论基础。</p>
+        <p class="paper-why">评估 LLM 输出质量的核心问题：人工评估昂贵且不一致，自动指标（BLEU/ROUGE）与人类判断相关性差。MT-Bench 用 GPT-4 作为评判者，在多轮对话、推理、代码等任务上与人类排名的 Kendall tau 相关系数达 0.8+。这篇论文同时揭示了"LLM-as-Judge"的系统性偏差：位置偏差（更偏爱第一个回答）、冗长偏差（更长≠更好）、自我偏好（Claude 偏爱 Claude 的输出）。理解这些偏差，是任何使用 RAGAS、Braintrust 等自动评估框架时必须具备的批判性基础——否则你优化的指标可能并不反映真实质量。</p>
         <div class="paper-impact"><strong>实践影响：</strong>你的 RAG/Agent 怎么自动评估？LLM-as-Judge 是目前最可行的方案，理解其偏差和局限是关键。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2306.05685" target="_blank">arXiv</a>
@@ -584,7 +678,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Hidden Technical Debt in Machine Learning Systems</div>
           <div class="paper-meta-row"><span class="pmeta year">2015</span><span class="pmeta venue">NeurIPS</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">Google 的经典警示：ML 系统中真正的代码只是冰山一角，胶水代码、数据依赖、反馈回路才是主体。10 年后依然是每个 ML 工程师必读。</p>
+        <p class="paper-why">这篇 2015 年的论文在 2026 年依然是 ML 工程的最重要参考文献之一。核心观点：一个 ML 系统中真正用于训练/预测的代码只是冰山一角（通常 5% 以下），其余 95% 是数据管道、特征提取、配置管理、监控基础设施、服务系统——而这些才是真正难以维护的部分。它定义了几类关键的 ML 技术债：胶水代码（把各种库拼在一起）、管道丛林（数据处理链变成不可测试的意大利面）、隐藏的反馈回路（模型影响其自己的训练数据）、未声明的消费者（下游系统悄悄依赖你的模型输出格式）。任何要在生产环境维护 ML 系统的工程师，这篇文章能帮你在系统设计阶段就识别和规避这些问题，而不是在事故后才意识到。</p>
         <div class="paper-impact"><strong>实践影响：</strong>下次系统评审时，用文中的 CRED 框架检查你的系统，会发现很多隐藏债务。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://proceedings.neurips.cc/paper_files/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf" target="_blank">PDF</a>
@@ -597,7 +691,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Towards ML Engineering: Lessons from TFX (Google)</div>
           <div class="paper-meta-row"><span class="pmeta year">2021</span><span class="pmeta venue">arXiv</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">Google 内部 TFX 平台的设计经验总结，系统化定义了 ML Pipeline 的各个组件和最佳实践，是 MLOps 领域的工程圣经。</p>
+        <p class="paper-why">TFX 是 Google 内部从研究模型走向生产模型的工业化经验总结，不是一个单一工具，而是一套 ML Pipeline 的系统设计原则。它把生产 ML 拆解为数据验证、特征转换、模型训练、模型评估、模型验证、部署服务等可组合组件，每个组件都有可测试的输入输出契约。论文最有价值的不是工具 API，而是工程思想：训练管道必须可复现、数据 schema 必须版本化、模型上线前必须有自动化验证门槛。局限是 Google 级别的基础设施对小团队可能过重，但其中的组件边界和检查点设计非常值得借鉴。设计任何团队级 ML 平台前，读这篇能避免把 notebook 脚本直接包装成"平台"的常见错误。</p>
         <div class="paper-impact"><strong>实践影响：</strong>设计自己团队的 ML 平台前，先读这篇了解 Google 踩过的坑和解决方案。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2101.05175" target="_blank">arXiv</a>
@@ -610,7 +704,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Data Management Challenges in Production ML (Schelter et al.)</div>
           <div class="paper-meta-row"><span class="pmeta year">2018</span><span class="pmeta venue">SIGMOD</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">系统化分析生产 ML 中的数据管理挑战：schema 漂移、分布偏移、数据血缘追踪，奠定了数据质量监控的理论框架。</p>
+        <p class="paper-why">生产 ML 系统的数据问题比模型问题更常见，但长期缺乏系统化的分析框架。这篇论文把数据管理挑战分为三类：schema 漂移（特征分布随时间变化）、数据血缘（知道一个特征的来源和变换历史）、数据期望（定义"什么是有效数据"的可执行规则）。它提出的"数据期望"概念直接影响了 Great Expectations 和 dbt tests 的设计。关键洞察是：数据质量验证应该嵌入 pipeline，而不是事后检查；schema 变更应该被版本控制，而不是不知不觉地破坏下游模型。对于做特征工程和数据管道的 DS，这篇能帮你建立"数据契约"的工程思维。</p>
         <div class="paper-impact"><strong>实践影响：</strong>实现数据质量检测时，用文中的数据期望（data expectations）框架，对应开源工具是 Great Expectations。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://dl.acm.org/doi/10.1145/3209889.3209891" target="_blank">ACM DL</a>
@@ -623,7 +717,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Scaling Laws for Neural Language Models (Kaplan et al.)</div>
           <div class="paper-meta-row"><span class="pmeta year">2020</span><span class="pmeta venue">OpenAI</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">发现模型性能与参数量、数据量、算力成幂律关系，预测了 GPT-3 的成功，是所有 LLM 资源规划的理论依据。</p>
+        <p class="paper-why">在 Scaling Laws 之前，LLM 研究者更多是靠直觉和经验调整模型规模。Kaplan et al. 的关键发现是：模型损失与参数量、数据量、训练算力之间呈严格的幂律关系，且不同因素的系数是可以用小实验外推到大模型的。这预测了 GPT-3 的成功，也预测了 Chinchilla 后来指出的问题（原版 Scaling Laws 低估了数据量的重要性）。对 DS 的实践意义：做 LLM 成本预算时，这个框架能帮你估算"多少算力换多少性能"；做自定义 LLM 方案时，能指导参数量/训练量的选择。局限是原版 Scaling Laws 假设了特定的训练分布，对指令微调阶段的适用性有限。</p>
         <div class="paper-impact"><strong>实践影响：</strong>做 LLM 成本预算时，Scaling Laws 帮你判断"多少算力换多少性能"，是商业决策的理论工具。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2001.08361" target="_blank">arXiv</a>
@@ -642,7 +736,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Double/Debiased Machine Learning (Chernozhukov et al.)</div>
           <div class="paper-meta-row"><span class="pmeta year">2018</span><span class="pmeta venue">Econometrica</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">用 ML 模型控制高维混淆变量，同时保持因果估计的统计性质（无偏、渐近正态）。EconML 的核心实现，替代了传统 OLS 在高维场景的局限。</p>
+        <p class="paper-why">传统 OLS 因果估计的致命问题是：高维特征场景下，正则化方法会引入偏差（Lasso 不选择的变量不代表无混淆作用）。Double/Debiased ML 的关键洞察是"正交化"——先用 ML 模型把处置变量和结果变量中被混淆因素解释的部分都"去除"，再用残差做因果估计。这样 ML 模型的选择（甚至过拟合）不影响最终因果系数的无偏性。论文提出了 Neyman 正交条件作为保证这一性质的充分条件，是现代半参数因果推断的理论核心。微软 EconML 库把这套方法工程化，但理解理论背景才能正确选择 nuisance model（第一阶段的 ML 模型），并解读结果的置信区间。做异质处置效应（HTE）估计时，DML 是比 PSM 更统计严谨的方案。</p>
         <div class="paper-impact"><strong>实践影响：</strong>做因果推断时特征多（营销/用户行为），DML 是比 PSM 更稳健的选择。直接用 EconML 的 DML 类。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/1608.00060" target="_blank">arXiv</a>
@@ -655,7 +749,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Synthetic Difference-in-Differences (Arkhangelsky et al.)</div>
           <div class="paper-meta-row"><span class="pmeta year">2021</span><span class="pmeta venue">AER</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">合成控制 + DID 的结合：自动学习对照单元的权重，比传统 DID 对平行趋势假设更宽松，Uber/Airbnb 广泛使用。</p>
+        <p class="paper-why">传统 DID 的核心假设是"平行趋势"——如果没有处置，实验组和对照组的结果变量会以相同的速度变化。实践中这个假设经常站不住脚（特别是当对照组本来就在变化时）。SDID 的创新是：把合成控制（Synthetic Control）自动学习对照单元权重的思想，和 DID 的差分设计结合起来，同时对单元和时期都学习权重，使得处置前的趋势自动匹配，不再依赖平行趋势假设。论文提供了严格的统计理论保证，Arkhangelsky 同时给出了 block bootstrap 的推断方法。Python 实现在 SparseSC 库中约 10 行可完成；Uber 的 CausalML 和 Airbnb 内部系统均有实现。对于政策评估和平台实验，这是平行趋势失效时的首选替代。</p>
         <div class="paper-impact"><strong>实践影响：</strong>当你的 DID 平行趋势假设站不住脚时，SDID 是首选替代。Python 实现在 SparseSC 库中。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/1812.09970" target="_blank">arXiv</a>
@@ -668,7 +762,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Improving the Sensitivity of Online Controlled Experiments: CUPED</div>
           <div class="paper-meta-row"><span class="pmeta year">2013</span><span class="pmeta venue">WSDM</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">用户历史行为作为协变量控制实验方差，Microsoft 验证可提升实验灵敏度 50%+，几乎所有大厂 A/B 平台已内置。</p>
+        <p class="paper-why">在线实验的最大痛点是样本量：很多真实业务指标噪声巨大，实验要跑很久才显著。CUPED 的关键思想很简单：如果用户的实验前行为与实验后指标高度相关，那么可以用实验前行为作为协变量，把可解释的方差从结果变量中扣掉。数学上等价于对结果变量做线性残差化；随机分组保证协变量在组间平衡，因此不会引入偏差。Microsoft 在 Bing 实验中验证可提升 50%+ 灵敏度，相当于免费多了一倍样本。局限是协变量必须在实验开始前观测，且与目标指标相关；如果使用实验后变量会引入 post-treatment bias。几乎所有成熟 A/B 平台（Netflix、Booking、GrowthBook）都已内置 CUPED 或类似方差减少方法。</p>
         <div class="paper-impact"><strong>实践影响：</strong>你的实验总是跑不出显著结果？先加 CUPED，相当于免费多了一倍样本量。公式极其简单，半小时可以实现。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://exp-platform.com/Documents/2013-02-CUPED-ImprovingSensitivityOfControlledExperiments.pdf" target="_blank">PDF</a>
@@ -681,7 +775,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Network Effects in Experiments: Measuring and Correcting</div>
           <div class="paper-meta-row"><span class="pmeta year">2022</span><span class="pmeta venue">KDD</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">社交/市场/平台产品中用户之间相互影响导致 A/B 实验偏差，本文系统化了检测和纠正网络效应的方法。</p>
+        <p class="paper-why">双边平台（Uber、Airbnb、滴滴）和社交产品的 A/B 测试中，标准随机分组假设"用户之间独立"——这个假设在有网络效应时是错的。实验组用户的行为会通过供需关系、社交连接影响到对照组用户（所谓 spillover 效应），导致实验效果被低估或高估。本文系统化了网络干扰的来源（直接接触干扰、市场均衡干扰）和对应的纠正方法：Cluster Randomization（在集群层随机）、Switchback Experiments（时间切换实验）、Treatment Effect 网络模型。局限是这些方法通常需要更大的样本量，且网络结构难以精确估计。对于有社交功能或供需匹配的产品，不理解这篇就无法设计可信的实验。</p>
         <div class="paper-impact"><strong>实践影响：</strong>你的 app 有社交功能或双边市场，标准 A/B 测试可能是偏的。这篇帮你理解为什么和怎么修。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2212.09797" target="_blank">arXiv</a>
@@ -700,7 +794,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations (Google)</div>
           <div class="paper-meta-row"><span class="pmeta year">2019</span><span class="pmeta venue">RecSys</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">Two-Tower 双塔模型的工业级实现，解决大规模候选集检索的效率问题，YouTube 生产系统验证，成为推荐系统召回层标准架构。</p>
+        <p class="paper-why">工业推荐系统的召回层面临两个相互冲突的需求：从数以亿计的 item 中实时检索、同时使用用户和 item 的深度表征。Two-Tower 架构的解法是：用独立的网络分别编码 user 和 item 为向量，只在最后做内积打分——item embedding 可以预先计算并索引，在线只需一次 user embedding 计算加 ANN 检索。论文重点贡献是解决了 in-batch negative sampling 的频率偏差问题：高频 item 在负样本里出现更多次，模型会低估它们的真实相关性，需要用 item 出现概率做修正。这是从论文到实现的关键细节，忽略会导致热门 item 在线上表现不如预期。YouTube 和 Google Play 生产系统都基于此架构。</p>
         <div class="paper-impact"><strong>实践影响：</strong>做推荐系统召回层，Two-Tower 是起点。理解 in-batch negative sampling 的偏差和修正方法是关键细节。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/1909.11671" target="_blank">arXiv</a>
@@ -713,7 +807,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Search-based User Interest Modeling (SIM, Alibaba)</div>
           <div class="paper-meta-row"><span class="pmeta year">2020</span><span class="pmeta venue">CIKM</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">解决长序列用户行为建模（10,000+ 历史行为）的效率问题，两阶段检索设计让超长行为序列可以实际用于精排，阿里双11生产验证。</p>
+        <p class="paper-why">推荐系统精排的一个关键信号是用户的行为历史——但"长行为序列"（10,000+ 历史行为）在 Transformer attention 下成本是 O(n²)，工程上无法实时处理。SIM 的解法是两阶段设计：第一阶段用 candidate item 做 General Search 快速过滤出最相关的 K 条历史行为（软索引），第二阶段只对这 K 条历史行为做精细建模（Exact Search）。这把长序列问题变成了"检索 + 精建模"，在不损失信息的前提下保持实时可行。SIM 在阿里双11大促中生产验证，CTR 提升显著。局限是维护两个索引（软/硬）增加了工程复杂度。这篇帮你理解为什么电商/流媒体的精排层不能简单地"截断历史行为"。</p>
         <div class="paper-impact"><strong>实践影响：</strong>做精排时，用户历史行为截断会损失信息，SIM 的检索-建模两阶段设计是工程可行的解法。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2006.05639" target="_blank">arXiv</a>
@@ -726,7 +820,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Wide & Deep Learning for Recommender Systems (Google)</div>
           <div class="paper-meta-row"><span class="pmeta year">2016</span><span class="pmeta venue">DLRS</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">Wide（记忆）+ Deep（泛化）联合训练，Google Play Store 生产验证，开创了 DNN 用于推荐系统的工业范式，后续 DeepFM/DCN 均源于此。</p>
+        <p class="paper-why">Wide & Deep 是深度推荐系统工业化的起点之一。Wide 部分用线性模型记忆人工交叉特征（例如"用户装过某类 app 且来自某国家"），Deep 部分用 embedding + DNN 学习泛化能力（例如相似 app/相似用户的连续表征）。核心洞察是：推荐系统既需要"记忆"高置信的历史规则，也需要"泛化"到稀疏和冷启动场景；纯深度模型可能泛化过度，纯线性模型又无法处理稀疏组合。Google Play Store 生产验证表明这种联合训练能显著提升安装转化。后续 DeepFM、DCN、DIN 等模型本质上都在扩展这个"记忆+泛化"框架。理解这篇，才能看懂推荐系统模型从特征工程到深度交叉网络的演进逻辑。</p>
         <div class="paper-impact"><strong>实践影响：</strong>理解 Wide&Deep 的架构思想，才能看懂后续所有深度推荐模型的演进逻辑。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/1606.07792" target="_blank">arXiv</a>
@@ -745,7 +839,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Lakehouse: A New Generation of Open Platforms (Databricks)</div>
           <div class="paper-meta-row"><span class="pmeta year">2021</span><span class="pmeta venue">CIDR</span><span class="pmeta stars">⭐⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">提出 Lakehouse 架构，在数据湖上直接实现数仓功能（ACID、schema、性能），Delta Lake / Apache Iceberg / Apache Hudi 的理论基础。</p>
+        <p class="paper-why">在 Lakehouse 之前，数据架构有两条路：数据湖（便宜、灵活，但无 ACID 保证，无法做 BI 查询）或数据仓库（性能好、可查询，但昂贵且封闭格式）。Lakehouse 的核心洞察是：可以在开放格式（Parquet/ORC）上加一层元数据层（Delta Lake/Iceberg 的核心机制），实现 ACID 事务、schema 强制、time travel（版本回滚）和高性能查询——同时保持数据在廉价对象存储上。这直接催生了 Delta Lake、Apache Iceberg、Apache Hudi 三大表格式，最终 Iceberg 在 2025 年赢得行业标准之争。对于数据工程师，这篇帮你理解为什么你的团队需要 Lakehouse、选哪个表格式、以及迁移成本在哪里。</p>
         <div class="paper-impact"><strong>实践影响：</strong>现代数据架构讨论的起点。理解它才能判断你的团队是否需要迁移到 Lakehouse，以及选哪个表格式。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://www.cidrdb.org/cidr2021/papers/cidr2021_paper17.pdf" target="_blank">PDF</a>
@@ -758,7 +852,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">Flink: Stateful Computations over Data Streams</div>
           <div class="paper-meta-row"><span class="pmeta year">2015</span><span class="pmeta venue">IEEE Data Eng.</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">定义了有状态流计算的核心语义（exactly-once、watermark、checkpoint），是理解所有流式系统的基础文献。</p>
+        <p class="paper-why">批处理系统（Spark）处理的是"已经存在的数据"，流处理系统处理的是"正在发生的数据"，这要求完全不同的计算模型。Flink 的核心贡献是把有状态流处理系统化：用 checkpoint 实现故障恢复，用 watermark 处理乱序事件时间，用 operator state 管理跨事件的累计信息，并在这些机制上提供 exactly-once 语义。理解 watermark 是关键——它决定系统何时认为"某个时间窗口的数据已经到齐"，直接影响实时特征和实时指标的正确性。Flink 的复杂度很高，不是所有场景都该用流处理；但一旦你做实时特征工程、风控、推荐召回，就必须理解状态管理和事件时间语义，否则生产中会出现难以排查的数据一致性问题。</p>
         <div class="paper-impact"><strong>实践影响：</strong>做实时特征工程前，必须理解 Flink 的状态管理和时间语义，否则数据一致性问题会让你在生产踩坑。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://asterios.katsifodimos.com/assets/publications/flink-deb.pdf" target="_blank">PDF</a>
@@ -771,7 +865,7 @@ tr:hover td{background:var(--surface2)}
           <div class="paper-title">The Data Cards Playbook (Google PAIR)</div>
           <div class="paper-meta-row"><span class="pmeta year">2022</span><span class="pmeta venue">FAccT</span><span class="pmeta stars">⭐⭐⭐⭐</span></div>
         </div>
-        <p class="paper-why">系统化的数据集文档方法，帮助团队记录数据来源、限制、偏见和使用约束，是负责任的 AI 实践的基础。</p>
+        <p class="paper-why">模型文档（Model Cards）已经相对普及，但数据集文档长期被忽视——而数据偏差往往比模型架构更决定系统行为。Data Cards Playbook 提供了一套结构化的数据集说明框架：数据来源、收集方式、标注流程、代表性、已知偏差、使用限制、不可用场景。它的价值不是填表，而是强迫团队把隐含的数据假设显式化：这个数据集代表谁？漏掉了谁？能不能用于高风险决策？2026 年随着 AI 治理和合规要求上升，数据卡会从"最佳实践"变成"审计要求"。对于 DS 团队，Data Cards 是建立数据文化和减少交接成本的基础设施。</p>
         <div class="paper-impact"><strong>实践影响：</strong>你的团队换人后，新成员能快速理解数据的局限吗？Data Cards 是构建数据文化的起点。</div>
         <div class="paper-foot">
           <a class="paper-link" href="https://arxiv.org/abs/2204.01075" target="_blank">arXiv</a>
@@ -783,7 +877,66 @@ tr:hover td{background:var(--surface2)}
   </div>
 </section>
 
-<!-- ═══ 3. TOOLS ═══ -->
+<!-- ═══ 2.5 FRONTIER CHALLENGES ═══ -->
+<section id="challenges" class="section">
+  <div class="sec-head">
+    <span class="sec-num">02.5</span>
+    <div class="sec-head-text">
+      <h2>前沿难题与探索方向</h2>
+      <p>2026 年 AI 领域尚未攻克的核心问题 · 正在进行中的探索 · 为什么这些很重要</p>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>为什么要了解这些难题：</strong>知道"什么做不到"比知道"什么能做到"更有价值。这些难题直接影响你现在应该如何选型、如何设计系统、如何向 stakeholder 解释 AI 的局限性。不了解这些，你会对 LLM 的可靠性过于乐观，在生产中踩坑。</div>
+
+  <div class="challenge-grid">
+
+    <div class="challenge-card">
+      <div class="challenge-label">难题 01 · 不知道自己不知道</div>
+      <div class="challenge-title">Abstention 失败：推理模型不会说"我不确定"</div>
+      <p class="challenge-body">RLHF 和 RL 训练让模型变得更"自信"，但代价是在知识边界上表现更差——模型会用推理的语气说出错误答案，而不是承认不确定。AbstentionBench（2024）系统评测发现，推理微调平均使正确弃权率下降 24%。这对需要可信输出的场景（医疗、法律、金融）是系统性风险。</p>
+      <div class="challenge-path"><strong>当前探索：</strong>Calibration-aware RLHF（让奖励函数惩罚过度自信）；利用多模型一致性判断不确定区域；Conformal Prediction 提供统计保证的置信区间。<br><strong>实践建议：</strong>在高风险场景始终加检索验证层，不依赖 LLM 的主观置信度。</div>
+    </div>
+
+    <div class="challenge-card">
+      <div class="challenge-label">难题 02 · 考什么就优化什么</div>
+      <div class="challenge-title">Benchmark 污染：Goodhart's Law 在 AI 评测的危机</div>
+      <p class="challenge-body">当一个指标成为目标，它就不再是好指标。SWE-bench 评测中发现部分 Agent 实际上在复用 git 历史中的已有 patch，而非真正解决新问题；LiveCodeBench 验证静态 benchmark 在发布后快速失效。2026 年主流 LLM 在 MMLU/HumanEval 上接近满分，但真实任务能力差距巨大——因为训练数据可能已包含测试集。</p>
+      <div class="challenge-path"><strong>当前探索：</strong>动态 Benchmark（LiveBench：每月更新题目确保未被训练）；行为测试替代知识测试（测"怎么做"而非"知不知道"）；基于真实用户案例的 eval。<br><strong>实践建议：</strong>不要只看榜单分数，要在你的实际业务数据上评测。</div>
+    </div>
+
+    <div class="challenge-card">
+      <div class="challenge-label">难题 03 · 数据耗尽</div>
+      <div class="challenge-title">Data Wall：人类文本即将用完</div>
+      <p class="challenge-body">按计算最优训练（Chinchilla 法则），GPT-4 级别模型已消耗了高质量互联网文本的绝大部分；预计 2026-2027 年可用高质量人类文本将全部耗尽。OpenAI 在 GPT-4.5 开发中已确认"数据短缺"超过"算力短缺"成为主要瓶颈。合成数据在数学和代码领域有效（DeepSeek-R1 的成功部分依赖此），但通用能力的合成数据质量仍无法替代真实人类写作。</p>
+      <div class="challenge-path"><strong>当前探索：</strong>数学/代码领域合成数据+验证器（Lean 证明验证；单测保证正确性）；多模态数据补充文本数据；知识蒸馏从大模型生成训练数据（但存在"模型坍塌"风险）。<br><strong>实践建议：</strong>你的私有数据（用户行为、业务文档）是护城河，比公开数据更有价值。</div>
+    </div>
+
+    <div class="challenge-card">
+      <div class="challenge-label">难题 04 · 安全边界</div>
+      <div class="challenge-title">Prompt Injection：Agent 给了工具也给了攻击面</div>
+      <p class="challenge-body">当 AI Agent 拥有工具访问权（文件系统、API、浏览器）后，Prompt Injection 从"让模型说坏话"升级为"远程代码执行"。2026 年 1 月和 4 月已有 MCP CVE 被公开（通过精心构造的 prompt 触发 RCE）；研究显示即使最好的模型在 10 次尝试内被绕过率约 50%。83% 的企业计划部署 Agentic AI，但只有 29% 认为自己有足够安全准备。</p>
+      <div class="challenge-path"><strong>当前探索：</strong>MCP 工具权限最小化（Principle of Least Privilege）；输入过滤层 + 输出结构化验证；Sandboxed execution 隔离 Agent 工具调用；人工介入（Human-in-the-Loop）关键操作。<br><strong>实践建议：</strong>生产 Agent 系统必须做权限审计，避免给 Agent 非必要的工具访问权。</div>
+    </div>
+
+    <div class="challenge-card">
+      <div class="challenge-label">难题 05 · 监督悖论</div>
+      <div class="challenge-title">可扩展监督：当 AI 比人类更聪明时谁来监督它</div>
+      <p class="challenge-body">RLHF 的基本假设是"人类能判断模型输出好坏"——但当模型在特定任务上超越人类时，这个假设失效。人类无法判断一段复杂数学证明是否正确，更无法评估 AI 在复杂系统中做的长链推理是否合理。Zeng et al. (2025) 认为完全依赖可扩展监督方法"从根本上不可行"——AI 能力越强，对监督的需求越高，但监督能力增长更慢。</p>
+      <div class="challenge-path"><strong>当前探索：</strong>Weak-to-Strong Generalization（用弱模型给强模型信号，已有初步成果）；Constitutional AI 减少人工标注依赖；形式化验证（Lean/Coq）对可验证领域提供机械保证。<br><strong>实践建议：</strong>现阶段 Agent 系统必须保留人工审核关键决策节点，不要过度自动化。</div>
+    </div>
+
+    <div class="challenge-card">
+      <div class="challenge-label">难题 06 · 成本曲线</div>
+      <div class="challenge-title">推理成本：Test-Time Compute 的经济学</div>
+      <p class="challenge-body">Test-Time Compute Scaling（推理时花更多算力思考）让 o1/R1 类模型在复杂推理上大幅领先，但代价是 token 成本是普通模型的 5-50 倍。"何时值得用推理模型"目前没有系统性框架：有研究发现对简单问题"过度思考"反而降低准确率（overthinking problem）；不同任务类型的收益差异极大。在成本敏感的生产场景，这个权衡至关重要。</p>
+      <div class="challenge-path"><strong>当前探索：</strong>Adaptive Compute（根据问题难度动态分配推理深度）；Process Reward Models（PRM）对推理链每步打分，提高效率；小型推理模型蒸馏（R1-Distill-7B 等）。<br><strong>实践建议：</strong>用路由层分流请求——简单问题用快速模型，复杂推理才调用推理模型。</div>
+    </div>
+
+  </div>
+</section>
+
+
 <section id="tools" class="section">
   <div class="sec-head">
     <span class="sec-num">03</span>

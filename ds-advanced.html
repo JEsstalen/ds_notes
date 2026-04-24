@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据进阶工程图谱 · Advanced Map</title>
+<style>
+:root {
+  --bg: #f8fafc; --surface: #ffffff; --surface2: #f1f5f9; --border: #e2e8f0;
+  --accent: #0891b2; --accent-light: rgba(8,145,178,.08);
+  --green: #16a34a; --green-light: rgba(22,163,74,.08);
+  --amber: #d97706; --amber-light: rgba(217,119,6,.08);
+  --red: #dc2626; --red-light: rgba(220,38,38,.08);
+  --purple: #7c3aed; --purple-light: rgba(124,58,237,.08);
+  --text: #0f172a; --text-2: #334155; --text-3: #64748b;
+  --nav-w: 260px;
+  --nav-bg: #1e293b; --nav-border: #334155; --nav-text: #e2e8f0; --nav-text3: #94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.7}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--green));z-index:9999;transition:width .1s}
+#sidebar{position:fixed;top:0;left:0;width:var(--nav-w);height:100vh;background:var(--nav-bg);border-right:1px solid var(--nav-border);overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+#sidebar-head{padding:18px 16px 12px;border-bottom:1px solid var(--nav-border)}
+#sidebar-head .site-badge{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#67e8f9;background:rgba(8,145,178,.22);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
+#sidebar-head h1{font-size:13px;font-weight:700;color:#f1f5f9}
+#sidebar-head p{font-size:11px;color:var(--nav-text3);margin-top:2px}
+#nav-tree{flex:1;padding:8px 0 20px;overflow-y:auto}
+.nav-group{margin-bottom:2px}
+.nav-group-label{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--nav-text3);cursor:pointer;user-select:none}
+.nav-group-label:hover{color:#f1f5f9}
+.nav-group-label .caret{font-size:9px;transition:transform .15s}
+.nav-group-label.open .caret{transform:rotate(90deg)}
+.nav-items{display:none}
+.nav-items.open{display:block}
+.nav-items a{display:flex;align-items:center;gap:6px;padding:5px 16px 5px 24px;font-size:12.5px;color:var(--nav-text3);text-decoration:none;border-left:2px solid transparent;transition:all .12s}
+.nav-items a:hover{color:#67e8f9;background:rgba(8,145,178,.15)}
+.nav-items a.active{color:#67e8f9;border-left-color:#67e8f9;background:rgba(8,145,178,.15);font-weight:600}
+#sidebar-foot{padding:12px 16px;border-top:1px solid var(--nav-border);display:flex;flex-direction:column;gap:8px}
+#sidebar-foot a{font-size:12px;color:var(--nav-text3);text-decoration:none;display:flex;align-items:center;gap:6px}
+#sidebar-foot a:hover{color:#67e8f9}
+#main{margin-left:var(--nav-w);padding:0 48px 80px}
+.content-wrap{max-width:920px;margin:0 auto}
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border);margin-bottom:56px;position:relative}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.hero h1{font-size:42px;font-weight:800;line-height:1.15;letter-spacing:-1px;color:var(--text)}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{margin-top:12px;font-size:16px;color:var(--text-2);max-width:620px;line-height:1.6}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.chip{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;border:1px solid}
+.chip.mlops{background:rgba(8,145,178,.08);color:#0e7490;border-color:rgba(8,145,178,.25)}
+.chip.llm{background:rgba(79,70,229,.08);color:#4338ca;border-color:rgba(79,70,229,.25)}
+.chip.exp{background:rgba(124,58,237,.08);color:#6d28d9;border-color:rgba(124,58,237,.25)}
+.chip.ops{background:rgba(22,163,74,.08);color:#15803d;border-color:rgba(22,163,74,.25)}
+.hero-notice{margin-top:24px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-2);line-height:1.6}
+.hero-notice strong{color:var(--text)}
+.section{margin-bottom:72px;scroll-margin-top:24px}
+.sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.sec-num{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:3px 8px;border-radius:4px;letter-spacing:.5px;flex-shrink:0;margin-top:4px}
+.sec-head-text h2{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--text)}
+.sec-head-text p{font-size:13px;color:var(--text-3);margin-top:3px}
+.callout{display:flex;gap:10px;padding:12px 16px;border-radius:8px;margin:16px 0;font-size:13px;line-height:1.55}
+.callout.info{background:var(--accent-light);border-left:3px solid var(--accent)}
+.callout.tip{background:var(--green-light);border-left:3px solid var(--green)}
+.callout.warn{background:var(--amber-light);border-left:3px solid var(--amber)}
+.tab-row{display:flex;gap:3px;margin-bottom:16px;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab-btn{padding:8px 16px;border:none;background:transparent;font-size:13px;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;white-space:nowrap;font-family:inherit}
+.tab-btn:hover{color:var(--text);background:var(--surface2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.checklist-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.checklist-group{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.checklist-title{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:10px}
+.check-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text-2);line-height:1.5}
+.check-item:last-child{border-bottom:none}
+.check-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;background:var(--surface2)}
+.track-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.track-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.track-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.track-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.track-meta{font-size:11px;color:var(--text-3)}
+.sprint-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.sprint-item{display:flex;gap:10px;font-size:12.5px;color:var(--text-2);line-height:1.5}
+.sprint-week{font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;white-space:nowrap;height:max-content}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card h3{font-size:15px;margin-bottom:8px;color:var(--text)}
+.card p,.card li{font-size:12.5px;color:var(--text-2);line-height:1.55}
+.card ul{padding-left:18px}
+.metric-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.metric-pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--surface2);color:var(--text-3)}
+.metric-pill.good{background:var(--green-light);color:#15803d}
+.metric-pill.warn{background:var(--amber-light);color:#b45309}
+.metric-pill.bad{background:var(--red-light);color:#b91c1c}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+th{background:var(--surface2);padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border)}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.code-block{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.55;overflow-x:auto;margin:12px 0}
+.challenge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:16px}
+.challenge-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;border-left:4px solid var(--accent)}
+.challenge-card:nth-child(2n){border-left-color:var(--amber)}
+.challenge-card:nth-child(3n){border-left-color:var(--purple)}
+.challenge-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.challenge-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#0e7490;background:var(--accent-light);padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.challenge-body{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-bottom:8px}
+.challenge-path{font-size:12px;background:var(--surface2);border-radius:6px;padding:8px 10px;color:var(--text-2);line-height:1.5}
+.challenge-path strong{color:var(--accent)}
+.bridge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:12px}
+.bridge-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.bridge-target{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px}
+.bridge-when{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.bw-now{background:rgba(22,163,74,.1);color:#15803d}
+.bw-later{background:rgba(217,119,6,.1);color:#b45309}
+.bridge-prereq{font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:8px}
+.bridge-card a{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none}
+.bridge-card a:hover{text-decoration:underline}
+#hamburger{display:none;position:fixed;bottom:20px;right:20px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;color:white;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+@media(max-width:768px){#sidebar{transform:translateX(-100%);transition:transform .2s}#sidebar.open{transform:none}#main{margin-left:0;padding:0 16px 60px}#hamburger{display:grid;place-items:center}.hero h1{font-size:28px}.checklist-grid,.track-grid,.card-grid,.challenge-grid,.bridge-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="gate" style="display:none;position:fixed;inset:0;background:#f8fafc;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+  <div style="text-align:center;margin-bottom:8px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0891b2;margin-bottom:10px">数据进阶工程图谱 · Advanced Map</div>
+    <div style="font-size:28px;font-weight:800;color:#0f172a">访问验证</div>
+    <div style="font-size:13px;color:#64748b;margin-top:6px">请输入访问密码</div>
+  </div>
+  <input id="gate-input" type="password" placeholder="密码" onkeydown="if(event.key==='Enter')checkGate()" style="padding:12px 18px;border-radius:8px;border:1px solid #cbd5e1;background:#ffffff;color:#0f172a;font-size:15px;width:280px;outline:none;text-align:center">
+  <button onclick="checkGate()" style="padding:10px 32px;background:#0891b2;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">进入</button>
+  <div id="gate-err" style="color:#dc2626;font-size:13px;min-height:20px"></div>
+</div>
+<script>
+(function(){
+  const HASH='f11a231e9cf870fb29f2145fee0e2374ff673f3d907bb06d253caff91b8d1623';
+  const KEYS=['ds_notes_auth','ds_expert_auth','ds_advanced_auth'];
+  async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+  async function checkGate(){
+    const v=document.getElementById('gate-input').value;
+    const h=await sha256(v);
+    if(h===HASH){KEYS.forEach(k=>sessionStorage.setItem(k,'1'));document.getElementById('gate').style.display='none';document.body.style.overflow=''}
+    else{document.getElementById('gate-err').textContent='密码错误，请重试'}
+  }
+  window.checkGate=checkGate;
+  if(!KEYS.some(k=>sessionStorage.getItem(k))){document.getElementById('gate').style.display='flex';document.body.style.overflow='hidden'}
+})();
+</script>
+
+<div id="progress-bar"></div>
+<nav id="sidebar">
+  <div id="sidebar-head">
+    <div class="site-badge">Advanced Map</div>
+    <h1>数据进阶工程图谱</h1>
+    <p>从会建模到能落地</p>
+  </div>
+  <div id="nav-tree">
+    <div class="nav-group">
+      <div class="nav-group-label open" onclick="toggleGroup(this)"><span>导航</span><span class="caret">▶</span></div>
+      <div class="nav-items open">
+        <a href="#selfcheck">进阶前自检</a>
+        <a href="#roadmap">进阶路线图</a>
+        <a href="#mlops">ML 工程化实战</a>
+        <a href="#llmapp">LLM 应用工程</a>
+        <a href="#experimentation">实验与度量深化</a>
+        <a href="#troubleshoot">问题解法手册</a>
+        <a href="#bridge">衔接专家图谱</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-foot">
+    <a href="index.html">← 返回基础笔记</a>
+    <a href="ds-expert.html">进入专家图谱 →</a>
+  </div>
+</nav>
+<button id="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<main id="main">
+<div class="content-wrap">
+<div class="hero">
+  <div class="hero-eyebrow">数据进阶工程图谱 · Advanced Map · 2026</div>
+  <h1>从"会建模"到<em>能交付</em>的<br>中阶跃迁路径</h1>
+  <p class="hero-sub">这不是基础知识复习，也不是前沿论文导航。它回答一个更现实的问题：一个已经能做分析和建模的 DS，下一步如何把模型、实验和 LLM 应用做成可靠的生产系统。</p>
+  <div class="chip-row">
+    <span class="chip mlops">ML Engineering</span>
+    <span class="chip llm">LLM Applications</span>
+    <span class="chip exp">Experimentation</span>
+    <span class="chip ops">Production Readiness</span>
+  </div>
+  <div class="hero-notice"><strong>使用方式：</strong>先做第 00 节自检，再按第 01 节选择一条主轨推进。第 02-05 节可作为工作中的参考手册：模型上线、RAG 评估、实验不显著、线上指标变差时，直接跳到对应模块查方法。</div>
+</div>
+
+<section id="selfcheck" class="section">
+  <div class="sec-head"><span class="sec-num">00</span><div class="sec-head-text"><h2>进阶前自检</h2><p>如果这些项大多能独立完成，就可以开始读本页；否则先回基础页补齐关键短板</p></div></div>
+  <div class="checklist-grid">
+    <div class="checklist-group">
+      <div class="checklist-title">数据分析基础</div>
+      <div class="check-item"><span class="check-box"></span><span>能用 SQL 窗口函数写留存、漏斗、队列分析，并解释业务含义。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>能做完整 EDA：缺失、异常、分布、分组差异，并提出下一步假设。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>理解 p-value、置信区间、效应量的区别，不把"显著"当作"重要"。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>能把业务问题拆成指标口径、观测窗口、用户分群和对照逻辑。</span></div>
+    </div>
+    <div class="checklist-group">
+      <div class="checklist-title">建模与实验</div>
+      <div class="check-item"><span class="check-box"></span><span>能训练 XGBoost/LightGBM，做交叉验证、调参和特征重要性解释。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>能根据业务成本选择 precision/recall/F1/AUC，而不是只看最高分。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>能设计基础 A/B 实验：样本量、随机单元、主指标和护栏指标。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>知道数据泄漏、训练/测试污染、时间穿越特征会让离线结果虚高。</span></div>
+    </div>
+    <div class="checklist-group">
+      <div class="checklist-title">工程基础</div>
+      <div class="check-item"><span class="check-box"></span><span>能管理 Python 环境和依赖，知道 notebook 到脚本的基本组织方式。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>能使用 Git 分支、commit、diff，知道如何复现一次实验代码。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>知道模型持久化、配置文件、日志、异常处理的基本用途。</span></div>
+      <div class="check-item"><span class="check-box"></span><span>能读懂一个简单 API 服务如何接收请求、调用模型、返回结果。</span></div>
+    </div>
+  </div>
+  <div class="callout tip"><strong>大部分勾选：</strong>继续读本页。你的下一个瓶颈通常不是模型算法，而是数据管道、评估体系、上线稳定性和跨团队协作。</div>
+  <div class="callout warn"><strong>勾选少于一半：</strong>建议先回基础页补统计、SQL、ML 评估和实验设计，否则后面的工程化内容会变成背概念。</div>
+</section>
+
+<section id="roadmap" class="section">
+  <div class="sec-head"><span class="sec-num">01</span><div class="sec-head-text"><h2>进阶路线图</h2><p>不是所有方向都要同时学。优先选择一条主轨，按冲刺节奏做出可展示的产物</p></div></div>
+  <div class="track-grid">
+    <div class="track-card">
+      <div class="track-head"><div class="track-title">ML 工程化轨</div><div class="track-meta">8 周 · 优先级最高 · 从 notebook 到生产</div></div>
+      <div class="sprint-list">
+        <div class="sprint-item"><span class="sprint-week">1-2周</span><span>重构一个旧模型项目：加 schema check、数据分布断言、特征生成脚本。</span></div>
+        <div class="sprint-item"><span class="sprint-week">3-4周</span><span>接入 MLflow：记录数据版本、参数、指标、模型 artifact 和关键图表。</span></div>
+        <div class="sprint-item"><span class="sprint-week">5-6周</span><span>用 FastAPI 封装模型服务，定义请求 schema、响应 schema、p95 latency 目标。</span></div>
+        <div class="sprint-item"><span class="sprint-week">7-8周</span><span>建立监控面板：数据漂移、模型指标、业务指标、服务指标分层展示。</span></div>
+      </div>
+    </div>
+    <div class="track-card">
+      <div class="track-head"><div class="track-title">LLM 应用轨</div><div class="track-meta">6 周 · 从 POC 到可靠 RAG/Agent</div></div>
+      <div class="sprint-list">
+        <div class="sprint-item"><span class="sprint-week">第1周</span><span>实现一个小型 RAG：文档切块、embedding、向量检索、引用来源展示。</span></div>
+        <div class="sprint-item"><span class="sprint-week">第2周</span><span>加入 BM25 + reranker，对比纯向量检索和混合检索的召回差异。</span></div>
+        <div class="sprint-item"><span class="sprint-week">3-4周</span><span>建立评估集：20 个高频问题、10 个边界问题、5 个故意无答案问题。</span></div>
+        <div class="sprint-item"><span class="sprint-week">5-6周</span><span>加入 trace、成本统计、prompt 版本管理，尝试 LangGraph 工具调用流程。</span></div>
+      </div>
+    </div>
+    <div class="track-card">
+      <div class="track-head"><div class="track-title">分析深化轨</div><div class="track-meta">6 周 · 从"有结果"到"结果可信"</div></div>
+      <div class="sprint-list">
+        <div class="sprint-item"><span class="sprint-week">1-2周</span><span>实现 CUPED：选实验前协变量，比较方差减少前后的置信区间宽度。</span></div>
+        <div class="sprint-item"><span class="sprint-week">3-4周</span><span>用 EconML 做一次 DML 估计，理解 nuisance model 和置信区间。</span></div>
+        <div class="sprint-item"><span class="sprint-week">5-6周</span><span>设计一个指标树：OEC、护栏指标、诊断指标、反作弊指标各自分层。</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout info"><strong>推荐顺序：</strong>如果你当前没有明确项目，先走 ML 工程化轨；如果你正在做 AI 应用，先走 LLM 应用轨；分析深化轨可以并行做，但不要替代工程能力训练。</div>
+</section>
+
+<section id="mlops" class="section">
+  <div class="sec-head"><span class="sec-num">02</span><div class="sec-head-text"><h2>ML 工程化实战</h2><p>从 notebook 到生产系统：数据、训练、服务、监控四个环节缺一不可</p></div></div>
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('mlops',this,'tab-feature')">特征流水线</button>
+    <button class="tab-btn" onclick="switchTab('mlops',this,'tab-train')">训练管道</button>
+    <button class="tab-btn" onclick="switchTab('mlops',this,'tab-serve')">模型服务</button>
+    <button class="tab-btn" onclick="switchTab('mlops',this,'tab-monitor')">监控系统</button>
+  </div>
+  <div id="tab-feature" class="tab-content active">
+    <div class="card-grid">
+      <div class="card"><h3>Training-serving skew</h3><p>离线训练和线上服务使用了不同的特征计算逻辑，就会出现 training-serving skew。最常见原因是 notebook 里临时处理了缺失值、线上服务用了不同时间窗口、特征更新频率不一致。</p><div class="metric-row"><span class="metric-pill bad">高风险</span><span class="metric-pill">线上指标骤降</span></div></div>
+      <div class="card"><h3>是否需要 Feature Store</h3><p>不是所有团队都需要 Feature Store。如果特征数量少、全是离线批处理，脚本+数据契约足够；如果同一特征被多个模型复用，且有在线低延迟需求，就应该考虑 Feast/Tecton。</p><div class="metric-row"><span class="metric-pill good">判断标准</span><span class="metric-pill">复用度 × 实时性</span></div></div>
+    </div>
+    <div class="callout tip"><strong>上线前核对：</strong>特征定义是否版本化？训练和线上是否调用同一份转换代码？窗口边界是否包含未来信息？缺失值策略是否一致？日志里能否回放一次线上预测？</div>
+    <div class="callout warn"><strong>常见坑：</strong>离线用全量数据做 target encoding，线上只看历史；离线按自然日聚合，线上按滚动 24 小时聚合；实验组和对照组使用了不同特征刷新频率。</div>
+  </div>
+  <div id="tab-train" class="tab-content">
+    <div class="card-grid">
+      <div class="card"><h3>数据验证</h3><p>训练前先跑 schema check、取值范围断言、类别枚举检查和分布漂移检测。数据验证不是 QA 的额外步骤，而是训练管道的入口门。</p></div>
+      <div class="card"><h3>MLflow 追踪</h3><p>重点记录：数据版本、特征版本、参数、指标、模型 artifact、重要图表和 commit hash。不要把每个中间变量都追踪进去，否则 experiment UI 会变成垃圾场。</p></div>
+      <div class="card"><h3>模型 Registry</h3><p>模型进入 registry 才算候选上线版本。每个版本至少应有 stage、训练数据��间窗、主指标、负责人、回滚说明。</p></div>
+    </div>
+    <div class="callout tip"><strong>最低可用训练管道：</strong>load data → validate data → build features → train → evaluate → register model。每一步都应该可单独重跑，并保留输入输出。</div>
+  </div>
+  <div id="tab-serve" class="tab-content">
+    <table><thead><tr><th>服务模式</th><th>适用场景</th><th>核心风险</th></tr></thead><tbody><tr><td>批量预测</td><td>每日推荐名单、营销人群、风险评分</td><td>数据延迟、结果过期、回填失败</td></tr><tr><td>实时服务</td><td>搜索排序、风控、个性化推荐</td><td>p95/p99 latency、依赖超时、特征缺失</td></tr><tr><td>流式服务</td><td>实时特征、异常检测、在线学习</td><td>状态一致性、乱序事件、checkpoint 恢复</td></tr></tbody></table>
+    <div class="callout tip"><strong>发布流程：</strong>先 shadow deployment 只记录不影响用户，再 canary 给 1-5% 流量，观察系统指标和业务护栏，最后逐步放量。上线模型一定要有快速回滚路径。</div>
+    <div class="callout warn"><strong>Latency SLO：</strong>不要只看平均耗时。排序/推荐/风控服务应至少看 p50、p95、p99；p99 的长尾通常来自外部依赖和冷启动。</div>
+  </div>
+  <div id="tab-monitor" class="tab-content">
+    <table><thead><tr><th>层级</th><th>监控内容</th><th>告警方式</th></tr></thead><tbody><tr><td>系统指标</td><td>QPS、错误率、p95/p99 latency、CPU/GPU</td><td>实时告警</td></tr><tr><td>数据指标</td><td>缺失率、分布漂移、类别新值、特征 freshness</td><td>小时/日报</td></tr><tr><td>模型指标</td><td>AUC、precision、recall、calibration、分群表现</td><td>日报+异常告警</td></tr><tr><td>业务指标</td><td>转化率、留存、GMV、投诉率、护栏指标</td><td>实验看板</td></tr></tbody></table>
+    <div class="callout info"><strong>漂移指标选择：</strong>PSI 适合业务看板解释；KS 适合数值分布差异；Wasserstein 能衡量分布移动距离。不要只靠一个漂移数值做自动回滚。</div>
+  </div>
+</section>
+
+<section id="llmapp" class="section">
+  <div class="sec-head"><span class="sec-num">03</span><div class="sec-head-text"><h2>LLM 应用工程</h2><p>LLM 应用不是把 API 接起来，而是检索、评估、可观测性和安全边界的系统工程</p></div></div>
+  <div class="card-grid">
+    <div class="card"><h3>RAG 工程</h3><p>切块策略决定召回上限。Fixed-size 简单稳定，sentence-based 更自然，semantic chunking 适合长文档但成本更高。生产 RAG 通常需要混合检索：向量检索负责语义相似，BM25 负责精确关键词，再用 reranker 重排。</p><ul><li>不要只用向量检索，数字、专有名词、代码名会丢召回。</li><li>长上下文不是万能，"lost in the middle"会让中间证据被忽略。</li><li>答案必须带引用来源，否则无法审计幻觉。</li></ul></div>
+    <div class="card"><h3>评估体系</h3><p>RAGAS 的四个核心维度可以作为起点：Faithfulness 看答案是否忠于上下文，Answer Relevancy 看是否回答了问题，Context Precision 看召回内容是否噪声少，Context Recall 看证据是否足够。</p><ul><li>LLM-as-Judge 要随机化答案位置，减少位置偏差。</li><li>评估集必须包含无答案问题，测试模型是否会胡编。</li><li>关键 query 应进入 CI，每次 prompt 或检索改动都跑回归。</li></ul></div>
+    <div class="card"><h3>Agent 生产化</h3><p>Agent 的风险来自工具访问权。每个工具都应最小权限、参数可验证、操作幂等、设置超时。失败处理不要只靠 retry：能恢复就 retry，能降级就 fallback，涉及资金/权限/外部状态变更就 escalate-to-human。</p><ul><li>必须记录 trace：模型输入、工具调用、输出、耗时、成本。</li><li>关键工具调用要有人审或规则审。</li><li>Prompt 版本必须和线上结果绑定。</li></ul></div>
+  </div>
+  <div class="checklist-group" style="margin-top:14px">
+    <div class="checklist-title">LLM 应用上线 8 项检查</div>
+    <div class="check-item"><span class="check-box"></span><span>有固定评估集，覆盖高频、边界、无答案、对抗输入。</span></div>
+    <div class="check-item"><span class="check-box"></span><span>有 trace、成本、latency、成功率、人工接管率监控。</span></div>
+    <div class="check-item"><span class="check-box"></span><span>输出格式经过结构化验证，不合法时有 fallback。</span></div>
+    <div class="check-item"><span class="check-box"></span><span>外部工具最小权限，不允许模型直接执行不可逆操作。</span></div>
+    <div class="check-item"><span class="check-box"></span><span>Prompt、检索参数、模型版本都可回滚。</span></div>
+    <div class="check-item"><span class="check-box"></span><span>知道单次请求成本和每日预算上限。</span></div>
+  </div>
+</section>
+
+<section id="experimentation" class="section">
+  <div class="sec-head"><span class="sec-num">04</span><div class="sec-head-text"><h2>实验与度量深化</h2><p>中阶 DS 的分水岭：不是跑出显著，而是知道结果为什么可信或不可信</p></div></div>
+  <table><thead><tr><th>问题现象</th><th>根本原因</th><th>解法</th></tr></thead><tbody><tr><td>SRM：实验组比例不对</td><td>分流逻辑 bug、去重口径不一致、日志丢失</td><td>先停读实验结果；用 chi-square 检测；复查曝光日志和随机单元</td></tr><tr><td>首日效果特别大</td><td>新奇效应或学习效应</td><td>延长观察窗口，拆分 day 1 / day 7 / day 14 效果</td></tr><tr><td>每天看结果直到显著</td><td>p-hacking，提高假阳性率</td><td>预先固定分析时间，或使用序贯检验</td></tr><tr><td>对照组也被影响</td><td>网络效应或市场供需干扰</td><td>Cluster randomization、switchback experiment、准实验方法</td></tr><tr><td>很多指标总有一个显著</td><td>多重比较问题</td><td>预注册主指标，次级指标只做诊断，必要时校正 p-value</td></tr><tr><td>主指标涨，护栏指标跌</td><td>局部优化损害长期价值</td><td>设 OEC + guardrail，推动产品决策而非只报 p-value</td></tr></tbody></table>
+  <div class="callout tip"><strong>CUPED 公式：</strong>选择实验前指标 X，计算 θ = cov(Y, X) / var(X)，然后用 Y' = Y - θ(X - mean(X)) 作为调整后的结果。随机分组保证不会引入偏差，但协变量必须在实验开始前观测。</div>
+  <div class="code-block">theta = cov(y, x_pre) / var(x_pre)
+y_cuped = y - theta * (x_pre - x_pre.mean())
+effect = y_cuped[treatment].mean() - y_cuped[control].mean()</div>
+  <div class="callout warn"><strong>实验不可行时：</strong>样本不够 → 用 CUPED/延长周期/改更敏感指标；不能随机 → 考虑 DML/匹配/IV；单元不可分或有干扰 → 考虑合成控制或 switchback。</div>
+</section>
+
+<section id="troubleshoot" class="section">
+  <div class="sec-head"><span class="sec-num">05</span><div class="sec-head-text"><h2>问题解法手册</h2><p>工作中遇到问题时先定位类型，再选择最小可行修复，不要盲目换模型</p></div></div>
+  <table><thead><tr><th>问题</th><th>诊断方向</th><th>快速解法</th><th>跳转</th></tr></thead><tbody><tr><td>线上 AUC 明显低于离线</td><td>training-serving skew、数据泄漏、时间切分错误</td><td>回放线上请求，对齐特征生成逻辑</td><td>#mlops</td></tr><tr><td>模型预测突然变差</td><td>数据漂移、特征刷新失败、上游 schema 变化</td><td>先查数据质量 dashboard 和特征 freshness</td><td>#mlops</td></tr><tr><td>A/B 实验跑不显著</td><td>方差大、样本小、指标太迟钝</td><td>CUPED、延长周期、换更敏感代理指标</td><td>#experimentation</td></tr><tr><td>RAG 答案不准确</td><td>召回差、context 噪声、模型幻觉</td><td>混合检索 + reranker + faithfulness eval</td><td>#llmapp</td></tr><tr><td>LLM 输出格式不稳</td><td>prompt 约束弱、没有验证层</td><td>JSON mode / schema validation / fallback</td><td>#llmapp</td></tr><tr><td>Feature 数量爆炸</td><td>无治理、重复特征、无 owner</td><td>特征重要性过滤、owner 标注、Feature Store</td><td>#mlops</td></tr></tbody></table>
+  <div class="challenge-grid">
+    <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">幻觉</div><p class="challenge-body">模型生成看似合理但没有证据支持的内容。</p><div class="challenge-path"><strong>防御：</strong>强制引用来源，faithfulness eval，无证据时输出"不知道"。</div></div>
+    <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">召回失败</div><p class="challenge-body">正确答案在知识库里，但检索阶段没有取出来。</p><div class="challenge-path"><strong>防御：</strong>混合检索、query rewrite、reranker、召回集人工抽检。</div></div>
+    <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">Prompt 注入</div><p class="challenge-body">外部文本诱导模型忽略系统指令或滥用工具。</p><div class="challenge-path"><strong>防御：</strong>工具最小权限、隔离不可信内容、关键操作人工确认。</div></div>
+    <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">成本失控</div><p class="challenge-body">长上下文、多轮 retry、推理模型路由不当导致 token 成本飙升。</p><div class="challenge-path"><strong>防御：</strong>缓存、模型路由、context 压缩、每用户预算上限。</div></div>
+  </div>
+</section>
+
+<section id="bridge" class="section">
+  <div class="sec-head"><span class="sec-num">06</span><div class="sec-head-text"><h2>衔接专家图谱</h2><p>读完本页后，专家页不是全都要立刻精读。按时机选择模块，避免被前沿信息淹没</p></div></div>
+  <div class="bridge-grid">
+    <div class="bridge-card"><div class="bridge-target">00 发展脉络</div><span class="bridge-when bw-now">现在就读</span><div class="bridge-prereq">用于建立 2017-2026 的技术时间感，不要求工程经验。</div><a href="ds-expert.html#evolution">前往 expert 对应章节 →</a></div>
+    <div class="bridge-card"><div class="bridge-target">01 技术雷达</div><span class="bridge-when bw-now">现在就读</span><div class="bridge-prereq">读法：先看 Adopt/Trial，Hold 只需知道为什么不该投入。</div><a href="ds-expert.html#radar">前往 expert 对应章节 →</a></div>
+    <div class="bridge-card"><div class="bridge-target">02 论文路线</div><span class="bridge-when bw-later">分层阅读</span><div class="bridge-prereq">Tier 1 现在读；Tier 2 等你完成 ML/LLM 主轨后再深读。</div><a href="ds-expert.html#roadmap">前往 expert 对应章节 →</a></div>
+    <div class="bridge-card"><div class="bridge-target">02.5 前沿难题</div><span class="bridge-when bw-later">6个月后读</span><div class="bridge-prereq">有过上线、评估、监控和安全边界问题后，理解会更深。</div><a href="ds-expert.html#challenges">前往 expert 对应章节 →</a></div>
+    <div class="bridge-card"><div class="bridge-target">03 工具生态</div><span class="bridge-when bw-now">随时查</span><div class="bridge-prereq">当你在本页某个模块需要选工具时，对照 mature/growing 标签判断。</div><a href="ds-expert.html#tools">前往 expert 对应章节 →</a></div>
+    <div class="bridge-card"><div class="bridge-target">06 专家成长路径</div><span class="bridge-when bw-later">阶段复盘</span><div class="bridge-prereq">每 3-6 个月回看一次，判断自己的输出物是否从单点分析变成系统影响。</div><a href="ds-expert.html#trajectory">前往 expert 对应章节 →</a></div>
+  </div>
+  <div class="callout info"><strong>最好的过渡方式：</strong>不要把 expert 页当教材顺序读，而是把它当雷达。先进阶做项目，有上下文后再回去看论文和前沿难题。</div>
+</section>
+
+<div style="padding:40px 0;text-align:center;color:var(--text-3);font-size:12px;border-top:1px solid var(--border);font-family:system-ui">
+  数据进阶工程图谱 · Advanced Map · 从基础到专家的桥接层 · 2026<br>
+  <a href="index.html" style="color:var(--accent);text-decoration:none;margin-top:6px;display:inline-block">← 返回基础笔记</a>
+  <span style="margin:0 8px;color:var(--border)">|</span>
+  <a href="ds-expert.html" style="color:var(--accent);text-decoration:none;margin-top:6px;display:inline-block">进入专家图谱 →</a>
+</div>
+</div>
+</main>
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+function toggleGroup(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+const navLinks = document.querySelectorAll('.nav-items a[href^="#"]');
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`.nav-items a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+function switchTab(group, btn, targetId) {
+  const container = btn.closest('section') || document;
+  container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(targetId).classList.add('active');
+}
+navLinks.forEach(a => a.addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+}));
+</script>
+</body>
+</html>
