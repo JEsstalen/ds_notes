@@ -135,6 +135,28 @@ tr:hover td{background:var(--surface2)}
 .concept-pointer a{color:var(--accent);text-decoration:none;font-weight:600}
 .concept-pointer a:hover{text-decoration:underline}
 .decision-table-wrap{margin-top:16px;overflow-x:auto}
+
+/* ── 动机触发 / 认知崩塌组件 ── */
+.crisis-block{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:18px 20px;margin:20px 0}
+.crisis-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#c2410c;margin-bottom:12px}
+.crisis-list{display:flex;flex-direction:column;gap:10px}
+.crisis-item{display:flex;gap:12px;align-items:flex-start}
+.crisis-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.crisis-text{font-size:13px;color:#431407;line-height:1.55}
+.crisis-text strong{color:#9a3412}
+.crisis-resolve{font-size:11.5px;color:#7c2d12;margin-top:3px;font-style:italic}
+
+/* ── 基础页失效锚点 ── */
+.from-basics{display:flex;gap:10px;align-items:flex-start;background:#f0f9ff;border-left:3px solid #0891b2;border-radius:0 8px 8px 0;padding:10px 14px;margin:14px 0;font-size:12.5px}
+.from-basics .fb-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#0e7490;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.from-basics .fb-text{color:#0c4a6e;line-height:1.55}
+.from-basics .fb-text strong{color:#075985}
+
+/* ── 线索案例标注条 ── */
+.case-thread{display:flex;gap:10px;align-items:flex-start;background:#faf5ff;border-left:3px solid #7c3aed;border-radius:0 8px 8px 0;padding:10px 14px;margin:14px 0;font-size:12.5px}
+.case-thread .ct-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#7c3aed;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.case-thread .ct-text{color:#3b0764;line-height:1.55}
+.case-thread .ct-text strong{color:#6d28d9}
 #hamburger{display:none;position:fixed;bottom:20px;right:20px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;color:white;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 @media(max-width:768px){#sidebar{transform:translateX(-100%);transition:transform .2s}#sidebar.open{transform:none}#main{margin-left:0;padding:0 16px 60px}#hamburger{display:grid;place-items:center}.hero h1{font-size:28px}.checklist-grid,.track-grid,.card-grid,.challenge-grid,.bridge-grid{grid-template-columns:1fr}}
 </style>
@@ -211,6 +233,16 @@ tr:hover td{background:var(--surface2)}
     <span class="chip ops">Production Readiness</span>
   </div>
   <div class="hero-notice"><strong>使用方式：</strong>先做第 00 节自检，再按第 01 节选择一条主轨推进。第 02-05 节可作为工作中的参考手册：模型上线、RAG 评估、实验不显著、线上指标变差时，直接跳到对应模块查方法。</div>
+  <div class="crisis-block">
+    <div class="crisis-title">为什么看完基础版还需要进阶版：5 个真实业务崩塌时刻</div>
+    <div class="crisis-list">
+      <div class="crisis-item"><span class="crisis-icon">📉</span><div><div class="crisis-text"><strong>信贷风控模型离线 AUC 0.91，上线两周后只有 0.74。</strong></div><div class="crisis-resolve">基础版教你评估模型；进阶版教你定位 training-serving skew、数据漂移和线上回放。</div></div></div>
+      <div class="crisis-item"><span class="crisis-icon">🧾</span><div><div class="crisis-text"><strong>客服 RAG demo 回答很准，真实用户问订单号、退款规则、内部缩写时频繁答错。</strong></div><div class="crisis-resolve">基础版教你 RAG 是什么；进阶版教你做混合检索、RAGAS 评估和无答案拒答。</div></div></div>
+      <div class="crisis-item"><span class="crisis-icon">🧪</span><div><div class="crisis-text"><strong>A/B 实验 p-value 显著，发布后 GMV 没涨，投诉率反而上升。</strong></div><div class="crisis-resolve">基础版教你假设检验；进阶版教你样本量、护栏指标、p-hacking 和长期效应。</div></div></div>
+      <div class="crisis-item"><span class="crisis-icon">⚙️</span><div><div class="crisis-text"><strong>Notebook 里模型跑得通，别人复现实验失败，线上服务也不知道该用哪版模型。</strong></div><div class="crisis-resolve">基础版教你训练模型；进阶版教你 MLflow、数据版本、模型 Registry 和可回滚发布。</div></div></div>
+      <div class="crisis-item"><span class="crisis-icon">🧭</span><div><div class="crisis-text"><strong>老板问"这个推荐策略真的提升留存吗"，你只有相关性和模型重要性，无法回答因果问题。</strong></div><div class="crisis-resolve">基础版教你建模预测；进阶版教你什么时候用实验、CUPED、DID、DML 和 Uplift。</div></div></div>
+    </div>
+  </div>
 </div>
 
 <section id="selfcheck" class="section">
@@ -351,6 +383,8 @@ tr:hover td{background:var(--surface2)}
 
 <section id="mlops" class="section">
   <div class="sec-head"><span class="sec-num">02</span><div class="sec-head-text"><h2>ML 工程化实战</h2><p>从 notebook 到生产系统：数据、训练、服务、监控四个环节缺一不可</p></div></div>
+  <div class="from-basics"><span class="fb-label">基础版失效点</span><span class="fb-text">基础版教你用交叉验证评估模型——但那是在一份静态数据集上的评估。<strong>现实是：数据每天在变，特征计算逻辑在训练和服务之间可能不一致，模型"评估好"不代表"上线好"。</strong>本节解决的是离线指标和线上指标之间的那条鸿沟。</span></div>
+  <div class="case-thread"><span class="ct-label">贯穿案例</span><span class="ct-text"><strong>信贷风控模型上线：</strong>你在 notebook 里训练了一个 AUC 0.91 的 LightGBM 模型，使用了"用户近 30 天平均还款额"等聚合特征。本节讲的每个问题——training-serving skew、特征 freshness、模型 Registry、灰度发布——都对应这个模型从 notebook 走向真实信贷决策系统的一步。</span></div>
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchTab('mlops',this,'tab-feature')">特征流水线</button>
     <button class="tab-btn" onclick="switchTab('mlops',this,'tab-train')">训练管道</button>
@@ -386,6 +420,8 @@ tr:hover td{background:var(--surface2)}
 
 <section id="llmapp" class="section">
   <div class="sec-head"><span class="sec-num">03</span><div class="sec-head-text"><h2>LLM 应用工程</h2><p>LLM 应用不是把 API 接起来，而是检索、评估、可观测性和安全边界的系统工程</p></div></div>
+  <div class="from-basics"><span class="fb-label">基础版失效点</span><span class="fb-text">基础版教你 RAG 是什么、提示工程怎么写——在 demo 里效果不错。<strong>真实用户的问法更短、更口语、充满内部缩写和指代词，知识库里也有大量噪声文档。"demo 好用"和"生产可靠"之间，隔着评估体系、混合检索和可观测性。</strong></span></div>
+  <div class="case-thread"><span class="ct-label">贯穿案例</span><span class="ct-text"><strong>电商客服 RAG 系统：</strong>产品经理想用 LLM 处理"我的订单什么时候到""怎么退款""优惠券能不能叠加"等 80% 的重复问题。本节讲的 RAG 工程、评估体系和 Agent 生产化，对应的就是这个系统从 demo 走向每天处理 10 万次对话的过程——以及它在真实用户面前为什么会失败。</span></div>
   <div class="card-grid">
     <div class="card"><h3>RAG 工程</h3><p>切块策略决定召回上限。Fixed-size 简单稳定，sentence-based 更自然，semantic chunking 适合长文档但成本更高。生产 RAG 通常需要混合检索：向量检索负责语义相似，BM25 负责精确关键词，再用 reranker 重排。</p><ul><li>不要只用向量检索，数字、专有名词、代码名会丢召回。</li><li>长上下文不是万能，"lost in the middle"会让中间证据被忽略。</li><li>答案必须带引用来源，否则无法审计幻觉。</li></ul></div>
     <div class="card"><h3>评估体系</h3><p>RAGAS 的四个核心维度可以作为起点：Faithfulness 看答案是否忠于上下文，Answer Relevancy 看是否回答了问题，Context Precision 看召回内容是否噪声少，Context Recall 看证据是否足够。</p><ul><li>LLM-as-Judge 要随机化答案位置，减少位置偏差。</li><li>评估集必须包含无答案问题，测试模型是否会胡编。</li><li>关键 query 应进入 CI，每次 prompt 或检索改动都跑回归。</li></ul></div>
@@ -432,6 +468,8 @@ tr:hover td{background:var(--surface2)}
 
 <section id="experimentation" class="section">
   <div class="sec-head"><span class="sec-num">04</span><div class="sec-head-text"><h2>实验与度量深化</h2><p>中阶 DS 的分水岭：不是跑出显著，而是知道结果为什么可信或不可信</p></div></div>
+  <div class="from-basics"><span class="fb-label">基础版失效点</span><span class="fb-text">基础版教你设计 A/B 实验、计算 p-value——你能跑出一个"显著"的结果。<strong>但显著不等于真实：SRM 让你的分流就已经坏了、首日效应骗了你、每天看结果让假阳性飙升、护栏指标没设导致发布后用户投诉。</strong>这节教你区分"看起来有效"和"真的有效"。</span></div>
+  <div class="case-thread"><span class="ct-label">贯穿案例</span><span class="ct-text"><strong>内容推荐 A/B 实验：</strong>你给 Feed 流推荐算法做了一次实验，点击率提升 8%，p=0.03，你准备发布。但——实验组和对照组比例是 52:48 不是 50:50（SRM）；你看了 3 天就停实验；次日留存没有设护栏；社区网络效应让对照组也被污染了。本节每个陷阱都对应这个决策链上的一个断点。</span></div>
   <table><thead><tr><th>问题现象</th><th>根本原因</th><th>解法</th></tr></thead><tbody><tr><td>SRM：实验组比例不对</td><td>分流逻辑 bug、去重口径不一致、日志丢失</td><td>先停读实验结果；用 chi-square 检测；复查曝光日志和随机单元</td></tr><tr><td>首日效果特别大</td><td>新奇效应或学习效应</td><td>延长观察窗口，拆分 day 1 / day 7 / day 14 效果</td></tr><tr><td>每天看结果直到显著</td><td>p-hacking，提高假阳性率</td><td>预先固定分析时间，或使用序贯检验</td></tr><tr><td>对照组也被影响</td><td>网络效应或市场供需干扰</td><td>Cluster randomization、switchback experiment、准实验方法</td></tr><tr><td>很多指标总有一个显著</td><td>多重比较问题</td><td>预注册主指标，次级指标只做诊断，必要时校正 p-value</td></tr><tr><td>主指标涨，护栏指标跌</td><td>局部优化损害长期价值</td><td>设 OEC + guardrail，推动产品决策而非只报 p-value</td></tr></tbody></table>
   <div class="callout tip"><strong>CUPED 公式：</strong>选择实验前指标 X，计算 θ = cov(Y, X) / var(X)，然后用 Y' = Y - θ(X - mean(X)) 作为调整后的结果。随机分组保证不会引入偏差，但协变量必须在实验开始前观测。</div>
   <div class="code-block">theta = cov(y, x_pre) / var(x_pre)
@@ -454,6 +492,8 @@ effect = y_cuped[treatment].mean() - y_cuped[control].mean()</div>
 <!-- ═══ 04.5 因果方法选择指南 ═══ -->
 <section id="causal" class="section">
   <div class="sec-head"><span class="sec-num">04.5</span><div class="sec-head-text"><h2>因果方法选择指南</h2><p>专家页里出现的 DML、DID、Synthetic DID、IV 在什么场景下该选哪个</p></div></div>
+  <div class="from-basics"><span class="fb-label">基础版失效点</span><span class="fb-text">基础版教你建回归模型预测结果——但预测不是因果。<strong>老板问"我们的会员计划真的提升了购买频次吗"，用回归系数回答是错的，因为愿意买会员的人本来就买得多。</strong>从"相关性分析"到"因果估计"，是一个思维框架的彻底升级。</span></div>
+  <div class="case-thread"><span class="ct-label">贯穿案例</span><span class="ct-text"><strong>会员激励计划评估：</strong>公司给一批用户发了优惠会员，三个月后这批人的 GMV 涨了 25%。这是会员计划的效果，还是因为本来就爱买的人更容易接受会员？本节的 DID、DML、IV 方法，每一个都在尝试用不同假设回答这同一个问题。</span></div>
 
   <div class="callout info"><strong>选方法的核心问题：</strong>你能不能做随机实验？如果不能，为什么不能？"为什么不能"决定了哪种准实验方法适合。</div>
 
@@ -542,6 +582,7 @@ print(est.ate_, est.ate_interval())</div>
 
 <section id="troubleshoot" class="section">
   <div class="sec-head"><span class="sec-num">05</span><div class="sec-head-text"><h2>问题解法手册</h2><p>工作中遇到问题时先定位类型，再选择最小可行修复，不要盲目换模型</p></div></div>
+  <div class="case-thread"><span class="ct-label">贯穿案例</span><span class="ct-text"><strong>当事情真的坏掉时：</strong>信贷模型线上 AUC 掉了、客服 RAG 开始胡说、推荐实验显著但投诉上升、会员策略无法证明因果效果——不要第一反应换更强模型。先按本表定位：是数据、评估、发布、检索、实验设计，还是因果假设出了问题。</span></div>
   <table><thead><tr><th>问题</th><th>诊断方向</th><th>快速解法</th><th>跳转</th></tr></thead><tbody><tr><td>线上 AUC 明显低于离线</td><td>training-serving skew、数据泄漏、时间切分错误</td><td>回放线上请求，对齐特征生成逻辑</td><td>#mlops</td></tr><tr><td>模型预测突然变差</td><td>数据漂移、特征刷新失败、上游 schema 变化</td><td>先查数据质量 dashboard 和特征 freshness</td><td>#mlops</td></tr><tr><td>A/B 实验跑不显著</td><td>方差大、样本小、指标太迟钝</td><td>CUPED、延长周期、换更敏感代理指标</td><td>#experimentation</td></tr><tr><td>RAG 答案不准确</td><td>召回差、context 噪声、模型幻觉</td><td>混合检索 + reranker + faithfulness eval</td><td>#llmapp</td></tr><tr><td>LLM 输出格式不稳</td><td>prompt 约束弱、没有验证层</td><td>JSON mode / schema validation / fallback</td><td>#llmapp</td></tr><tr><td>Feature 数量爆炸</td><td>无治理、重复特征、无 owner</td><td>特征重要性过滤、owner 标注、Feature Store</td><td>#mlops</td></tr></tbody></table>
   <div class="challenge-grid">
     <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">幻觉</div><p class="challenge-body">模型生成看似合理但没有证据支持的内容。</p><div class="challenge-path"><strong>防御：</strong>强制引用来源，faithfulness eval，无证据时输出"不知道"。</div></div>
