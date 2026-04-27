@@ -83,6 +83,12 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .sprint-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
 .sprint-item{display:flex;gap:10px;font-size:12.5px;color:var(--text-2);line-height:1.5}
 .sprint-week{font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;white-space:nowrap;height:max-content}
+.sprint-body{flex:1;display:flex;flex-direction:column;gap:5px}
+.sprint-task{font-size:13px;font-weight:700;color:var(--text);line-height:1.4}
+.sprint-res{font-size:11.5px;color:var(--text-3);line-height:1.5;padding-left:2px}
+.sprint-res strong{color:var(--text-2)}
+.sprint-res a{color:var(--accent);text-decoration:none;font-weight:600}
+.sprint-res a:hover{text-decoration:underline}
 .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
 .card h3{font-size:15px;margin-bottom:8px;color:var(--text)}
@@ -364,27 +370,115 @@ tr:hover td{background:var(--surface2)}
     <div class="track-card">
       <div class="track-head"><div class="track-title">ML 工程化轨</div><div class="track-meta">8 周 · 优先级最高 · 从 notebook 到生产</div></div>
       <div class="sprint-list">
-        <div class="sprint-item"><span class="sprint-week">1-2周</span><span>重构一个旧模型项目：加 schema check、数据分布断言、特征生成脚本。</span></div>
-        <div class="sprint-item"><span class="sprint-week">3-4周</span><span>接入 MLflow：记录数据版本、参数、指标、模型 artifact 和关键图表。</span></div>
-        <div class="sprint-item"><span class="sprint-week">5-6周</span><span>用 FastAPI 封装模型服务，定义请求 schema、响应 schema、p95 latency 目标。</span></div>
-        <div class="sprint-item"><span class="sprint-week">7-8周</span><span>建立监控面板：数据漂移、模型指标、业务指标、服务指标分层展示。</span></div>
+        <div class="sprint-item">
+          <span class="sprint-week">1-2周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">重构旧模型项目：加数据验证与断言</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://docs.greatexpectations.io/docs/tutorials/quickstart/" target="_blank">Great Expectations 快速入门</a>（~1 小时）</div>
+            <div class="sprint-res"><strong>做：</strong>对你的训练数据加 3 条断言（行数不为零、关键特征不含空值、某列取值在合法范围内），全部跑通。</div>
+            <div class="sprint-res"><strong>验证：</strong>故意注入一行坏数据，断言能拦截并打印描述性错误；提取特征的函数封装成可独立测试的 Python 模块。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">3-4周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">接入 MLflow：实验追踪与模型 Registry</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://mlflow.org/docs/latest/getting-started/intro-quickstart/index.html" target="_blank">MLflow 快速入门官方教程</a>（~1 小时）+ <a href="https://mlflow.org/docs/latest/model-registry.html" target="_blank">Model Registry 文档</a>（~30 分钟）</div>
+            <div class="sprint-res"><strong>做：</strong>为第 1-2 周项目的每次训练自动记录：数据 hash、特征版本、超参、AUC/F1、混淆矩阵图、git commit hash；将最优版本注册到 Registry。</div>
+            <div class="sprint-res"><strong>验证：</strong>能通过 experiment UI 对比三次不同超参的运行；能一键加载 Registry 中任意版本的模型做预测，不依赖本地 pickle 文件。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">5-6周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">用 FastAPI 封装模型服务</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://fastapi.tiangolo.com/tutorial/" target="_blank">FastAPI 官方教程（Request/Response Schema 部分）</a>（~1.5 小时）</div>
+            <div class="sprint-res"><strong>做：</strong>将模型包装成 REST API；用 Pydantic 定义输入/输出 Schema；写一个压测脚本，记录 p50 / p95 / p99 latency。</div>
+            <div class="sprint-res"><strong>验证：</strong>输入错误格式时 API 返回明确的 422 错误；在本地能跑出 p95 &lt; 200ms；README 里写明如何在新机器上从零启动服务。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">7-8周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">建立四层监控面板</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://docs.evidentlyai.com/get-started/tutorial" target="_blank">Evidently AI 入门教程</a>（~1 小时）+ 本页 §02 监控系统 Tab</div>
+            <div class="sprint-res"><strong>做：</strong>用 Evidently 对 3 个关键特征计算 PSI；分别设置系统层（QPS/latency）、数据层（PSI）、模型层（AUC）、业务层（转化率）各 1 个监控指标，写明告警阈值。</div>
+            <div class="sprint-res"><strong>验证：</strong>能用一段话解释 PSI &gt; 0.2 的业务含义；面对"线上 AUC 掉了"能有序排查：先看数据漂移，再看特征 freshness，再看系统日志。</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="track-card">
       <div class="track-head"><div class="track-title">LLM 应用轨</div><div class="track-meta">6 周 · 从 POC 到可靠 RAG/Agent</div></div>
       <div class="sprint-list">
-        <div class="sprint-item"><span class="sprint-week">第1周</span><span>实现一个小型 RAG：文档切块、embedding、向量检索、引用来源展示。</span></div>
-        <div class="sprint-item"><span class="sprint-week">第2周</span><span>加入 BM25 + reranker，对比纯向量检索和混合检索的召回差异。</span></div>
-        <div class="sprint-item"><span class="sprint-week">3-4周</span><span>建立评估集：20 个高频问题、10 个边界问题、5 个故意无答案问题。</span></div>
-        <div class="sprint-item"><span class="sprint-week">5-6周</span><span>加入 trace、成本统计、prompt 版本管理，尝试 LangGraph 工具调用流程。</span></div>
+        <div class="sprint-item">
+          <span class="sprint-week">第1周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">实现小型 RAG：切块 + embedding + 向量检索</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://python.langchain.com/docs/tutorials/rag/" target="_blank">LangChain RAG 入门教程</a>（~1.5 小时）</div>
+            <div class="sprint-res"><strong>做：</strong>选一份 PDF 或 Markdown 知识库（至少 20 页），完成：文档切块 → OpenAI / BGE embedding → FAISS 或 Chroma 向量检索 → 带引用来源的问答。</div>
+            <div class="sprint-res"><strong>验证：</strong>提问"文档里讲了什么 X"，答案末尾显示来源段落和页码；对 5 个真实问题手工核查答案是否有据可查，不能只看模型"感觉"对。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">第2周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">混合检索：BM25 + 向量 + Reranker</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://www.sbert.net/examples/applications/retrieve_rerank/README.html" target="_blank">SBERT 检索-重排教程</a>（~1 小时）+ 本页 §03 RAG 工程部分</div>
+            <div class="sprint-res"><strong>做：</strong>用 rank_bm25 加入关键词检索；用 cross-encoder 对 top-10 候选重排；设计 5 个含精确关键词的问题，对比纯向量 vs 混合检索的召回结果。</div>
+            <div class="sprint-res"><strong>验证：</strong>找出至少 2 个"纯向量检索漏召回、混合检索能找到"的例子，用截图或日志记录对比差异。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">3-4周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">建立评估集与 RAGAS 自动评估</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://docs.ragas.io/en/stable/getstarted/rag_testset_generation.html" target="_blank">RAGAS 评估集生成文档</a>（~1 小时）</div>
+            <div class="sprint-res"><strong>做：</strong>构建 35 题评估集（20 个高频问题 + 10 个边界问题 + 5 个知识库里不存在答案的问题）；用 RAGAS 跑 Faithfulness + Answer Relevancy + Context Recall 三项指标。</div>
+            <div class="sprint-res"><strong>验证：</strong>能说出每个指标的数值含义；Faithfulness &lt; 0.7 的样本至少找到 1 个，并指出是哪个检索段落导致了幻觉。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">5-6周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">生产化：Trace + 成本统计 + LangGraph 工具调用</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://langfuse.com/docs/get-started" target="_blank">Langfuse 快速入门</a>（~1 小时）+ <a href="https://langchain-ai.github.io/langgraph/tutorials/introduction/" target="_blank">LangGraph 入门教程</a>（~2 小时）</div>
+            <div class="sprint-res"><strong>做：</strong>将 RAG 接入 Langfuse，记录每次请求的 latency、token 数、成本；用 LangGraph 实现一个带工具调用的简单 Agent（如：先判断是否能从知识库回答，不能则返回"我不知道"）。</div>
+            <div class="sprint-res"><strong>验证：</strong>Langfuse dashboard 能看到每次请求的完整 trace；Agent 对"文档外问题"能输出拒答，而不是瞎编；能说出单次问答的平均成本（美分级别）。</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="track-card">
       <div class="track-head"><div class="track-title">分析深化轨</div><div class="track-meta">6 周 · 从"有结果"到"结果可信"</div></div>
       <div class="sprint-list">
-        <div class="sprint-item"><span class="sprint-week">1-2周</span><span>实现 CUPED：选实验前协变量，比较方差减少前后的置信区间宽度。</span></div>
-        <div class="sprint-item"><span class="sprint-week">3-4周</span><span>用 EconML 做一次 DML 估计，理解 nuisance model 和置信区间。</span></div>
-        <div class="sprint-item"><span class="sprint-week">5-6周</span><span>设计一个指标树：OEC、护栏指标、诊断指标、反作弊指标各自分层。</span></div>
+        <div class="sprint-item">
+          <span class="sprint-week">1-2周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">实现 CUPED：用实验前协变量降低方差</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://matheusfacure.github.io/python-causality-handbook/02-Randomised-Experiments.html" target="_blank">Causal Inference for the Brave and True: Randomized Experiments</a>（~2 小时）+ 本页 §04 CUPED 公式</div>
+            <div class="sprint-res"><strong>做：</strong>找一份 A/B 数据或模拟数据，选择实验前 7 天活跃度作为协变量，分别计算原始均值差和 CUPED 调整后的均值差、标准误、置信区间。</div>
+            <div class="sprint-res"><strong>验证：</strong>能量化"方差减少了多少 %"；能解释为什么协变量必须在实验开始前观测，不能用实验后的行为变量。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">3-4周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">用 EconML 做一次 Double ML 估计</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://econml.azurewebsites.net/spec/estimation/dml.html" target="_blank">EconML DML 文档</a>（~1.5 小时）+ <a href="https://matheusfacure.github.io/python-causality-handbook/22-Debiased-Orthogonal-Machine-Learning.html" target="_blank">Debiased / Orthogonal ML 章节</a>（~2 小时）</div>
+            <div class="sprint-res"><strong>做：</strong>用公开营销数据或模拟用户数据，估计一次优惠券对购买金额的 ATE；分别指定 Y、T、X、W，并输出置信区间。</div>
+            <div class="sprint-res"><strong>验证：</strong>能用自己的话解释 nuisance model 在估计什么；能指出 DML 的核心假设是"无未测混淆"，而不是魔法消除所有偏差。</div>
+          </div>
+        </div>
+        <div class="sprint-item">
+          <span class="sprint-week">5-6周</span>
+          <div class="sprint-body">
+            <div class="sprint-task">设计指标树：OEC + 护栏 + 诊断 + 反作弊</div>
+            <div class="sprint-res"><strong>学：</strong><a href="https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/" target="_blank">Microsoft Experimentation Platform 文章集</a>（选读 2 篇，~2 小时）</div>
+            <div class="sprint-res"><strong>做：</strong>为一个产品场景（推荐流、会员计划、搜索排序任选）画一棵指标树：1 个 OEC、2 个主指标、3 个护栏指标、3 个诊断指标、1 个反作弊指标，并写清楚每个指标的数据口径。</div>
+            <div class="sprint-res"><strong>验证：</strong>能回答"主指标上涨但护栏下降时怎么办"；能区分哪个指标用于发布决策，哪个只用于定位问题。</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
