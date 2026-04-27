@@ -163,6 +163,14 @@ tr:hover td{background:var(--surface2)}
 .case-thread .ct-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#7c3aed;white-space:nowrap;flex-shrink:0;margin-top:2px}
 .case-thread .ct-text{color:#3b0764;line-height:1.55}
 .case-thread .ct-text strong{color:#6d28d9}
+
+/* ── 节末自测 ── */
+.sec-check{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:16px 20px;margin:24px 0 0}
+.sec-check-title{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#15803d;margin-bottom:10px}
+.sec-check-list{display:flex;flex-direction:column;gap:8px}
+.sec-check-item{font-size:12.5px;color:#14532d;line-height:1.6;display:flex;gap:8px;align-items:flex-start}
+.sci-num{font-size:11px;font-weight:800;color:#15803d;background:rgba(22,163,74,.15);border-radius:4px;padding:1px 6px;flex-shrink:0;margin-top:2px}
+
 #hamburger{display:none;position:fixed;bottom:20px;right:20px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;color:white;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 @media(max-width:768px){#sidebar{transform:translateX(-100%);transition:transform .2s}#sidebar.open{transform:none}#main{margin-left:0;padding:0 16px 60px}#hamburger{display:grid;place-items:center}.hero h1{font-size:28px}.checklist-grid,.track-grid,.card-grid,.challenge-grid,.bridge-grid{grid-template-columns:1fr}}
 </style>
@@ -520,6 +528,13 @@ tr:hover td{background:var(--surface2)}
     <table><thead><tr><th>层级</th><th>监控内容</th><th>告警方式</th></tr></thead><tbody><tr><td>系统指标</td><td>QPS、错误率、p95/p99 latency、CPU/GPU</td><td>实时告警</td></tr><tr><td>数据指标</td><td>缺失率、分布漂移、类别新值、特征 freshness</td><td>小时/日报</td></tr><tr><td>模型指标</td><td>AUC、precision、recall、calibration、分群表现</td><td>日报+异常告警</td></tr><tr><td>业务指标</td><td>转化率、留存、GMV、投诉率、护栏指标</td><td>实验看板</td></tr></tbody></table>
     <div class="callout info"><strong>漂移指标选择：</strong>PSI 适合业务看板解释；KS 适合数值分布差异；Wasserstein 能衡量分布移动距离。不要只靠一个漂移数值做自动回滚。</div>
   </div>
+  <div class="sec-check">
+    <div class="sec-check-title">读完这节，能回答这两个问题才算学会</div>
+    <div class="sec-check-list">
+      <div class="sec-check-item"><span class="sci-num">Q1</span>你的信贷模型上线后两周 AUC 从 0.91 跌到 0.74。你会按什么顺序排查？第一步看什么数据，如何判断是 training-serving skew 还是数据漂移？</div>
+      <div class="sec-check-item"><span class="sci-num">Q2</span>产品经理问："能不能把模型做成实时服务，用户提交申请时 500ms 内出结果？"你会提哪些问题来评估可行性，以及 p95 latency 会在哪些环节被拉高？</div>
+    </div>
+  </div>
 </section>
 
 <section id="llmapp" class="section">
@@ -593,6 +608,13 @@ tr:hover td{background:var(--surface2)}
   </div>
 
   <div class="callout warn" style="margin-top:16px"><strong>面试中的 AI Safety 问法：</strong>"如果你的 RAG Agent 被 Prompt Injection 攻击，你会怎么设计防御？"——答题框架：① 说出直接/间接注入区别 ② 列出纵深防御四层 ③ 举一个具体工具（如 LLM Guard）④ 说明不可逆操作的人工审核机制。能说到第 ③ 步已超过 80% 候选人。</div>
+  <div class="sec-check">
+    <div class="sec-check-title">读完这节，能回答这两个问题才算学会</div>
+    <div class="sec-check-list">
+      <div class="sec-check-item"><span class="sci-num">Q1</span>你的电商客服 RAG 上线一周后，用户反馈"问退款流程答案每次不一样，有时还说出文档里没有的政策"。你会用哪两个 RAGAS 指标诊断这个问题，排查步骤是什么？</div>
+      <div class="sec-check-item"><span class="sci-num">Q2</span>产品经理想让 Agent 直接调用退款 API，用户说"退款"就帮他执行。你会在系统设计层面加哪些保护，让 Prompt Injection 攻击无法触发实际退款？</div>
+    </div>
+  </div>
 </section>
 
 <section id="llmconcepts" class="section">
@@ -646,6 +668,13 @@ effect = y_cuped[treatment].mean() - y_cuped[control].mean()</div>
     <div class="callout warn" style="margin-top:8px"><strong>常见误区：</strong>先跑实验，样本量不够就延长时间——但延长会遇到季节效应和 p-hacking 问题。正确顺序：先算样本量 → 确认实验周期 → 开始实验。Python 工具：<code style="background:var(--surface2);padding:1px 5px;border-radius:3px">statsmodels.stats.power.tt_ind_solve_power</code></div>
   </div>
   <div class="callout warn"><strong>实验不可行时：</strong>样本不够 → 用 CUPED/延长周期/改更敏感指标；不能随机 → 考虑 DML/匹配/IV；单元不可分或有干扰 → 考虑合成控制或 switchback。</div>
+  <div class="sec-check">
+    <div class="sec-check-title">读完这节，能回答这两个问题才算学会</div>
+    <div class="sec-check-list">
+      <div class="sec-check-item"><span class="sci-num">Q1</span>你跑了一个推荐算法实验，点击率 p=0.03 显著，但实验组和对照组比例是 52:48。你怎么处理这个 SRM，为什么不能直接用这个结果发布？</div>
+      <div class="sec-check-item"><span class="sci-num">Q2</span>业务方说"上次实验只跑了 3 天就停了，因为结果看起来很显著"，结果发布后指标没变化。你能解释这是什么问题，以及下次实验你会要求他们做哪些改变？</div>
+    </div>
+  </div>
 </section>
 
 <!-- ═══ 04.5 因果方法选择指南 ═══ -->
@@ -735,6 +764,13 @@ est = LinearDML(
 est.fit(Y, T, X=X, W=W)
 print(est.ate_, est.ate_interval())</div>
       <p style="font-size:12px;color:var(--text-3);margin-top:6px">Y=结果，T=处置，X=调节变量（影响处置效应），W=混淆变量（需控制但不关心其效应）</p>
+    </div>
+  </div>
+  <div class="sec-check">
+    <div class="sec-check-title">读完这节，能回答这两个问题才算学会</div>
+    <div class="sec-check-list">
+      <div class="sec-check-item"><span class="sci-num">Q1</span>公司三个月前给一批用户发了优惠会员，现在想评估效果。你发现"会员用户 GMV 比非会员高 40%"。为什么不能直接下这个结论，你会选择哪种因果方法，前提假设是什么？</div>
+      <div class="sec-check-item"><span class="sci-num">Q2</span>同事用 DML 估出优惠券对 GMV 的 ATE = 15 元（p &lt; 0.01），兴奋地说"券有效，所有用户都发"。你会提出哪两个后续问题，让结论更完整、决策更精准？</div>
     </div>
   </div>
 </section>
