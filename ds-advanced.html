@@ -209,6 +209,7 @@ tr:hover td{background:var(--surface2)}
         <a href="#experimentation">实验与度量深化</a>
         <a href="#causal">因果方法选择指南</a>
         <a href="#troubleshoot">问题解法手册</a>
+        <a href="#capstone">综合实战项目</a>
         <a href="#bridge">衔接专家图谱</a>
       </div>
     </div>
@@ -232,7 +233,7 @@ tr:hover td{background:var(--surface2)}
     <span class="chip exp">Experimentation</span>
     <span class="chip ops">Production Readiness</span>
   </div>
-  <div class="hero-notice"><strong>使用方式：</strong>先做第 00 节自检，再按第 01 节选择一条主轨推进。第 02-05 节可作为工作中的参考手册：模型上线、RAG 评估、实验不显著、线上指标变差时，直接跳到对应模块查方法。</div>
+  <div class="hero-notice"><strong>使用方式：</strong>先做第 00 节自检，再按第 01 节选择一条主轨推进。第 02-05 节可作为工作中的参考手册：模型上线、RAG 评估、实验不显著、线上指标变差时，直接跳到对应模块查方法。<br><strong>预计时间：</strong>系统读完约 20–30 小时；按主轨做出一个可展示项目约 4–6 周。<strong>做完能干什么：</strong>在面试中演示一个完整的 ML 工程化或 LLM 应用系统设计案例——这是中级 DS / MLE 岗位最有区分度的能力证明。</div>
   <div class="crisis-block">
     <div class="crisis-title">为什么看完基础版还需要进阶版：5 个真实业务崩塌时刻</div>
     <div class="crisis-list">
@@ -592,6 +593,58 @@ print(est.ate_, est.ate_interval())</div>
     <div class="challenge-card"><div class="challenge-label">ML 失效</div><div class="challenge-title">过拟合到验证集</div><p class="challenge-body">频繁在同一验证集上调参，导致参数选择已经"记住"了验证集的特点，线上泛化差。</p><div class="challenge-path"><strong>防御：</strong>预先保留 holdout 集，只在最终评估时用一次；调参过程只看 CV 结果。</div></div>
     <div class="challenge-card"><div class="challenge-label">实验失效</div><div class="challenge-title">因果解读错误</div><p class="challenge-body">把 A/B 实验的相关性当因果用于决策（如用实验结果预测个人用户干预效果），或在非实验数据上直接做 OLS 得出因果结论。</p><div class="challenge-path"><strong>防御：</strong>实验只能估计 ATE，个体效应需要 HTE/Uplift；观测数据用因果图 + DoWhy 明确假设。</div></div>
   </div>
+</section>
+
+<!-- ═══ CAPSTONE PROJECT ═══ -->
+<section id="capstone" class="section">
+  <div class="sec-head"><span class="sec-num">05.5</span><div class="sec-head-text"><h2>综合实战项目：从 notebook 到生产级系统</h2><p>把本页所有模块——ML 工程化、LLM 应用、实验设计、因果推断——串成一个可展示的完整系统</p></div></div>
+
+  <div class="callout info"><strong>项目定位：</strong>这不是比谁的模型 AUC 最高。面试官想看到的是：你能不能把一个模型做成可信赖的生产系统——有监控、有评估、有回滚机制、知道什么时候该重训练。做完这个项目，你就有了一个完整的 MLE 面试案例。</div>
+
+  <div class="from-basics"><span class="fb-label">衔接基础版</span><span class="fb-text">基础版的<strong>综合实战项目</strong>止步于"模型评估和 SHAP 解释"。本项目从那里出发：同样的信贷违约预测场景，下一步是<strong>把那个 notebook 做成一个工程化、可监控、可验证因果效应的系统</strong>。</span></div>
+
+  <div class="case-thread"><span class="ct-label">贯穿案例</span><span class="ct-text"><strong>信贷违约系统上线：</strong>基础版给了你一个 AUC 0.91 的 LightGBM 模型和三张 SHAP 图。现在业务要求把它接入审批流程，每天处理 5000 笔申请。本项目每个阶段都在回答同一个问题：这个模型在线上真的靠谱吗？</span></div>
+
+  <div class="card-grid" style="margin-top:20px">
+
+    <div class="card" style="border-top:3px solid #0891b2">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#0891b2;margin-bottom:8px">Phase 1 · ML 工程化</div>
+      <h3>消除 training-serving skew</h3>
+      <p>把基础版 notebook 里的特征计算逻辑抽成独立函数，确保训练和推理调用完全相同的代码路径。接入 MLflow 记录数据版本、特征版本和模型 artifact。</p>
+      <div style="font-size:11.5px;background:var(--surface2);border-radius:6px;padding:8px 10px;color:var(--text-3);margin-top:10px"><strong style="color:var(--text-2)">好结果：</strong>能给出一份"上线前核对清单"，并指出基础版 notebook 里至少 2 处潜在 skew 风险（例如 target encoding 在训练时用了全量数据）。MLflow experiment 截图可在面试中演示。</div>
+      <div class="metric-row"><span class="metric-pill">跳转</span><a href="#mlops" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:600">ML 工程化实战 §02</a></div>
+    </div>
+
+    <div class="card" style="border-top:3px solid #16a34a">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#16a34a;margin-bottom:8px">Phase 2 · 监控体系</div>
+      <h3>建立四层监控面板</h3>
+      <p>对信贷模型，数据层监控"用户近 30 天还款额"等关键特征的分布漂移（PSI），模型层监控每日 AUC 和校准误差，业务层监控实际坏账率 vs. 模型预测坏账率。</p>
+      <div style="font-size:11.5px;background:var(--surface2);border-radius:6px;padding:8px 10px;color:var(--text-3);margin-top:10px"><strong style="color:var(--text-2)">好结果：</strong>一张截图或表格，展示四层指标各选了什么、为什么选这个、阈值怎么定。能说清楚：PSI &gt; 0.2 触发的是"调查"还是"自动停用"，以及为什么。</div>
+      <div class="metric-row"><span class="metric-pill">跳转</span><a href="#mlops" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:600">监控系统 Tab</a></div>
+    </div>
+
+    <div class="card" style="border-top:3px solid #d97706">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#d97706;margin-bottom:8px">Phase 3 · 实验验证</div>
+      <h3>设计上线 A/B 实验</h3>
+      <p>新模型不能直接全量替换旧规则。设计一个实验：主指标是 60 天实际坏账率，护栏指标是审批通过率（不允许下降超过 5%）。预计算样本量和实验周期。</p>
+      <div style="font-size:11.5px;background:var(--surface2);border-radius:6px;padding:8px 10px;color:var(--text-3);margin-top:10px"><strong style="color:var(--text-2)">好结果：</strong>一份实验设计文档（1页），说明：随机单元（申请 ID 还是用户 ID？）、主指标和护栏指标、最小可检测效果是多少、为什么是 60 天观察窗口而不是 7 天。</div>
+      <div class="metric-row"><span class="metric-pill">跳转</span><a href="#experimentation" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:600">实验与度量深化 §04</a></div>
+    </div>
+
+    <div class="card" style="border-top:3px solid #7c3aed">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#7c3aed;margin-bottom:8px">Phase 4 · 因果验证</div>
+      <h3>证明模型带来了真实效果</h3>
+      <p>实验跑完后，除了 p-value，还需要回答：新模型的效果是均匀的还是集中在某类用户？用 EconML CausalForest 估计异质处置效应（HTE），找出模型效果最大的细分群体。</p>
+      <div style="font-size:11.5px;background:var(--surface2);border-radius:6px;padding:8px 10px;color:var(--text-3);margin-top:10px"><strong style="color:var(--text-2)">好结果：</strong>一张 CATE 分布图 + 1 段业务解读——"新模型对月收入 5000-15000 的中等信用用户效果最显著（CATE = -8.3% 违约率下降），对高信用用户效果接近零，这意味着可以针对性地只对中等信用群体启用新模型"。</div>
+      <div class="metric-row"><span class="metric-pill">跳转</span><a href="#causal" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:600">因果方法选择指南 §04.5</a></div>
+    </div>
+
+  </div>
+
+  <div class="callout tip" style="margin-top:16px"><strong>最终交付物：</strong>一个 GitHub 仓库 + 一份系统设计文档（2-3 页），涵盖：数据管道设计、特征版本策略、监控指标选择理由、实验设计、HTE 分析结论。面试时能说出：<em>"我做的不只是一个模型，而是一个从数据更新到线上监控都可追溯的信贷评分系统"</em>。</div>
+
+  <div class="callout warn"><strong>进阶版常见失误：</strong>监控只看 AUC 不看业务指标；实验上线没有灰度发布计划；因果分析把 ATE 直接当个体决策依据；MLflow 记录了太多无用变量导致实验对比困难。</div>
+
 </section>
 
 <section id="bridge" class="section">
