@@ -209,6 +209,7 @@ tr:hover td{background:var(--surface2)}
         <a href="#experimentation">实验与度量深化</a>
         <a href="#causal">因果方法选择指南</a>
         <a href="#troubleshoot">问题解法手册</a>
+        <a href="#sysdesign">ML 系统设计</a>
         <a href="#capstone">综合实战项目</a>
         <a href="#bridge">衔接专家图谱</a>
       </div>
@@ -592,6 +593,116 @@ print(est.ate_, est.ate_interval())</div>
     <div class="challenge-card"><div class="challenge-label">LLM 失效</div><div class="challenge-title">成本失控</div><p class="challenge-body">长上下文、多轮 retry、推理模型路由不当导致 token 成本飙升。</p><div class="challenge-path"><strong>防御：</strong>缓存、模型路由、context 压缩、每用户预算上限。</div></div>
     <div class="challenge-card"><div class="challenge-label">ML 失效</div><div class="challenge-title">过拟合到验证集</div><p class="challenge-body">频繁在同一验证集上调参，导致参数选择已经"记住"了验证集的特点，线上泛化差。</p><div class="challenge-path"><strong>防御：</strong>预先保留 holdout 集，只在最终评估时用一次；调参过程只看 CV 结果。</div></div>
     <div class="challenge-card"><div class="challenge-label">实验失效</div><div class="challenge-title">因果解读错误</div><p class="challenge-body">把 A/B 实验的相关性当因果用于决策（如用实验结果预测个人用户干预效果），或在非实验数据上直接做 OLS 得出因果结论。</p><div class="challenge-path"><strong>防御：</strong>实验只能估计 ATE，个体效应需要 HTE/Uplift；观测数据用因果图 + DoWhy 明确假设。</div></div>
+  </div>
+</section>
+
+<!-- ═══ ML 系统设计 ═══ -->
+<section id="sysdesign" class="section">
+  <div class="sec-head"><span class="sec-num">05.8</span><div class="sec-head-text"><h2>ML 系统设计框架</h2><p>大厂 MLE / Senior DS 面试必有 1 轮：从零设计一个完整的 ML 系统——考察的是工程判断力，不是算法细节</p></div></div>
+
+  <div class="callout info"><strong>面试定位：</strong>ML 系统设计轮没有标准答案，但有标准框架。面试官想听到的是：你如何从模糊需求出发，拆解问题、定义指标、做出有依据的设计取舍——而不是背一个架构图。</div>
+
+  <div class="from-basics"><span class="fb-label">基础版失效点</span><span class="fb-text">基础版教你训练一个模型——但 ML 系统设计面试问的是：<strong>如果要给 1 亿用户每天做 1000 次个性化推荐，你怎么设计整个系统？</strong>这是从"会建模"到"会设计系统"的跃迁。</span></div>
+
+  <div class="case-thread"><span class="ct-label">贯穿案例</span><span class="ct-text"><strong>设计一个电商信息流推荐系统：</strong>面试官说"为我们的电商 App 设计一个信息流推荐系统，目标是提升 GMV"——接下来 45 分钟怎么答？本节的每个模块都是这道题的一个拆解步骤。</span></div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('sysdesign',this,'sd-framework')">答题框架</button>
+    <button class="tab-btn" onclick="switchTab('sysdesign',this,'sd-recsys')">推荐系统设计</button>
+    <button class="tab-btn" onclick="switchTab('sysdesign',this,'sd-tradeoffs')">核心取舍</button>
+    <button class="tab-btn" onclick="switchTab('sysdesign',this,'sd-interview')">面试评分标准</button>
+  </div>
+
+  <div id="sd-framework" class="tab-content active">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">ML 系统设计 7 步答题框架</div>
+    <table>
+      <thead><tr><th>步骤</th><th>做什么</th><th>耗时</th><th>常见失误</th></tr></thead>
+      <tbody>
+        <tr><td><strong>① 澄清需求</strong></td><td>确认业务目标、用户规模、延迟要求、是否实时、冷启动场景</td><td>3-4 min</td><td>跳过澄清直接开始设计，方向跑偏</td></tr>
+        <tr><td><strong>② 定义指标</strong></td><td>离线指标（AUC/NDCG）+ 在线指标（CTR/GMV/留存）+ 护栏指标</td><td>3-4 min</td><td>只说 AUC，不说业务指标；忘记护栏</td></tr>
+        <tr><td><strong>③ 数据设计</strong></td><td>训练数据来源、标签定义（正样本是什么）、负采样策略、特征工程</td><td>5-7 min</td><td>忽略标签噪声和 position bias</td></tr>
+        <tr><td><strong>④ 模型选择</strong></td><td>从简单基线出发，说清楚为什么要升级复杂度，每步收益是什么</td><td>5-7 min</td><td>直接上最复杂模型，说不出取舍理由</td></tr>
+        <tr><td><strong>⑤ 系统架构</strong></td><td>召回层 + 排序层 + 重排层的分工；实时 vs 离线特征；缓存策略</td><td>8-10 min</td><td>设计成单层大模型，忽略工程可行性</td></tr>
+        <tr><td><strong>⑥ 上线与迭代</strong></td><td>A/B 实验设计、监控指标、模型更新频率、冷启动方案</td><td>5-7 min</td><td>说完模型就结束，忘了讲上线后怎么办</td></tr>
+        <tr><td><strong>⑦ 主动讨论难点</strong></td><td>点出你知道这个设计的限制：数据稀疏/延迟/公平性/过拟合</td><td>3-5 min</td><td>等面试官追问，显得没有全局视角</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>时间分配原则：</strong>澄清需求永远不省——方向错了后面全浪费。③④⑤是核心，合计 20 分钟。①②⑥⑦是框架分，合计 15 分钟。</div>
+  </div>
+
+  <div id="sd-recsys" class="tab-content">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">推荐系统标准架构（从候选集到最终排名）</div>
+    <table>
+      <thead><tr><th>层级</th><th>目标</th><th>典型方案</th><th>规模</th><th>核心挑战</th></tr></thead>
+      <tbody>
+        <tr><td><strong>候选生成（召回）</strong></td><td>从全量 item 中快速筛出候选集</td><td>协同过滤 / Two-tower / 倒排索引 / 向量 ANN</td><td>从百万到千个</td><td>覆盖率 vs 相关性；冷启动 item</td></tr>
+        <tr><td><strong>粗排</strong></td><td>用轻量模型对千个候选快速打分</td><td>轻量 MLP / LR + 稀疏特征</td><td>千 → 百</td><td>特征简化后的效果损失</td></tr>
+        <tr><td><strong>精排</strong></td><td>用复杂模型对百个候选精准打分</td><td>Wide&Deep / DeepFM / Transformer</td><td>百 → 十几</td><td>特征工程、样本偏差、延迟</td></tr>
+        <tr><td><strong>重排</strong></td><td>综合多样性/去重/强制曝光等业务规则</td><td>MMR / DPP / 规则引擎</td><td>最终列表</td><td>多目标权衡（新颖性 vs 相关性）</td></tr>
+      </tbody>
+    </table>
+    <div class="card-grid" style="margin-top:14px">
+      <div class="card">
+        <h3>标签定义：正样本是什么</h3>
+        <p>推荐系统的训练质量取决于标签定义。选项比较：</p>
+        <ul>
+          <li><strong>点击</strong>：噪声大，标题党行为正向激励</li>
+          <li><strong>购买</strong>：稀疏，冷启动难</li>
+          <li><strong>观看时长 / 划走速度</strong>：内容推荐更合适</li>
+          <li><strong>加购 + 收藏 + 分享</strong>：多目标，需要加权</li>
+        </ul>
+        <div class="metric-row"><span class="metric-pill warn">常见错误</span><span class="metric-pill">只用点击当正样本</span></div>
+      </div>
+      <div class="card">
+        <h3>Two-Tower 模型原理</h3>
+        <p>用户塔（User Tower）和物品塔（Item Tower）各自独立编码，输出向量，用内积衡量匹配度。</p>
+        <ul>
+          <li><strong>优点：</strong>物品向量可离线预计算，线上只需查表 + 内积，延迟极低</li>
+          <li><strong>缺点：</strong>用户-物品交叉特征在塔内无法捕获（精排才做交叉）</li>
+          <li><strong>负采样：</strong>随机负采样 + 热门 item 降权（避免模型偏向流行内容）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>冷启动解法</h3>
+        <p>三种冷启动场景的标准处理：</p>
+        <ul>
+          <li><strong>新用户：</strong>基于注册信息 + 新手问卷 → 人口属性画像召回</li>
+          <li><strong>新 item：</strong>用 item 内容特征（图、文、类目）做 Content-based 召回；设置强制曝光保底</li>
+          <li><strong>新场景：</strong>迁移学习（从相近场景的模型权重初始化）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="sd-tradeoffs" class="tab-content">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">面试中必须主动讨论的核心取舍</div>
+    <table>
+      <thead><tr><th>取舍维度</th><th>选项 A</th><th>选项 B</th><th>判断依据</th></tr></thead>
+      <tbody>
+        <tr><td>实时 vs 离线特征</td><td>实时特征（用户当前行为）</td><td>离线特征（历史统计）</td><td>实时更准确但工程复杂；离线稳定但有延迟；通常混用</td></tr>
+        <tr><td>CTR 优化 vs GMV 优化</td><td>CTR（点击率）</td><td>GMV（成交额）</td><td>CTR 样本多易收敛，GMV 稀疏但直接对齐业务；用 ESMM 多目标联合训练</td></tr>
+        <tr><td>相关性 vs 多样性</td><td>每次推最相关的</td><td>保证一定新颖性</td><td>纯相关性会信息茧房；MMR 或 DPP 做多样性重排</td></tr>
+        <tr><td>模型更新频率</td><td>日更（T+1）</td><td>近实时流式更新</td><td>日更稳定省成本；流式更新捕捉趋势但复杂度高；根据业务时效性选</td></tr>
+        <tr><td>精准度 vs 覆盖率</td><td>高精准（只推非常确定的）</td><td>高召回（多推一些候选）</td><td>召回阶段要高覆盖，排序阶段要高精准；分层架构本身解决这个问题</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><strong>面试陷阱：</strong>不要等面试官问"你有没有考虑 X 问题"——主动说出你知道这个系统的局限性，比被追问到更能展示工程判断力。</div>
+  </div>
+
+  <div id="sd-interview" class="tab-content">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">面试评分维度（大厂 E5/L5 级别标准）</div>
+    <table>
+      <thead><tr><th>维度</th><th>满分表现</th><th>减分表现</th></tr></thead>
+      <tbody>
+        <tr><td><strong>问题定义</strong></td><td>主动澄清需求，说出多个可能的方向并解释为什么选这个</td><td>直接开始画架构图，没有澄清</td></tr>
+        <tr><td><strong>指标设计</strong></td><td>离线指标、在线指标、护栏指标分层说清，能说出每个指标为什么选</td><td>只说 AUC，或只说 CTR</td></tr>
+        <tr><td><strong>数据意识</strong></td><td>主动提标签噪声、position bias、数据分布偏移、冷启动</td><td>把数据当已知，只讨论模型</td></tr>
+        <tr><td><strong>工程判断</strong></td><td>能说出"在这个延迟要求下，XX 方案不可行，因为……"</td><td>设计脱离工程约束（99.9th latency 要求下跑 BERT）</td></tr>
+        <tr><td><strong>取舍能力</strong></td><td>主动说出这个设计的限制，以及在什么条件下会换方案</td><td>认为自己的方案没有缺点</td></tr>
+        <tr><td><strong>沟通清晰度</strong></td><td>先说结论，再说推理；用类比解释复杂选择</td><td>边说边想，没有结构</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><strong>一个能显著加分的习惯：</strong>每做一个设计决策，说出"我在这里做了一个取舍：A 换来了 B，代价是 C——在当前场景下 B 比 C 更重要，所以选 A"。这个句式让面试官看到的不是答案，而是你的思考过程。</div>
   </div>
 </section>
 
