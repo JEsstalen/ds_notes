@@ -205,6 +205,7 @@ tr:hover td{background:var(--surface2)}
         <a href="#roadmap">进阶路线图</a>
         <a href="#mlops">ML 工程化实战</a>
         <a href="#llmapp">LLM 应用工程</a>
+        <a href="#aisafety">AI Safety 工程</a>
         <a href="#llmconcepts">LLM 核心原理</a>
         <a href="#experimentation">实验与度量深化</a>
         <a href="#causal">因果方法选择指南</a>
@@ -347,6 +348,13 @@ tr:hover td{background:var(--surface2)}
       <div class="concept-pointer">本页深度：<a href="#llmapp">LLM 应用工程 §03</a> · 专家页：<a href="ds-expert.html#radar">技术雷达 MCP/LangGraph</a></div>
     </div>
 
+    <div class="concept-card c-llm">
+      <span class="concept-area ca-llm">多模态</span>
+      <div class="concept-title">多模态 LLM：图文统一理解</div>
+      <p class="concept-body">现代大模型（GPT-4o、Gemini 1.5、Claude 3.5 Sonnet）能同时处理图像和文字。核心思路：把图像切成固定大小的"视觉 patch"，通过视觉编码器（ViT/SigLIP）映射到与文字 token 同维度的向量，再一起送进 Transformer 处理。<br><strong>为什么要知道：</strong>越来越多 DS 岗位要求会用多模态 API 处理图表、截图、文档扫描件；CLIP 式多模态 embedding 也是下一代跨模态 RAG 的基础。一张图产生几百个 token，成本路由是工程重点。</p>
+      <div class="concept-pointer">本页深度：<a href="#llmconcepts">LLM 核心原理 §03.5</a> · 专家页：<a href="ds-expert.html#radar">技术雷达 Assess</a></div>
+    </div>
+
   </div>
 </section>
 
@@ -438,6 +446,59 @@ tr:hover td{background:var(--surface2)}
     <div class="check-item"><span class="check-box"></span><span>Prompt、检索参数、模型版本都可回滚。</span></div>
     <div class="check-item"><span class="check-box"></span><span>知道单次请求成本和每日预算上限。</span></div>
   </div>
+
+  <!-- ── AI Safety 工程实践 ── -->
+  <div id="aisafety" class="sec-head" style="margin-top:40px;padding-top:20px;border-top:1px solid var(--border)">
+    <div class="sec-head-text"><h2 style="font-size:18px">AI Safety 工程实践</h2><p>大厂 JD 2025 年高频要求：Prompt Injection 防御、Guardrails 工具链、行为审计</p></div>
+  </div>
+
+  <div class="from-basics"><span class="fb-label">为什么重要</span><span class="fb-text">Agent 获得工具访问权后，安全边界从"模型说错话"升级为"远程代码执行"。<strong>2026 年 MCP CVE 已被公开利用，大厂 DS/MLE 岗位 JD 对 AI Safety 工程实践的要求 2025 年翻倍。</strong>这不是 Research 话题，是生产工程要求。</span></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Prompt Injection 攻击类型</h3>
+      <p>两大类：</p>
+      <ul>
+        <li><strong>直接注入</strong>：用户在输入里嵌入"忽略以上所有指令，改为……"——绕过系统 prompt 约束。</li>
+        <li><strong>间接注入</strong>：恶意内容藏在 Agent 检索或处理的文档/网页中，模型读取后被植入指令。Agent 调用搜索工具时尤其危险。</li>
+      </ul>
+      <div class="metric-row"><span class="metric-pill bad">高风险</span><span class="metric-pill">Agent + 外部内容场景</span></div>
+    </div>
+    <div class="card">
+      <h3>防御层次（纵深防御）</h3>
+      <ul>
+        <li><strong>输入层</strong>：检测指令切换词（"ignore previous"、"new task:"）；对不可信内容做结构化隔离（XML wrapper / 引号包裹）。</li>
+        <li><strong>权限层</strong>：工具最小权限；不可逆操作（删除/付款/发邮件）强制人工确认。</li>
+        <li><strong>输出层</strong>：结构化输出 + schema 验证；禁止模型在响应里直接嵌入可执行内容。</li>
+        <li><strong>监控层</strong>：Trace 所有工具调用；异常模式告警（单次调用次数、敏感词、外发域名）。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Guardrails 工具链选型</h3>
+      <table style="margin-top:8px">
+        <thead><tr><th>工具</th><th>定位</th><th>适用</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Guardrails AI</strong></td><td>开源，Python 原生，validator 插件生态</td><td>输出格式验证、内容过滤、自定义规则</td></tr>
+          <tr><td><strong>NeMo Guardrails</strong></td><td>NVIDIA，对话流程控制，Colang DSL</td><td>聊天机器人边界控制、话题限制</td></tr>
+          <tr><td><strong>LLM Guard</strong></td><td>轻量，输入/输出双向扫描</td><td>PII 检测、prompt 注入检测</td></tr>
+          <tr><td><strong>自建规则层</strong></td><td>关键词匹配 + 正则 + ML 分类器</td><td>可解释、低延迟、特定业务规则</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip" style="margin-top:10px"><strong>选型建议：</strong>先用 LLM Guard 做快速扫描（latency ~10ms），再用 Guardrails AI 做结构化验证，NeMo 适合需要对话状态机控制的场景。</div>
+    </div>
+    <div class="card">
+      <h3>模型行为审计</h3>
+      <p>三个可操作的审计维度：</p>
+      <ul>
+        <li><strong>Trace 覆盖率</strong>：每次 LLM 调用都要记录 prompt、输出、latency、token 数、工具调用链。Langfuse/LangSmith 实现。</li>
+        <li><strong>异质用户测试</strong>：定期用 adversarial prompt 集（越狱尝试、角色扮演绕过、间接注入样本）跑回归，记录绕过率趋势。</li>
+        <li><strong>Canary 输出监控</strong>：在评估集里加几条"金丝雀"——已知正确答案的问题。每次模型/prompt 版本变更后自动跑，CI 里失败就回滚。</li>
+      </ul>
+      <div class="metric-row"><span class="metric-pill good">推荐</span><span class="metric-pill">接入 CI/CD</span></div>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:16px"><strong>面试中的 AI Safety 问法：</strong>"如果你的 RAG Agent 被 Prompt Injection 攻击，你会怎么设计防御？"——答题框架：① 说出直接/间接注入区别 ② 列出纵深防御四层 ③ 举一个具体工具（如 LLM Guard）④ 说明不可逆操作的人工审核机制。能说到第 ③ 步已超过 80% 候选人。</div>
 </section>
 
 <section id="llmconcepts" class="section">
@@ -452,6 +513,7 @@ tr:hover td{background:var(--surface2)}
     <div class="card"><h3>4. DPO / GRPO 在优化什么</h3><p>SFT 让模型学会"按示例回答"，但不一定知道哪个回答更好。DPO 用成对偏好数据（A 比 B 好）直接优化模型偏好，比 PPO/RLHF 简化很多。GRPO 是 DeepSeek-R1 路线里用于推理训练的强化学习方法，核心是让模型通过多次尝试比较相对好坏，学习长链推理。</p><ul><li><strong>DPO：</strong>更像"偏好微调"，适合对齐风格/安全/有用性。</li><li><strong>GRPO：</strong>更像"训练模型思考过程"，适合数学、代码、可验证推理。</li></ul></div>
     <div class="card"><h3>5. Test-Time Compute 为什么贵</h3><p>普通模型一次生成答案；推理模型会在回答前生成更长的思考链、尝试更多路径、做自我检查。能力提升来自"推理时花更多算力"，不是模型凭空变聪明。代价是 token 数、延迟和成本都大幅增加。</p><ul><li><strong>工程判断：</strong>不要所有问题都用推理模型；先做路由，简单问题走快模型，复杂问题才走 reasoning model。</li><li><strong>expert 连接：</strong>专家页的 Test-Time Compute 和成本曲线都围绕这个权衡。</li></ul></div>
     <div class="card"><h3>6. LLM-as-Judge 为什么有偏差</h3><p>用强模型评估弱模型输出很实用，但它不是客观真理。常见偏差：更喜欢长答案（冗长偏差）、更喜欢第一个展示的答案（位置偏差）、更喜欢自己家模型的风格（自我偏好）。</p><ul><li><strong>工程判断：</strong>评估时随机化答案顺序；关键样本人工复核；不要只看 judge 分数。</li><li><strong>expert 连接：</strong>专家页的 LLM-as-Judge 论文卡专门讲这些偏差。</li></ul></div>
+    <div class="card"><h3>7. 多模态：图像 Token 怎么工作</h3><p>GPT-4o / Gemini 1.5 / Claude 3.5 处理图像的方式：先用视觉编码器（ViT/SigLIP）把图切成固定大小的 patch（如 16×16 像素），每个 patch 映射成一个向量 token，再和文字 token 一起送进 Transformer。<br>核心成本问题：一张 1024×1024 的图会产生约 1000 个 token，比一段文字贵得多。<br><strong>三个工程判断：</strong></p><ul><li><strong>能用低分辨率就不用高分辨率</strong>——图表分析 512px 足够，节省 75% token。</li><li><strong>文字描述 vs. 图像输入</strong>——能 OCR 或图转文的场景，用文字更省钱、更可追溯。</li><li><strong>多模态 RAG</strong>：用 CLIP embedding 把图文一起检索，答案可以是图片段落；但嵌入成本比纯文字高约 3-5×。</li></ul></div>
   </div>
 
   <div class="decision-table-wrap">
@@ -463,6 +525,7 @@ tr:hover td{background:var(--surface2)}
         <tr><td>模型不懂内部术语/固定表达</td><td>先 RAG，必要时 LoRA</td><td>全量微调</td><td>术语解释可检索；只有风格/抽取模式长期稳定时才值得微调。</td></tr>
         <tr><td>数学/代码推理题答错</td><td>推理模型 + 验证器</td><td>只加更多上下文</td><td>问题在推理过程，不在知识缺失；需要更多 test-time compute 或可执行验证。</td></tr>
         <tr><td>Agent 工具误操作</td><td>最小权限 + 人工确认</td><td>相信 prompt 约束</td><td>工具调用是外部副作用，必须用系统权限和审批控制。</td></tr>
+        <tr><td>图表/截图/扫描件需要理解</td><td>多模态 API（GPT-4o/Gemini）</td><td>先 OCR 再文字处理</td><td>结构复杂的图（流程图、UI 截图）用多模态更准；成本高，能 OCR 的文档用 OCR 更便宜。</td></tr>
       </tbody>
     </table>
   </div>
