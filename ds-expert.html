@@ -437,41 +437,30 @@ tr:hover td{background:var(--surface2)}
     <div class="radar-cat">
       <div class="radar-cat-label">🟢 Adopt — 现在就用</div>
       <div class="radar-pills">
-        <span class="radar-pill rp-adopt" onclick="showRadar('vllm','Adopt','vLLM','LLM 推理引擎，PagedAttention 实现高吞吐，≥55k ⭐，已成推理服务事实标准。AWS/Azure 均原生支持。OpenAI 兼容 API。','为什么是 Adopt：生产稳定性高，社区迭代快，替代自研推理成本极低。')">vLLM</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('lg','Adopt','LangGraph','基于状态机的 Agent 编排，47M+ PyPI 月下载，已成生产级 Agent 标准。支持循环/条件分支/人工介入。','为什么是 Adopt：2025年赢得"Agent框架战"，比 LangChain chains 更适合复杂生产 Agent，CrewAI 适合原型，LangGraph 适合生产。')">LangGraph</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('iceberg','Adopt','Apache Iceberg','供应商中立的 Lakehouse 表格式标准，Snowflake/AWS/Databricks/Flink/Spark 全支持。','为什么是 Adopt：2025-2026 赢得"表格式战争"，新 Lakehouse 项目首选，支持 ACID、time travel、schema evolution。')">Apache Iceberg</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('mcp','Adopt','MCP（模型上下文协议）','AI Agent 与外部工具/数据交互的开放标准，2025年底转交 Linux Foundation。已有 1600+ 公开 MCP server。','为什么是 Adopt：OpenAI/微软/谷歌/Stripe/GitHub 全部采用，任何生产 Agent 系统都应基于 MCP，而非自研接口层。')">MCP</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('dpo','Adopt','DPO 偏好微调','Direct Preference Optimization，无需奖励模型，比 PPO 更稳定更简单，2024-2025 成为开源模型对齐微调默认方法。','为什么是 Adopt：Llama/Mistral/Qwen 微调管道普遍使用，入门门槛远低于 PPO，生产中已大量验证。')">DPO 偏好微调</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('mlflow','Adopt','MLflow','ML 实验追踪 + 模型注册，几乎所有 MLOps 平台的基础组件，Databricks 背书。','为什么是 Adopt：API 稳定，学习成本低，生态最广，替换成本高——先用它，再考虑迁移。')">MLflow</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('rag','Adopt','RAG Pipeline','检索增强生成，LLM 应用落地主流架构，混合检索（向量+BM25）已成标配。','为什么是 Adopt：幻觉率显著低于 vanilla LLM，可解释，知识可更新，工程模式成熟。')">RAG Pipeline</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('feat','Adopt','Feature Store','在线+离线特征统一存储（Feast/Tecton），解决 training-serving skew 的关键。','为什么是 Adopt：中大型 DS 团队已成标配，避免重复计算和特征不一致。')">Feature Store</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('lora','Adopt','LoRA / QLoRA','低秩微调，在消费级 GPU 上微调 7B+ 模型，2025年已是定制 LLM 的默认选择。','为什么是 Adopt：资源效率极高，效果接近全量微调，已有海量生产案例。')">LoRA / QLoRA</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('cuped','Adopt','CUPED / 方差减少','A/B 测试中通过协变量控制减少方差，提升灵敏度 50%+。2025年新论文进一步统一了框架。','为什么是 Adopt：Netflix/Microsoft/Booking 均已实施，数学严谨，实现简单。')">CUPED</span>
-        <span class="radar-pill rp-adopt" onclick="showRadar('duckdb','Adopt','DuckDB','嵌入式 OLAP 引擎，本地分析 100GB 内 Parquet/CSV，替代 Spark 小数据场景。','为什么是 Adopt：极快，无依赖，SQL 接口完整，Notebook 友好，现代数据栈标配。')">DuckDB</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('vllm','Adopt','vLLM','LLM 推理引擎，PagedAttention 实现高吞吐，≥55k ⭐，已成推理服务事实标准。AWS/Azure 均原生支持。OpenAI 兼容 API。','为什么是 Adopt：生产稳定性高，社区迭代快，替代自研推理成本极低。<br><strong>30天最小实验：</strong>把一个本地开源模型用 vLLM 起成 OpenAI-compatible API，记录 100 次请求的 p50/p95 latency 和显存占用。')">vLLM</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('lg','Adopt','LangGraph','基于状态机的 Agent 编排，47M+ PyPI 月下载，已成生产级 Agent 标准。支持循环/条件分支/人工介入。','为什么是 Adopt：2025年赢得&quot;Agent框架战&quot;，比 LangChain chains 更适合复杂生产 Agent，CrewAI 适合原型，LangGraph 适合生产。<br><strong>30天最小实验：</strong>把一个两步 RAG 流程改成 LangGraph 状态机，加入失败分支和人工确认节点。')">LangGraph</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('iceberg','Adopt','Apache Iceberg','供应商中立的 Lakehouse 表格式标准，Snowflake/AWS/Databricks/Flink/Spark 全支持。','为什么是 Adopt：2025-2026 赢得&quot;表格式战争&quot;，新 Lakehouse 项目首选，支持 ACID、time travel、schema evolution。<br><strong>30天最小实验：</strong>用本地 Spark 或 DuckDB 读取一张 Iceberg 表，演示一次 schema evolution 和 time travel 查询。')">Apache Iceberg</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('mcp','Adopt','MCP（模型上下文协议）','AI Agent 与外部工具/数据交互的开放标准，2025年底转交 Linux Foundation。已有 1600+ 公开 MCP server。','为什么是 Adopt：OpenAI/微软/谷歌/Stripe/GitHub 全部采用，任何生产 Agent 系统都应基于 MCP，而非自研接口层。<br><strong>30天最小实验：</strong>写一个只读 MCP server，暴露一个本地 CSV 查询工具，并记录工具调用参数和返回结果。')">MCP</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('dpo','Adopt','DPO 偏好微调','Direct Preference Optimization，无需奖励模型，比 PPO 更稳定更简单，2024-2025 成为开源模型对齐微调默认方法。','为什么是 Adopt：Llama/Mistral/Qwen 微调管道普遍使用，入门门槛远低于 PPO，生产中已大量验证。<br><strong>30天最小实验：</strong>收集 50 对偏好样本，用 TRL 跑一次小模型 DPO，比较 SFT 前后在固定评估集上的胜率。')">DPO 偏好微调</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('mlflow','Adopt','MLflow','ML 实验追踪 + 模型注册，几乎所有 MLOps 平台的基础组件，Databricks 背书。','为什么是 Adopt：API 稳定，学习成本低，生态最广，替换成本高——先用它，再考虑迁移。<br><strong>30天最小实验：</strong>把一个旧 notebook 训练脚本接入 MLflow，记录数据 hash、超参、指标、图表和模型 artifact。')">MLflow</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('rag','Adopt','RAG Pipeline','检索增强生成，LLM 应用落地主流架构，混合检索（向量+BM25）已成标配。','为什么是 Adopt：幻觉率显著低于 vanilla LLM，可解释，知识可更新，工程模式成熟。<br><strong>30天最小实验：</strong>用 20 页真实文档做 30 题评估集，对比纯向量检索和 BM25+向量混合检索的 Context Recall。')">RAG Pipeline</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('feat','Adopt','Feature Store','在线+离线特征统一存储（Feast/Tecton），解决 training-serving skew 的关键。','为什么是 Adopt：中大型 DS 团队已成标配，避免重复计算和特征不一致。<br><strong>30天最小实验：</strong>用 Feast 定义 3 个复用特征，分别做离线训练读取和在线低延迟读取，对齐两边结果。')">Feature Store</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('lora','Adopt','LoRA / QLoRA','低秩微调，在消费级 GPU 上微调 7B+ 模型，2025年已是定制 LLM 的默认选择。','为什么是 Adopt：资源效率极高，效果接近全量微调，已有海量生产案例。<br><strong>30天最小实验：</strong>选一个分类或抽取任务，用 LoRA 微调小模型，并对比 prompt-only、RAG、LoRA 三种方案的错误类型。')">LoRA / QLoRA</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('cuped','Adopt','CUPED / 方差减少','A/B 测试中通过协变量控制减少方差，提升灵敏度 50%+。2025年新论文进一步统一了框架。','为什么是 Adopt：Netflix/Microsoft/Booking 均已实施，数学严谨，实现简单。<br><strong>30天最小实验：</strong>用一份历史 A/B 数据或模拟数据实现 CUPED，报告方差下降比例和置信区间变化。')">CUPED</span>
+        <span class="radar-pill rp-adopt" onclick="showRadar('duckdb','Adopt','DuckDB','嵌入式 OLAP 引擎，本地分析 100GB 内 Parquet/CSV，替代 Spark 小数据场景。','为什么是 Adopt：极快，无依赖，SQL 接口完整，Notebook 友好，现代数据栈标配。<br><strong>30天最小实验：</strong>把一个 pandas 聚合分析改写成 DuckDB SQL，比较内存占用、运行时间和代码可读性。')">DuckDB</span>
       </div>
     </div>
     <div class="radar-cat">
       <div class="radar-cat-label">🔵 Trial — 值得实验</div>
       <div class="radar-pills">
-        <span class="radar-pill rp-trial" onclick="showRadar('dspy','Trial','DSPy','LLM 编程范式，用优化器自动调 prompt/few-shot，≥28k ⭐，替代手工 prompt engineering。','为什么是 Trial：概念强大，有大量生产案例，但调试复杂，适合有 LLM pipeline 工程经验的团队。')">DSPy</span>
-        <span class="radar-pill rp-trial" onclick="showRadar('grpo','Trial','GRPO / RL 推理训练','Group Relative Policy Optimization，DeepSeek-R1 的 RL 算法，省去 value model。verl 开源实现 ≥19k ⭐。','为什么是 Trial：2025 年推理型 LLM 训练的新范式，但自训练门槛高，适合有 GPU 集群的团队探索。')">GRPO / RL 训练</span>
-        <span class="radar-pill rp-trial" onclick="showRadar('stagdid','Trial','Staggered DID','Callaway-Sant\'Anna / Sun-Abraham 修正了传统 OLS DiD 在分阶段推送时的偏差。','为什么是 Trial：几乎所有真实产品都是分阶段上线，标准 2×2 DID 在这种场景下是错的，这些方法应成为默认。')">Staggered DID</span>
-        <span class="radar-pill rp-trial" onclick="showRadar('pydanticai','Trial','PydanticAI','类型安全的 Agent 框架，DX 最佳，生产工程友好。','为什么是 Trial：2025 年快速崛起，适合强调类型安全和可测试性的工程团队，LangGraph 替代选项。')">PydanticAI</span>
-        <span class="radar-pill rp-trial" onclick="showRadar('langfuse','Trial','Langfuse / LangSmith','LLM 可观测性：trace 调试、prompt 版本、online eval、成本追踪。Langfuse 可自部署。','为什么是 Trial：LLM 应用进入生产后的必备工具，没有可观测性就是飞盲，Langfuse OSS 或 LangSmith 选一个。')">Langfuse / LangSmith</span>
-        <span class="radar-pill rp-trial" onclick="showRadar('econml','Trial','EconML / DoWhy','因果推断库，Double ML、IV、PSM 等方法的工业级实现，微软出品。','为什么是 Trial：方法论成熟，但因果推断本身需要领域专业判断，适合有统计背景的 DS 团队。')">EconML / DoWhy</span>
-        <span class="radar-pill rp-trial" onclick="showRadar('sdid','Trial','Synthetic DID','合成控制 + DID 的结合，Uber/Airbnb 使用的准实验方法，不依赖平行趋势假设。','为什么是 Trial：适合对照组难以选择的业务场景，Python 实现只需 10 行（SparseSC）。')">Synthetic DID</span>
-        <span class="radar-pill rp-trial" onclick="showRadar('growthbook','Trial','GrowthBook','开源实验平台，Feature Flag + A/B 测试一体化，内置 CUPED，可自部署。','为什么是 Trial：小团队自建实验平台的最佳选择，成本极低，但大型组织需要更多定制。')">GrowthBook</span>
-      </div>
-    </div>
-    <div class="radar-cat">
-      <div class="radar-cat-label">🟡 Assess — 持续关注</div>
-      <div class="radar-pills">
-        <span class="radar-pill rp-assess" onclick="showRadar('moe','Assess','MoE 架构','Mixture of Experts 在推理时只激活部分参数，成本效率高。','为什么是 Assess：GPT-4/Mixtral 已验证，但自训练 MoE 门槛极高，关注开源进展即可。')">MoE 架构</span>
-        <span class="radar-pill rp-assess" onclick="showRadar('multimodal','Assess','多模态 LLM','GPT-4o/Gemini 等，图文音视频统一模型。','为什么是 Assess：应用场景正在成熟，但工程落地成本仍高，持续关注 API 成熟度。')">多模态 LLM</span>
-        <span class="radar-pill rp-assess" onclick="showRadar('iceberg','Assess','Apache Iceberg','表格式 Lakehouse 格式，支持 ACID + 时间旅行。','为什么是 Assess：Databricks/Snowflake 均已支持，但迁移成本需评估。')">Apache Iceberg</span>
-        <span class="radar-pill rp-assess" onclick="showRadar('uplift','Assess','Uplift Modeling','预测个体处置效应，精准营销/政策评估的前沿方法。','为什么是 Assess：方法论成熟（CausalML），但落地需要严格实验设计配合。')">Uplift Modeling</span>
-        <span class="radar-pill rp-assess" onclick="showRadar('streamml','Assess','Streaming ML','流式数据上的在线学习（River/Faust）。','为什么是 Assess：实时场景有需求，但工程复杂度高，大多数场景 batch 够用。')">Streaming ML</span>
-        <span class="radar-pill rp-assess" onclick="showRadar('agentmem','Assess','Agent Memory 系统','为 AI Agent 持久化记忆：短期上下文 + 长期向量记忆 + 工具状态（mem0、Zep 等框架）。','为什么是 Assess：Agent 应用走向生产的关键瓶颈，但最佳实践尚在形成，值得持续关注。')">Agent Memory</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('dspy','Trial','DSPy','LLM 编程范式，用优化器自动调 prompt/few-shot，≥28k ⭐，替代手工 prompt engineering。','为什么是 Trial：概念强大，有大量生产案例，但调试复杂，适合有 LLM pipeline 工程经验的团队。<br><strong>30天最小实验：</strong>选一个现有 LLM pipeline（如 RAG 问答），用 DSPy 的 BootstrapFewShot 优化器替换手工 few-shot，对比优化前后在 20 题评估集上的 LLM-as-Judge 胜率变化。')">DSPy</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('grpo','Trial','GRPO / RL 推理训练','Group Relative Policy Optimization，DeepSeek-R1 的 RL 算法，省去 value model。verl 开源实现 ≥19k ⭐。','为什么是 Trial：2025 年推理型 LLM 训练的新范式，但自训练门槛高，适合有 GPU 集群的团队探索。<br><strong>30天最小实验：</strong>在本地跑通 TRL 的 GRPO 示例（用 GSM8K 数学题，单 GPU 可跑 1-3B 模型），记录 5 轮 RL 前后答案正确率和 reward 曲线，理解 group sampling 的直觉。')">GRPO / RL 训练</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('stagdid','Trial','Staggered DID','Callaway-Sant\'Anna / Sun-Abraham 修正了传统 OLS DiD 在分阶段推送时的偏差。','为什么是 Trial：几乎所有真实产品都是分阶段上线，标准 2×2 DID 在这种场景下是错的，这些方法应成为默认。<br><strong>30天最小实验：</strong>取一份分阶段上线的历史数据（或用 R/Python 模拟），分别用标准 OLS DiD 和 pyfixest 的 Sun-Abraham 方法估计 ATT，比较置信区间和点估计差异，找出结论分歧的场景。')">Staggered DID</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('pydanticai','Trial','PydanticAI','类型安全的 Agent 框架，DX 最佳，生产工程友好。','为什么是 Trial：2025 年快速崛起，适合强调类型安全和可测试性的工程团队，LangGraph 替代选项。<br><strong>30天最小实验：</strong>用 PydanticAI 重写一个已有的 LangChain/LangGraph Agent，对比两版：类型错误能否在运行前被 IDE 捕获、结构化输出是否更稳定、测试代码行数变化。')">PydanticAI</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('langfuse','Trial','Langfuse / LangSmith','LLM 可观测性：trace 调试、prompt 版本、online eval、成本追踪。Langfuse 可自部署。','为什么是 Trial：LLM 应用进入生产后的必备工具，没有可观测性就是飞盲，Langfuse OSS 或 LangSmith 选一个。<br><strong>30天最小实验：</strong>把一个现有 RAG 应用接入 Langfuse（自部署或云端），连续记录 100 次真实请求的 latency、token 数和成本，找出 p95 耗时和最贵的 3 类 query。')">Langfuse / LangSmith</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('econml','Trial','EconML / DoWhy','因果推断库，Double ML、IV、PSM 等方法的工业级实现，微软出品。','为什么是 Trial：方法论成熟，但因果推断本身需要领域专业判断，适合有统计背景的 DS 团队。<br><strong>30天最小实验：</strong>用公开营销数据集（Kaggle marketing-data），用 EconML LinearDML 估计优惠券对购买金额的 ATE，对比 nuisance model 选 LinearRegression vs RandomForest 时置信区间的差异，理解 model selection 的影响。')">EconML / DoWhy</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('sdid','Trial','Synthetic DID','合成控制 + DID 的结合，Uber/Airbnb 使用的准实验方法，不依赖平行趋势假设。','为什么是 Trial：适合对照组难以选择的业务场景，Python 实现只需 10 行（SparseSC）。<br><strong>30天最小实验：</strong>找一份有地区/城市维度的历史业务数据（或用加州烟草税公开数据），分别用标准 DID 和 SDID 估计政策效果，记录平行趋势假设的视觉检验结果和两种方法 ATE 的差异幅度。')">Synthetic DID</span>
+        <span class="radar-pill rp-trial" onclick="showRadar('growthbook','Trial','GrowthBook','开源实验平台，Feature Flag + A/B 测试一体化，内置 CUPED，可自部署。','为什么是 Trial：小团队自建实验平台的最佳选择，成本极低，但大型组织需要更多定制。<br><strong>30天最小实验：</strong>本地 Docker 跑通 GrowthBook，接入一个真实数据源（或 CSV 导入），跑一次完整实验：创建 feature flag → 分流 → 记录指标 → 开启 CUPED → 对比开启前后置信区间宽度变化。')">GrowthBook</span>
       </div>
     </div>
     <div class="radar-cat">
@@ -480,8 +469,10 @@ tr:hover td{background:var(--surface2)}
         <span class="radar-pill rp-assess" onclick="showRadar('testtime','Assess','Test-Time Compute Scaling','推理时分配更多算力（更长 CoT、自校正、搜索），o1/R1/QwQ 均用此范式。','为什么是 Assess：已验证有效，但"何时过度思考"仍在研究，不同任务类型差异显著，需理解边界。')">Test-Time Compute</span>
         <span class="radar-pill rp-assess" onclick="showRadar('prm','Assess','Process Reward Models','对推理链每一步打分（密集奖励），理论上比 ORM 更强，但步骤级标注成本高。','为什么是 Assess：2025年活跃研究方向，是否能规模化替代 ORM 尚无定论，适合关注而非现在投入。')">Process Reward Models</span>
         <span class="radar-pill rp-assess" onclick="showRadar('multimodal','Assess','多模态 LLM','GPT-4o/Gemini 2.5/Claude 3.5，图文音视频统一处理，API 已成熟。','为什么是 Assess：应用场景成熟，但 token 成本仍高，持续关注 cost curve 下降节点再决定是否自建。')">多模态 LLM</span>
+        <span class="radar-pill rp-assess" onclick="showRadar('moe','Assess','MoE 架构','Mixture of Experts 在推理时只激活部分参数，成本效率高。','为什么是 Assess：GPT-4/Mixtral 已验证，但自训练 MoE 门槛极高，关注开源进展即可。')">MoE 架构</span>
         <span class="radar-pill rp-assess" onclick="showRadar('agentmem','Assess','Agent Memory 系统','为 AI Agent 持久化记忆：短期上下文 + 长期向量记忆 + 工具状态（mem0、Zep）。','为什么是 Assess：Agent 生产化的关键瓶颈，但最佳实践尚在形成，标准未定。')">Agent Memory</span>
         <span class="radar-pill rp-assess" onclick="showRadar('uplift','Assess','Uplift Modeling','预测个体处置效应，精准营销/政策评估的前沿方法（CausalML 实现）。','为什么是 Assess：方法论成熟，但落地需要严格实验设计配合，多数团队暂无此能力。')">Uplift Modeling</span>
+        <span class="radar-pill rp-assess" onclick="showRadar('streamml','Assess','Streaming ML','流式数据上的在线学习（River/Faust）。','为什么是 Assess：实时场景有需求，但工程复杂度高，大多数场景 batch 够用。')">Streaming ML</span>
         <span class="radar-pill rp-assess" onclick="showRadar('sae','Assess','SAE 可解释性','Sparse Autoencoders 将 LLM 激活分解为人类可读特征，Anthropic 2024 用于 Claude 3 Sonnet。','为什么是 Assess：机械可解释性进入生产相邻阶段，企业 AI 治理需求上升，工程化路径仍不明确。')">SAE 可解释性</span>
       </div>
     </div>

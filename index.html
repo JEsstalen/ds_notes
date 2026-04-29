@@ -566,6 +566,9 @@ canvas { display: block; border-radius: 6px; background: var(--surface2); }
       <div class="nav-group-label open" onclick="toggleGroup(this)"><span>大数据 & Spark</span><span class="caret">▶</span></div>
       <div class="nav-items open">
         <a href="#timeseries">时间序列</a>
+        <a href="#simulation">蒙特卡洛模拟</a>
+        <a href="#cohort-retention">队列留存预测</a>
+        <a href="#exposure-bias">推荐曝光偏差</a>
         <a href="#spark">Spark 基础</a>
         <a href="#spark-opt">性能优化</a>
         <a href="#sql-adv">SQL 进阶<span class="tag" style="background:#f0fdf4;color:#16a34a">DuckDB</span></a>
@@ -939,6 +942,170 @@ for mde in [0.005, 0.01, 0.02, 0.05]:
       <div class="case-insight">💡 <strong>面试亮点：</strong>能主动发现并处理 Simpson's Paradox、解释 Novelty Effect，而非只是跑出 p&lt;0.05 就结束——是区分能力的关键。</div>
     </div>
   </div>
+
+  <!-- 蒙特卡洛功效模拟 -->
+  <div class="def-block">
+    <div class="def-label">延伸 · 蒙特卡洛功效模拟</div>
+    <div class="def-text">用随机模拟代替解析公式，直接观察"样本量不足时假阳性/假阴性如何失控"。</div>
+    <div class="def-context">统计功效公式给的是期望值；Monte Carlo 模拟给的是分布——能看到极端情况的发生概率，也能验证非参数场景下公式是否仍然成立。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">用 · 不用 · 实践价值</div>
+    <ul>
+      <li><strong>用：</strong>指标不符合正态假设（转化率偏低、长尾分布）；需要向业务方直观展示"为什么需要跑满 N 周"；验证非标准检验（permutation test、bootstrap CI）的统计性质。</li>
+      <li><strong>不用：</strong>标准两组比例/均值检验场景下，解析公式（statsmodels）更快且足够精确。</li>
+      <li><strong>实践价值：</strong>每次有人要求"先跑 3 天看效果"，一张功效 vs 样本量的模拟曲线比任何解释都有说服力——直接把假阳性率从 5% 到 30% 的曲线甩给 PM。</li>
+    </ul>
+  </div>
+  <div class="code-block">
+    <span class="lang">🐍 蒙特卡洛功效模拟（验证样本量与假阳性/假阴性的关系）</span>
+    <pre>import numpy as np
+from scipy import stats
+
+np.random.seed(42)
+N_SIM = 5000          # 模拟次数
+ALPHA  = 0.05         # 显著性水平
+
+def simulate_power(n_per_group, true_delta, baseline=0.12, n_sim=N_SIM):
+    """模拟给定样本量下的统计功效（真实效应存在时的检出率）"""
+    p_ctrl = baseline
+    p_trt  = baseline + true_delta
+    rejections = 0
+    for _ in range(n_sim):
+        ctrl = np.random.binomial(n_per_group, p_ctrl) / n_per_group
+        trt  = np.random.binomial(n_per_group, p_trt)  / n_per_group
+        # 双侧 z 检验
+        p_pool = (ctrl * n_per_group + trt * n_per_group) / (2 * n_per_group)
+        se = np.sqrt(2 * p_pool * (1 - p_pool) / n_per_group)
+        z  = (trt - ctrl) / (se + 1e-12)
+        if abs(z) > stats.norm.ppf(1 - ALPHA / 2):
+            rejections += 1
+    return rejections / n_sim
+
+def simulate_false_positive(n_per_group, baseline=0.12, n_sim=N_SIM):
+    """模拟无效应时的假阳性率（应接近 alpha=5%）"""
+    return simulate_power(n_per_group, true_delta=0, baseline=baseline, n_sim=n_sim)
+
+# ── 实验 1：功效 vs 样本量 ──
+sample_sizes = [200, 500, 1000, 2000, 5000, 10000]
+true_mde = 0.02  # 真实效应 +2%
+
+print("样本量(每组) | 统计功效 | 假阳性率")
+print("-" * 40)
+for n in sample_sizes:
+    power = simulate_power(n, true_mde)
+    fp    = simulate_false_positive(n)
+    print(f"  {n:>6,}   |  {power:.1%}   |  {fp:.1%}")
+
+# ── 实验 2：Peeking 代价（每 N 天看一次就停） ──
+def simulate_peeking(total_n, n_peeks, true_delta=0, baseline=0.12, n_sim=N_SIM):
+    """模拟中途偷看 n_peeks 次时实际假阳性率"""
+    peek_ns = [int(total_n * (i + 1) / n_peeks) for i in range(n_peeks)]
+    false_pos = 0
+    for _ in range(n_sim):
+        for n in peek_ns:
+            ctrl = np.random.binomial(n, baseline)   / n
+            trt  = np.random.binomial(n, baseline + true_delta) / n
+            p_pool = (ctrl * n + trt * n) / (2 * n)
+            se = np.sqrt(2 * p_pool * (1 - p_pool) / n)
+            z  = (trt - ctrl) / (se + 1e-12)
+            if abs(z) > stats.norm.ppf(1 - ALPHA / 2):
+                false_pos += 1
+                break  # 发现"显著"就停止
+    return false_pos / n_sim
+
+print("\nPeeking 代价（无真实效应，总样本 5000/组）：")
+for peeks in [1, 3, 7, 14]:
+    fp = simulate_peeking(5000, peeks)
+    print(f"  偷看 {peeks:>2} 次 → 假阳性率 {fp:.1%}  （目标 5%）")</pre>
+  </div>
+  <div class="callout tip"><span class="icon">💡</span><span><strong>关键结论：</strong>每组 500 人时功效只有 ~30%（70% 概率检测不到真实效果）；每天偷看 14 次的假阳性率从 5% 膨胀到 ~40%。把这两张表给 PM，比讲理论有效 10 倍。</span></div>
+  <div class="sec-check">
+    <div class="sc-q">Q：A/B 实验的"统计功效 80%"意味着什么？如果样本量减半会发生什么？</div>
+    <div class="sc-a">功效 80% 意味着在真实效应存在的情况下，有 80% 概率能检测到显著差异（20% 漏报）。样本量减半时，功效会大幅下降——通常从 80% 降至 40-50%，意味着一半以上的真实效应被当作"无效"丢掉。</div>
+  </div>
+
+  <!-- 实验不可行时的替代方案 -->
+  <h3 style="margin-top:28px">实验不可行时的替代方案</h3>
+  <div class="def-block">
+    <div class="def-label">理论 vs 现实的偏差</div>
+    <div class="def-text">教科书假设你可以随时随机分流用户做实验。现实是：大促 3 天跑不出样本量；社交产品实验组影响对照组；监管要求所有用户同等对待；平台流量不可分割。</div>
+    <div class="def-context">这三类情况分别对应三种替代方案：时间维度分流（Switchback）；空间维度分流（Cluster RCT）；事后观察数据因果估计（DID/合成控制）。能识别问题类型并选对方法，是中高级 DS 的核心判断力。</div>
+  </div>
+
+  <table>
+    <thead><tr><th>问题类型</th><th>具体场景</th><th>替代方案</th><th>核心假设</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>网络效应</strong><br><span style="font-size:11px;color:var(--text-3)">用户互相影响</span></td>
+        <td>社交平台：实验组用户给对照组发消息；双边市场：司机/买家/卖家不独立</td>
+        <td><strong>Cluster RCT</strong>：按地理/社群整体分组；或 <strong>时间分流</strong>（全平台交替切换策略）</td>
+        <td>不同 cluster 之间的溢出效应可忽略</td>
+      </tr>
+      <tr>
+        <td><strong>样本量不足</strong><br><span style="font-size:11px;color:var(--text-3)">时间窗口太短</span></td>
+        <td>游戏大促 3 天；黑五 GMV 实验；稀有事件（欺诈、重度付费）</td>
+        <td><strong>Switchback 实验</strong>：按时间段交替 A/B（如每小时切换）；或 <strong>CUPED</strong> 降方差；或事后 <strong>DID</strong></td>
+        <td>时间效应可控；或有平行趋势对照</td>
+      </tr>
+      <tr>
+        <td><strong>无法随机分流</strong><br><span style="font-size:11px;color:var(--text-3)">自然实验 / 政策变化</span></td>
+        <td>定价策略变更（全量上线）；监管政策分地区生效；功能按城市灰度</td>
+        <td><strong>DID（差分中差）</strong>；<strong>合成控制</strong>；<strong>断点回归（RDD）</strong></td>
+        <td>平行趋势假设；或临界点处理概率连续</td>
+      </tr>
+      <tr>
+        <td><strong>实验后评估</strong><br><span style="font-size:11px;color:var(--text-3)">已全量上线</span></td>
+        <td>大促已结束想知道真实效果；功能已全量无法回滚</td>
+        <td><strong>DID 事后分析</strong>；对照组用相似产品/地区；<strong>合成控制</strong>构造反事实</td>
+        <td>存在足够相似的对照；干预前趋势平行</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block">
+    <span class="lang">🐍 Switchback 实验设计（时间分流，适用于大促/平台级策略）</span>
+    <pre>import numpy as np
+import pandas as pd
+from scipy import stats
+
+np.random.seed(42)
+
+# ── 场景：外卖平台测试新定价策略，无法用用户分流（司机和用户相互影响）──
+# Switchback：每小时交替 A（对照）/ B（实验）
+hours = 72          # 观察 3 天
+strategy  = np.array(['A' if h % 2 == 0 else 'B' for h in range(hours)])
+
+# 模拟：B 策略真实效果 = 基础 GMV × 1.05（+5%）
+base_gmv  = 50000
+true_lift = 0.05
+noise_std = 3000    # 每小时自然波动
+
+gmv_A = base_gmv + np.random.normal(0, noise_std,
+                                      (strategy == 'A').sum())
+gmv_B = base_gmv * (1 + true_lift) + np.random.normal(0, noise_std,
+                                                        (strategy == 'B').sum())
+
+# ── 基础分析：直接比较 A/B 均值 ──
+t_stat, p_val = stats.ttest_ind(gmv_B, gmv_A)
+lift_est = (gmv_B.mean() - gmv_A.mean()) / gmv_A.mean()
+print(f"Switchback 实验结果（{hours} 小时，{len(gmv_A)} 个 A 窗口 / {len(gmv_B)} 个 B 窗口）：")
+print(f"  A 均值 GMV：{gmv_A.mean():,.0f} 元")
+print(f"  B 均值 GMV：{gmv_B.mean():,.0f} 元")
+print(f"  估计 uplift：{lift_est:+.1%}（真实值 +{true_lift:.0%}）")
+print(f"  p-value：{p_val:.4f}")
+
+# ── 注意：需要检验时间自相关（相邻时间段不独立）──
+# 简化版：检查 A 窗口前后的 GMV 是否有序列相关
+gmv_A_series = np.array([base_gmv + np.random.normal(0, noise_std)
+                           for _ in range(len(gmv_A))])
+autocorr = np.corrcoef(gmv_A_series[:-1], gmv_A_series[1:])[0, 1]
+print(f"\n时间自相关系数：{autocorr:.3f}")
+print("（接近 0 = 小时间隔足够长，时间效应可忽略；>0.3 需要更长切换间隔或 HAC 标准误）")</pre>
+  </div>
+
+  <div class="callout warn"><span class="icon">⚠️</span><span><strong>Switchback 的关键参数：</strong>切换间隔要长于系统响应时间（外卖一般 1-2 小时；广告系统 15 分钟可能够）；切换瞬间的"过渡期"数据要丢掉（切换后 N 分钟内数据不稳定）；时间有趋势时（早晚高峰）需要用 HAC 标准误而非普通 t 检验。</span></div>
+  <div class="callout tip"><span class="icon">💡</span><span><strong>面试回答框架：</strong>被问"如果不��做 A/B 实验怎么办"，三步走：① 问清楚"为什么不能做"——是网络效应、样本量、还是无法随机 → ② 根据原因选对应方法（上表）→ ③ 主动说出该方法的核心假设和验证方式。能做到第③步的候选人极少。</span></div>
 </section>
 
 <!-- ════════════ SECTION: ML Overview ════════════ -->
@@ -1456,6 +1623,79 @@ Walk-Forward Validation（滚动验证）：
       </ul>
       <div class="case-insight">💡 <strong>深度认知：</strong>AUC 好 ≠ 概率校准好。推荐系统只需排序→用 AUC；风控定价需要准确概率→还需校准。面试时能主动区分这两点是高分回答。</div>
     </div>
+  </div>
+
+  <!-- 校准深化 -->
+  <h3 style="margin-top:28px">概率校准（Calibration）—— AUC 之外更重要的能力</h3>
+  <div class="def-block">
+    <div class="def-label">定义 · 概率校准</div>
+    <div class="def-text">模型输出"30% 概率"时，真实发生率应该接近 30%。校准衡量的是预测概率的可信度，而不是排序能力。</div>
+    <div class="def-context">AUC 只关心"谁排在谁前面"，与预测概率的绝对值无关。保险定价、广告出价、风控授信额度都依赖准确的概率值——排序对了但概率偏高 2 倍，出价就会系统性偏高，直接亏损。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">用 · 不用 · 实践价值</div>
+    <ul>
+      <li><strong>必须校准：</strong>风控定价（预测概率直接决定利率）；广告 CPM 出价（概率×收益=出价上限）；医疗诊断（给医生看的"患病概率"必须可信）；LTV 预测（用来决定买量出价）。</li>
+      <li><strong>不需要校准：</strong>只需要排序的推荐系统（Top-K 召回）；AUC/NDCG 是唯一指标的竞赛场景。</li>
+      <li><strong>实践价值：</strong>校准是 DS 和 MLE 之间的能力分水岭之一。大多数人会调 AUC，少数人知道在风控/广告场景下未校准的模型会导致系统性过度/不足定价，直接影响 P&L。</li>
+    </ul>
+  </div>
+  <div class="code-block">
+    <span class="lang">🐍 校准诊断 + Platt Scaling / Isotonic Regression 修正</span>
+    <pre>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.calibration import CalibratedClassifierCV, calibration_curve
+from sklearn.metrics import brier_score_loss, log_loss
+from sklearn.model_selection import train_test_split
+
+np.random.seed(42)
+
+# ── 训练一个未校准的 GBM（典型场景：概率向中间压缩）──
+X, y = make_classification(n_samples=20000, n_features=20,
+                            n_informative=10, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+gbm = GradientBoostingClassifier(n_estimators=200, random_state=42)
+gbm.fit(X_train, y_train)
+prob_raw = gbm.predict_proba(X_test)[:, 1]
+
+# ── 校准后处理 ──
+# Platt Scaling：逻辑回归后处理，假设 sigmoid 形变形（适合 SVM/GBM）
+platt = CalibratedClassifierCV(gbm, method='sigmoid', cv='prefit')
+platt.fit(X_test[:500], y_test[:500])   # 用小验证集拟合校准参数
+prob_platt = platt.predict_proba(X_test)[:, 1]
+
+# Isotonic Regression：非参数，更灵活（需要更多数据，适合大样本）
+iso = CalibratedClassifierCV(gbm, method='isotonic', cv='prefit')
+iso.fit(X_test[:500], y_test[:500])
+prob_iso = iso.predict_proba(X_test)[:, 1]
+
+# ── 评估指标对比 ──
+print(f"{'方法':<20} {'Brier Score↓':>14} {'Log Loss↓':>12} {'校准说明'}")
+print("-" * 65)
+for name, prob in [("原始 GBM", prob_raw),
+                   ("Platt Scaling", prob_platt),
+                   ("Isotonic Reg.", prob_iso)]:
+    bs = brier_score_loss(y_test, prob)
+    ll = log_loss(y_test, prob)
+    print(f"{name:<20} {bs:>14.4f} {ll:>12.4f}")
+
+# ── 可靠性图（Reliability Diagram）关键数据 ──
+# 理想：预测 30% 的样本，实际正例率应接近 30%
+print("\n可靠性图（预测概率分箱 vs 实际正例率）：")
+print(f"{'预测概率区间':>16}  {'原始':>8}  {'Platt':>8}")
+frac_raw, mean_raw = calibration_curve(y_test, prob_raw, n_bins=5)
+frac_platt, mean_platt = calibration_curve(y_test, prob_platt, n_bins=5)
+for pred_r, pred_p, act in zip(mean_raw, mean_platt, frac_raw):
+    gap = abs(pred_r - act)
+    print(f"  预测 {pred_r:.2f} → 实际 {act:.2f}  (原始偏差 {gap:.2f})")</pre>
+  </div>
+  <div class="callout warn"><span class="icon">⚠️</span><span><strong>校准的两类常见问题：</strong>① <strong>过度自信</strong>（GBM/神经网络常见）：预测 0.9 的样本实际只有 0.7 正例率，模型高估了确定性；② <strong>回归中间</strong>（朴素贝叶斯常见）：概率集中在 0.4-0.6，极端情况不够极端。Platt Scaling 修正第①类，Isotonic 对两类都有效但需要更多数据。</span></div>
+  <div class="callout tip"><span class="icon">💡</span><span><strong>ECE（期望校准误差）一行计算：</strong><code style="background:var(--surface2);padding:1px 6px;border-radius:3px">ECE = Σ_bin (|bin_size/n| × |avg_confidence - avg_accuracy|)</code>。ECE &lt; 0.05 一般认为校准良好；风控场景建议 &lt; 0.02。</span></div>
+  <div class="sec-check">
+    <div class="sc-q">Q：你的风控模型 AUC=0.92，但产品方反映"模型给的通过率太高，实际坏账率比预测高 2 倍"。问题出在哪，你会怎么诊断和修复？</div>
+    <div class="sc-a">这是典型的校准问题——模型排序能力强（AUC 高）但概率系统性偏低（预测 10% 违约概率时实际是 20%）。诊断：画可靠性图，看每个概率区间的实际正例率是否偏离对角线。修复：用验证集做 Platt Scaling 或 Isotonic Regression 后处理，重新验证 Brier Score 是否下降。根本原因通常是训练集正负样本比例与真实分布不符，或 GBM 本身概率输出偏向中间。</div>
   </div>
 </section>
 
@@ -3328,9 +3568,909 @@ for fold in range(3):
       <div class="case-insight">💡 <strong>时序核心坑：</strong>用 random_split 而不是 time_split 会让未来数据"泄露"到训练集——实际 AUC 看起来很高但线上效果很差。TimeSeriesSplit 是时序任务的黄金法则。</div>
     </div>
   </div>
+  <!-- 状态空间模型 / HMM -->
+  <h3>状态空间模型 与 隐马尔可夫模型（HMM）</h3>
+  <div class="def-block">
+    <div class="def-label">定义 · 状态空间模型</div>
+    <div class="def-text">将时序系统分为"隐藏状态"和"观测信号"两层：状态随时间转移（转移方程），每个状态产生一个可观测值（观测方程）。</div>
+    <div class="def-context">卡尔曼滤波（Kalman Filter）是连续状态的经典实现；隐马尔可夫模型（HMM）是离散状态版本。两者都解决"从噪声观测中推断隐藏真实状态"的问题。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">用 · 不用 · 实践价值</div>
+    <ul>
+      <li><strong>用（HMM）：</strong>序列中存在离散的"模式切换"——市场牛熊状态、用户活跃/流失状态、语音识别音素序列；想知道"现在处于哪个状态"而不只是预测下一个值。</li>
+      <li><strong>用（卡尔曼滤波）：</strong>传感器信号含噪声、需要实时滤波（GPS 轨迹平滑、库存追踪）；参数随时间缓慢漂移（时变系数估计）。</li>
+      <li><strong>不用：</strong>序列没有明显"状态切换"语义；特征已经能直接描述所有已知模式；LightGBM lag 特征就够用时，别过度建模。</li>
+      <li><strong>实践价值：</strong>金融风控和用户生命周期模型里 HMM 是标配——"用户进入流失前状态"比"用户 7 天未登录"更早给出预警信号，通常领先 2-4 周。</li>
+    </ul>
+  </div>
+  <div class="code-block">
+    <span class="lang">🐍 HMM 状态推断（用户活跃/潜伏/流失三状态，hmmlearn）</span>
+    <pre>import numpy as np
+from hmmlearn import hmm
+
+# ── 场景：推断用户每天的行为状态（活跃 / 潜伏 / 流失前）──
+# 观测��：每日登录次数（0-5）
+np.random.seed(42)
+
+# 真实参数（实际中由 EM 算法学出来）
+# 3 个隐藏状态：0=活跃 1=潜伏 2=流失前
+model = hmm.PoissonHMM(n_components=3, n_iter=100, random_state=42)
+
+# 模拟 6 个月的用户登录序列
+true_states = [0]*30 + [1]*20 + [0]*15 + [2]*25 + [1]*30  # 120 天
+login_rates  = {0: 3.5, 1: 0.8, 2: 0.1}  # 各状态的泊松率
+obs = np.array([
+    np.random.poisson(login_rates[s]) for s in true_states
+]).reshape(-1, 1)
+
+# 拟合 HMM
+model.fit(obs)
+
+# 推断隐藏状态序列（Viterbi 解码）
+predicted_states = model.predict(obs)
+
+# 转移矩阵：model.transmat_[i, j] = P(状态j | 当前状态i)
+print("状态转移矩阵：")
+print(np.round(model.transmat_, 3))
+
+# 各状态的泊松均值（对应活跃程度）
+print("\n各状态的平均登录次数（越大越活跃）：")
+print(np.round(model.lambdas_.flatten(), 2))
+
+# ── 实战用法：滑动窗口推断当前状态 ──
+# 用最近 30 天数据推断用户"现在处于哪个状态"
+recent_obs = obs[-30:]
+current_state = model.predict(recent_obs)[-1]
+state_names = {0: "活跃", 1: "潜伏", 2: "流失风险"}
+print(f"\n该用户当前状态：{state_names[current_state]}")</pre>
+  </div>
+  <div class="code-block">
+    <span class="lang">🐍 卡尔曼滤波（Kalman Filter）— 从噪声销售数据中提取真实趋势</span>
+    <pre>import numpy as np
+
+def kalman_filter_1d(observations, process_var=1.0, obs_var=10.0):
+    """
+    单变量卡尔曼滤波：从含噪声的观测序列中估计真实状态。
+    process_var：状态本身的变化幅度（趋势漂移快→调大）
+    obs_var    ：观测噪声方差（噪声大→调大）
+    """
+    n = len(observations)
+    # 初始化
+    x_est = observations[0]   # 初始状态估计
+    p_est = 1.0               # 初始误差协方差
+
+    filtered = []
+    for z in observations:
+        # 预测步
+        x_pred = x_est        # 匀速假设：状态不变
+        p_pred = p_est + process_var
+
+        # 更新步（卡尔曼增益）
+        K      = p_pred / (p_pred + obs_var)   # 0→完全信任预测；1→完全信任观测
+        x_est  = x_pred + K * (z - x_pred)    # 加权融合
+        p_est  = (1 - K) * p_pred
+
+        filtered.append(x_est)
+    return np.array(filtered)
+
+# 模拟：真实趋势 + 高噪声销售数据
+np.random.seed(42)
+t = np.arange(60)
+true_trend  = 100 + 2 * t + 10 * np.sin(2 * np.pi * t / 12)
+noisy_sales = true_trend + np.random.normal(0, 20, len(t))   # 加入噪声
+
+# 滤波
+smooth = kalman_filter_1d(noisy_sales, process_var=2.0, obs_var=400.0)
+
+# 对比 RMSE
+rmse_raw    = np.sqrt(np.mean((noisy_sales - true_trend)**2))
+rmse_smooth = np.sqrt(np.mean((smooth - true_trend)**2))
+print(f"原始噪声 RMSE：{rmse_raw:.1f}")
+print(f"卡尔曼滤波后  RMSE：{rmse_smooth:.1f}")
+print(f"噪声降低比例：{(rmse_raw - rmse_smooth)/rmse_raw:.0%}")</pre>
+  </div>
+  <div class="callout tip"><span class="icon">💡</span><span><strong>参数调节直觉：</strong><code>obs_var / process_var</code> 的比值决定滤波平滑度。比值大→更信任模型预测（更平滑但滞后）；比值小→更信任观测（响应快但保留噪声）。实际中先用贝叶斯优化或 EM 自动学习这两个参数。</span></div>
+  <div class="callout warn"><span class="icon">⚠️</span><span><strong>HMM 常见坑：</strong>状态数量（n_components）要靠 BIC/AIC 或业务语义来选，不要随机猜；EM 算法对初值敏感，多跑几次取最优对数似然；状态的"活跃/流失"标签是事后贴的，要对照业务指标验证，别只看模型自己收敛的结果。</span></div>
+  <div class="sec-check">
+    <div class="sc-q">Q：HMM 和 ARIMA 都能用于时序，核心区别是什么？什么时候选 HMM？</div>
+    <div class="sc-a">ARIMA 直接对观测值建模（值 = 历史值的线性组合 + 误差），没有隐藏层，适合单一模式的平稳/趋势序列。HMM 假设系统在多个"模式"（状态）之间切换，每个状态有自己的生成分布——适合存在离散状态转换的场景（牛熊市、用户活跃周期）。选 HMM 的信号：领域专家能说出"应该有 N 种典型状态"，且这些状态在观测上有明显不同的统计特征。</div>
+  </div>
+
   <div class="hands-on">
     <span class="ho-label">动手练习</span>
     <a href="https://www.kaggle.com/learn/time-series" target="_blank" class="ho-link">Kaggle 时间序列预测课 — 从趋势/季节性分解到 LightGBM lag 特征，含可提交 notebook</a>
+  </div>
+</section>
+
+<!-- ════════════ SECTION: Monte Carlo Simulation ════════════ -->
+<section class="section" id="simulation">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:#faf5ff">🎲</div>
+    <h2>蒙特卡洛模拟 与 不确定性量化</h2>
+  </div>
+  <p class="sec-sub">用随机采样逼近复杂积分或分布——当解析解太难、真实分布未知、或需要感知结果置信度时，蒙特卡洛是万能工具箱。</p>
+
+  <div class="def-block">
+    <div class="def-label">定义 · 蒙特卡洛方法</div>
+    <div class="def-text">通过大量随机样本估计数学期望、概率或积分——"如果我从这个分布反复采样 N 次，平均结果会是什么？"</div>
+    <div class="def-context">名字来自摩纳哥赌城。1940 年代曼哈顿计划中用于模拟核链式反应——当时无法解析计算，就用随机数模拟粒子碰撞。今天用于不确定性量化、金融定价、实验功效分析、贝叶斯推断等各个领域。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">用 · 不用 · 实践价值</div>
+    <ul>
+      <li><strong>用：</strong>没有解析公式（如复杂业务场景的期望收益）；需要完整的不确定性分布而不只是点估计（"95% 的情况下收益在 X 到 Y 之间"）；验证解析结论在非正态/小样本场景下是否仍成立。</li>
+      <li><strong>不用：</strong>问题有简单解析解（均值方差直接计算更快）；样本空间极大但结构规则（用 DP/数学公式）；计算预算极度有限（模拟成本正比于采样次数）。</li>
+      <li><strong>实践价值：</strong>DS 工作中三个最常见应用：① 向 PM 展示"为什么实验要跑 N 周"（功效模拟）；② 业务预测不确定性（"Q3 GMV 有 80% 概率在 X 到 Y 之间"）；③ 风控场景下的尾部风险量化（VaR/CVaR）。</li>
+    </ul>
+  </div>
+
+  <!-- Tab 系统 -->
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('sim',this,'sim-t1')">不确定性区间</button>
+    <button class="tab-btn" onclick="switchTab('sim',this,'sim-t2')">Bootstrap</button>
+    <button class="tab-btn" onclick="switchTab('sim',this,'sim-t3')">期权定价直觉</button>
+    <button class="tab-btn" onclick="switchTab('sim',this,'sim-t4')">业务场景建模</button>
+  </div>
+
+  <div id="sim-t1" class="tab-content active">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">不用正态假设，直接模拟"如果这个过程重复 10000 次，结果分布是什么"。</p>
+    <div class="code-block">
+      <span class="lang">🐍 蒙特卡洛不确定性区间（业务收益预测）</span>
+      <pre>import numpy as np
+
+np.random.seed(42)
+N_SIM = 100_000
+
+# ── 场景：推送通知的收益不确定性 ──
+# 参数分布（来自历史数据的均值±标准差）
+ctr_mu,  ctr_std  = 0.05, 0.008   # 点击率
+cvr_mu,  cvr_std  = 0.12, 0.020   # 转化率
+aov_mu,  aov_std  = 150.0, 30.0   # 客单价（元）
+n_push             = 100_000       # 推送用户数
+
+# 蒙特卡洛采样
+ctr = np.random.normal(ctr_mu, ctr_std, N_SIM).clip(0, 1)
+cvr = np.random.normal(cvr_mu, cvr_std, N_SIM).clip(0, 1)
+aov = np.random.normal(aov_mu, aov_std, N_SIM).clip(0)
+
+# 计算每次模拟的总 GMV
+gmv = n_push * ctr * cvr * aov
+
+# 置信区间
+p5, p50, p95 = np.percentile(gmv, [5, 50, 95])
+print(f"预期 GMV（中位数）：{p50:,.0f} 元")
+print(f"80% 置信区间：[{p5:,.0f}, {p95:,.0f}] 元")
+print(f"超过 100 万 GMV 的概率：{(gmv > 1_000_000).mean():.1%}")
+print(f"低于 50 万 GMV 的概率：{(gmv < 500_000).mean():.1%}")
+
+# 敏感性分析：哪个参数不确定性贡献最大？
+from numpy import corrcoef
+print("\n各参数与 GMV 的相关性（越大→对 GMV 影响越大）：")
+print(f"  CTR 相关性：{corrcoef(ctr, gmv)[0,1]:.3f}")
+print(f"  CVR 相关性：{corrcoef(cvr, gmv)[0,1]:.3f}")
+print(f"  AOV 相关性：{corrcoef(aov, gmv)[0,1]:.3f}")</pre>
+    </div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>向业务方汇报时：</strong>不要只说"预期 GMV 85 万"——说"80% 概率在 62 万到 108 万之间，超过 100 万的概率是 28%"，让决策者感知风险，不是只接受点估计。</span></div>
+  </div>
+
+  <div id="sim-t2" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">Bootstrap：从你已有的样本中有放回地重采样，估计统计量的抽样分布——无需假设数据来自某个分布族。</p>
+    <div class="def-block">
+      <div class="def-label">定义 · Bootstrap</div>
+      <div class="def-text">把手头的样本当作"总体"，反复有放回抽样 B 次，每次计算同一个统计量，得到统计量的经验分布。</div>
+      <div class="def-context">解决"我知道样本均值，但不知道均值的不确定性有多大，且数据不满足正态假设"的问题。1979 年由 Bradley Efron 提出。</div>
+    </div>
+    <div class="code-block">
+      <span class="lang">🐍 Bootstrap 置信区间（非正态指标，如中位数、Gini 系数）</span>
+      <pre>import numpy as np
+
+np.random.seed(42)
+
+# ── 场景：用户消费金额（严重右偏，不能用正态公式）──
+# 真实用户消费数据（模拟：大多数人消费少，少数人消费极多）
+n_users = 500
+spend = np.concatenate([
+    np.random.exponential(100, int(n_users * 0.8)),  # 80% 普通用户
+    np.random.exponential(2000, int(n_users * 0.2))  # 20% 高价值用户
+])
+
+# ── Bootstrap 估计中位数的 95% 置信区间 ──
+B = 10_000
+medians = np.array([
+    np.median(np.random.choice(spend, size=len(spend), replace=True))
+    for _ in range(B)
+])
+
+ci_low, ci_high = np.percentile(medians, [2.5, 97.5])
+print(f"样本中位数：{np.median(spend):.1f} 元")
+print(f"95% Bootstrap CI：[{ci_low:.1f}, {ci_high:.1f}] 元")
+
+# ── Bootstrap A/B 检验（非参数，不假设分布形状）──
+def bootstrap_ab_test(group_a, group_b, B=10_000, statistic=np.mean):
+    """Bootstrap 检验两组统计量的差异，返回 p-value（双侧）"""
+    observed_diff = statistic(group_b) - statistic(group_a)
+    combined = np.concatenate([group_a, group_b])
+    diffs = []
+    for _ in range(B):
+        a_boot = np.random.choice(combined, size=len(group_a), replace=True)
+        b_boot = np.random.choice(combined, size=len(group_b), replace=True)
+        diffs.append(statistic(b_boot) - statistic(a_boot))
+    diffs = np.array(diffs)
+    p_value = (np.abs(diffs) >= np.abs(observed_diff)).mean()
+    return observed_diff, p_value
+
+# 示例：检验两个推荐算法的用户消费中位数差异
+group_a = np.random.exponential(120, 300)
+group_b = np.random.exponential(140, 300)   # B 组效果更好
+diff, p = bootstrap_ab_test(group_a, group_b, statistic=np.median)
+print(f"\nBootstrap A/B 检验（中位数差）：{diff:.1f} 元，p-value={p:.3f}")</pre>
+    </div>
+    <div class="callout warn"><span class="icon">⚠️</span><span><strong>Bootstrap 的局限：</strong>它假设样本能代表总体。样本太小（n&lt;30）时，重采样的分布不稳定；时序数据不能直接 bootstrap（破坏了时间相关结构），应该用 Block Bootstrap。</span></div>
+  </div>
+
+  <div id="sim-t3" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">用蒙特卡洛模拟股价路径，直觉理解期权定价——不要求懂 Black-Scholes 公式，只需理解"不确定性有价格"。</p>
+    <div class="def-block">
+      <div class="def-label">定义 · 期权定价直觉</div>
+      <div class="def-text">看涨期权的价值 = 到期日股价超过执行价格时的平均收益（折现）。蒙特卡洛路径模拟是最直观的估算方法。</div>
+      <div class="def-context">对 DS 的实际价值：期权定价模型（GBM + Monte Carlo）是金融 DS 面试标配；更重要的是，同样的"模拟未来路径 → 统计结果分布"框架可以直接用于业务预测、库存管理和风险量化。</div>
+    </div>
+    <div class="code-block">
+      <span class="lang">🐍 蒙特卡洛期权定价（Black-Scholes 的随机路径版）</span>
+      <pre>import numpy as np
+
+def mc_option_price(S0, K, T, r, sigma, n_paths=100_000, option_type='call'):
+    """
+    蒙特卡洛估计欧式期权价格。
+    S0    : 当前股价
+    K     : 执行价格
+    T     : 到期时间（年）
+    r     : 无风险利率（年化）
+    sigma : 波动率（年化）
+    """
+    # 几何布朗运动：St = S0 * exp((r - σ²/2)*T + σ*sqrt(T)*Z)
+    Z   = np.random.standard_normal(n_paths)
+    ST  = S0 * np.exp((r - 0.5 * sigma**2) * T + sigma * np.sqrt(T) * Z)
+
+    if option_type == 'call':
+        payoffs = np.maximum(ST - K, 0)   # 到期收益：max(股价-执行价, 0)
+    else:
+        payoffs = np.maximum(K - ST, 0)   # 看跌期权
+
+    # 折现期望收益
+    price   = np.exp(-r * T) * payoffs.mean()
+    std_err = payoffs.std() / np.sqrt(n_paths)
+
+    return price, std_err, ST
+
+np.random.seed(42)
+price, se, ST = mc_option_price(
+    S0=100, K=105, T=1.0, r=0.05, sigma=0.2, option_type='call'
+)
+print(f"蒙特卡洛期权价格：{price:.3f} 元（±{1.96*se:.3f} 95%CI）")
+print(f"到期股价中位数：{np.median(ST):.1f}，超过执行价概率：{(ST>105).mean():.1%}")
+
+# 直觉：为什么波动率越高，期权价格越高？
+for sigma in [0.1, 0.2, 0.3, 0.5]:
+    p, _, _ = mc_option_price(100, 105, 1.0, 0.05, sigma)
+    print(f"σ={sigma:.1f} → 期权价格={p:.2f}")</pre>
+    </div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>关键直觉：</strong>波动率越大，到期股价的"尾部"越厚——虽然期权到期一文不值的概率也高，但偶尔大涨的收益把价格撑起来了。这就是"不确定性有价格"的本质。同样的逻辑适用于任何可以被量化的业务风险。</span></div>
+  </div>
+
+  <div id="sim-t4" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">将蒙特卡洛模拟应用到实际业务场景：新产品上市预期收益、广告投放 ROI 分布、库存决策。</p>
+    <div class="code-block">
+      <span class="lang">🐍 业务场景：新功能上线 ROI 的蒙特卡洛不确定性分析</span>
+      <pre>import numpy as np
+
+np.random.seed(42)
+N_SIM = 100_000
+
+# ── 场景：评估推出付费会员功能的预期 ROI ──
+# 所有参数来自历史数据或专家估计，带有不确定性范围
+
+# 参数（均值, 标准差）—— 由历史实验或业务经验给出
+monthly_dau       = (500_000, 50_000)    # 月活用户
+membership_rate   = (0.03, 0.008)        # 付费转化率（3%±0.8%）
+monthly_price     = (29.0, 3.0)          # 会员月费（元）
+churn_rate        = (0.08, 0.02)         # 月流失率
+dev_cost          = (2_000_000, 300_000) # 开发成本（元）
+months            = 12                   # 评估期
+
+def sim_param(mu, std):
+    return np.random.normal(mu, std, N_SIM).clip(0)
+
+dau  = sim_param(*monthly_dau)
+mr   = sim_param(*membership_rate).clip(0, 1)
+price= sim_param(*monthly_price)
+churn= sim_param(*churn_rate).clip(0, 1)
+cost = sim_param(*dev_cost)
+
+# 简化模型：每月会员数 × 月费，考虑流失
+members_init = dau * mr
+# 12 个月总收入（指数衰减模型）
+total_revenue = members_init * price * (1 - (1 - churn)**months) / churn
+
+roi = (total_revenue - cost) / cost * 100  # %
+
+# 结果分布
+p10, p50, p90 = np.percentile(roi, [10, 50, 90])
+prob_positive  = (roi > 0).mean()
+
+print("── 会员功能 12 个月 ROI 不确定性分析 ──")
+print(f"中位 ROI：{p50:.0f}%")
+print(f"80% 置信区间：[{p10:.0f}%, {p90:.0f}%]")
+print(f"ROI 为正的概率：{prob_positive:.1%}")
+print(f"亏损场景（ROI < -50%）概率：{(roi < -50).mean():.1%}")
+
+# 敏感性：哪个参数影响最大？
+print("\n关键参数敏感性（与 ROI 相关性）：")
+for name, param in [("会员转化率", mr), ("客单价", price), ("流失率", -churn)]:
+    print(f"  {name}: {np.corrcoef(param, roi)[0,1]:.3f}")</pre>
+    </div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>DS 面试必杀技：</strong>当 PM 问"这个功能值得做吗"，用 Monte Carlo 给出概率分布而不是单点估计——"ROI 为正的概率是 73%，但最坏情况可能亏 40%，最好情况可以赚 280%"。这比说"预计 ROI 90%"更有说服力，也更诚实���</span></div>
+  </div>
+
+  <!-- 实战案例 -->
+  <div class="case-box" style="margin-top:24px">
+    <div class="case-box-head">
+      <span class="case-title">🎲 实战案例：广告投放预算分配（Monte Carlo + Bootstrap）</span>
+      <div class="case-badges">
+        <span class="case-badge cb-diff-med">中级</span>
+        <span class="case-badge cb-tag">Monte Carlo</span>
+        <span class="case-badge cb-tag">Bootstrap</span>
+        <span class="case-badge cb-tag">不确定性量化</span>
+      </div>
+    </div>
+    <div class="case-box-body">
+      <div class="case-meta">
+        <span>🔗 数据集：<a href="https://www.kaggle.com/datasets/chebotinaa/fast-food-marketing-campaign-ab-test" target="_blank">Kaggle — Fast Food A/B Test Dataset</a></span>
+        <span>📁 <strong>格式：</strong>CSV，548 门店，测试三种营销方案的效果</span>
+        <span>🎯 <strong>任务：</strong>在不确定性下选择最优预算分配策略</span>
+      </div>
+      <div class="case-concepts">
+        <span class="case-concept-tag">蒙特卡洛模拟</span>
+        <span class="case-concept-tag">Bootstrap CI</span>
+        <span class="case-concept-tag">Thompson Sampling</span>
+        <span class="case-concept-tag">ROI 分布</span>
+      </div>
+      <ul class="case-steps">
+        <li data-n="1">EDA：三个推广方案的销售分布不对称（右偏），不能直接用 t 检验——识别出需要非参数方法。</li>
+        <li data-n="2">Bootstrap 检验：对三组销售额中位数做配对 Bootstrap，得到每种方案比其他方案更优的概率（而不只是 p-value）。</li>
+        <li data-n="3">蒙特卡洛 ROI 模拟：用各方案的参数分布（均值±标准差）模拟 10000 次未来 12 个月收益，得到每种预算策略的 ROI 区间。</li>
+        <li data-n="4">决策：选择"最优方案比基准差"概率最低的策略——不只是期望最高，而是尾部风险也最小。</li>
+        <li data-n="5">汇报：输出"方案 A 超过 B 的概率是 78%，最坏情况（P5）仍比 B 的中位数高 12%"——概率语言替代 p-value。</li>
+      </ul>
+      <div class="case-insight">💡 <strong>面试亮点：</strong>能说出"我们在有限样本下做决策，置信度比点估计更重要"——这是从初级 DS（会跑 t 检验）到中高级 DS（理解不确定性）的核心能力跃迁。</div>
+    </div>
+  </div>
+
+  <div class="hands-on">
+    <span class="ho-label">动手练习</span>
+    <a href="https://www.kaggle.com/learn/intro-to-machine-learning" target="_blank" class="ho-link">Kaggle — Monte Carlo 在 Python 中的实现（numpy + matplotlib 全流程）</a>
+  </div>
+</section>
+
+<!-- ════════════ SECTION: Cohort Retention & Bottom-up Revenue ════════════ -->
+<section class="section" id="cohort-retention">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:#f0fdf4">📉</div>
+    <h2>队列留存模拟 与 Bottom-up 收入预测</h2>
+  </div>
+  <p class="sec-sub">时序方法在营销节点驱动的业务（游戏/直播/电商大促）里严重失效——历史活动的规律无法复制到下次活动。正确的做法是从机制出发：先预测 DAU，再叠加活动 uplift。</p>
+
+  <div class="def-block">
+    <div class="def-label">为什么时序在这里不够用</div>
+    <div class="def-text">ARIMA/Prophet 假设"历史模式会重复"——但游戏大促每次卡池内容不同、买量规模不同、竞品环境不同，上次春节活动的系数对这次毫无参考意义。</div>
+    <div class="def-context">时序能用的场景：基础留存（老用户日常消费）有统计规律。时序失效的场景：活动爆发本身是主收入驱动力，且每次活动不可复制。解法：把两部分分开建模，各用各的方法。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">用 · 不用 · 实践价值</div>
+    <ul>
+      <li><strong>用：</strong>游戏/App 收入预测；直播平台月收预测；订阅制产品 MRR 预测；任何"历史大促数据少、且每次活动内容都不同"的场景。</li>
+      <li><strong>不用：</strong>纯自然增长、无营销节点的 SaaS 订阅收入（时序方法更简单且足够准）；数据积累少于 3 个完整 cohort 周期（留存曲线根本拟不出来）。</li>
+      <li><strong>实践价值：</strong>这是游戏/泛娱乐行业 DS 的核心日常工作——每个季度做一次全年收入预测，拆解为买量计划 × 留存假设 × 活动节奏，每个参数都能被业务方质疑和调整，不是黑盒。</li>
+    </ul>
+  </div>
+
+  <h3>三步 Bottom-up 预测框架</h3>
+  <div class="callout info"><span class="icon">🎯</span><span>
+    <strong>Step 1：</strong>分 cohort 拟合留存曲线 →
+    <strong>Step 2：</strong>叠加所有在线 cohort 预测 DAU →
+    <strong>Step 3：</strong>DAU × ARPU × 活动 multiplier = 收入
+  </span></div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('cohort',this,'coh-t1')">留存曲线拟合</button>
+    <button class="tab-btn" onclick="switchTab('cohort',this,'coh-t2')">DAU 叠加预测</button>
+    <button class="tab-btn" onclick="switchTab('cohort',this,'coh-t3')">活动 uplift 建模</button>
+    <button class="tab-btn" onclick="switchTab('cohort',this,'coh-t4')">LTV 与鲸鱼分层</button>
+  </div>
+
+  <div id="coh-t1" class="tab-content active">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">留存曲线描述"同一批用户随时间流失的规律"。拟合好留存曲线是整个预测框架的基础。</p>
+    <table>
+      <thead><tr><th>曲线形状</th><th>公式</th><th>适用场景</th><th>参数含义</th></tr></thead>
+      <tbody>
+        <tr><td><strong>指数衰减</strong></td><td>r(d) = A·e^(−λd)</td><td>短期预测（30天内）；简单休闲游戏</td><td>A=第1天留存；λ=日流失率</td></tr>
+        <tr><td><strong>幂律（Power Law）</strong></td><td>r(d) = A·d^(−β)</td><td>中长期（30天+）；有硬核用户沉淀</td><td>β小→长期留存好；β≈0.5典型</td></tr>
+        <tr><td><strong>分段指数</strong></td><td>三段各拟一条指数</td><td>通用；最灵活</td><td>0-7天/8-30天/30+天各自λ不同</td></tr>
+        <tr><td><strong>Gompertz</strong></td><td>r(d) = e^(−ae^(−bd))</td><td>有明显"铁杆用户"底盘的产品</td><td>拐点后趋于平坦，不再快速流失</td></tr>
+      </tbody>
+    </table>
+    <div class="code-block">
+      <span class="lang">🐍 留存曲线拟合（指数 vs 幂律 vs 分段指数对比）</span>
+      <pre>import numpy as np
+from scipy.optimize import curve_fit
+from scipy.stats import pearsonr
+
+# ── 真实留存数据（某游戏 D1-D30 留存率）──
+days = np.array([1,2,3,7,14,21,30])
+retention = np.array([0.45, 0.32, 0.26, 0.18, 0.12, 0.09, 0.07])
+
+# ── 模型 1：指数衰减 ──
+def exp_retention(d, A, lam):
+    return A * np.exp(-lam * d)
+
+# ── 模型 2：幂律 ──
+def power_retention(d, A, beta):
+    return A * np.power(d, -beta)
+
+# ── 模型 3：分段指数（0-7天 / 8-30天 各一段）──
+def piecewise_retention(d, A1, l1, A2, l2):
+    return np.where(d <= 7,
+                    A1 * np.exp(-l1 * d),
+                    A2 * np.exp(-l2 * (d - 7)))
+
+# 拟合
+popt_exp, _ = curve_fit(exp_retention, days, retention, p0=[0.5, 0.05])
+popt_pow, _ = curve_fit(power_retention, days, retention, p0=[0.6, 0.4],
+                         bounds=([0,0],[1,2]))
+popt_pw,  _ = curve_fit(piecewise_retention, days, retention,
+                         p0=[0.5,0.1,0.2,0.05], maxfev=5000)
+
+# 对比 RMSE
+for name, fn, popt in [
+    ("指数", exp_retention, popt_exp),
+    ("幂律", power_retention, popt_pow),
+    ("分段", piecewise_retention, popt_pw),
+]:
+    pred = fn(days, *popt)
+    rmse = np.sqrt(np.mean((pred - retention)**2))
+    print(f"{name:<6} RMSE={rmse:.4f}  D30预测={fn(30,*popt):.3f}  D90预测={fn(90,*popt):.3f}")
+
+# 最终使用幂律做长期外推（30天后更准）
+A, beta = popt_pow
+print(f"\n幂律参数：A={A:.3f}, β={beta:.3f}")
+print(f"D60 留存预测：{power_retention(60, A, beta):.2%}")
+print(f"D180 留存预测：{power_retention(180, A, beta):.2%}")</pre>
+    </div>
+    <div class="callout warn"><span class="icon">⚠️</span><span><strong>外推陷阱：</strong>指数曲线在 D30+ 会把留存估得过低（真实硬核用户流失更慢）；幂律在 D1-3 会高估留存（早期流失比幂律快）。标准做法：前 7 天用指数拟合，7 天后用幂律外推，两段拼接。</span></div>
+  </div>
+
+  <div id="coh-t2" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">DAU(t) = 所有历史 cohort 中当天仍在线的用户之和。新增买量 + 自然增长每天都在产生新 cohort，叠加起来就是 DAU。</p>
+    <div class="code-block">
+      <span class="lang">🐍 Cohort DAU 叠加预测（含未来买量计划）</span>
+      <pre>import numpy as np
+import pandas as pd
+from scipy.optimize import curve_fit
+
+np.random.seed(42)
+
+# ── 留存函数（已拟合好的参数）──
+def retention(d, A=0.48, beta=0.42):
+    """幂律留存：r(d) = A * d^(-beta)，d>=1"""
+    return A * np.power(np.maximum(d, 1), -beta)
+
+# ── 历史 cohort（过去 30 天每天新增用户数）──
+today = 0   # 相对日期
+history_days   = np.arange(-29, 1)         # D-29 到 D0
+history_installs = np.random.randint(8000, 15000, 30)  # 每天新增
+
+# ── 未来买量计划（未来 60 天，含活动期加买）──
+future_days    = np.arange(1, 61)
+base_installs  = 10000
+# 假设 D15-D20 有一个大活动，买量 2×
+future_installs = np.where(
+    (future_days >= 15) & (future_days <= 20),
+    base_installs * 2.5,
+    base_installs
+).astype(int)
+
+# ── 拼接所有 cohort ──
+all_days     = np.concatenate([history_days, future_days])
+all_installs = np.concatenate([history_installs, future_installs])
+
+# ── 计算每天的预测 DAU ──
+dau_forecast = []
+for t in future_days:
+    dau_t = 0
+    for i, (cohort_day, cohort_size) in enumerate(zip(all_days, all_installs)):
+        age = t - cohort_day   # 该 cohort 在第 t 天的"年龄"（天数）
+        if age >= 1:
+            dau_t += cohort_size * retention(age)
+    dau_forecast.append(int(dau_t))
+
+# 输出关键时间点
+df = pd.DataFrame({'day': future_days, 'dau': dau_forecast,
+                   'new_installs': future_installs})
+print("未来 DAU 预测（关键时间点）：")
+for d in [7, 14, 15, 20, 30, 60]:
+    row = df[df.day == d].iloc[0]
+    print(f"  D+{d:>2}：DAU={row.dau:>7,}  当日新增={row.new_installs:>6,}")</pre>
+    </div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>活动期买量效果的滞后性：</strong>活动期间冲进来的大量新用户，在活动结束后 7-14 天才会集中流失，所以活动结束后 DAU 不会立刻跌回去，而是有 1-2 周的"尾巴"——这个效应用 cohort 叠加能自然捕捉到，用时序模型捕捉不到。</span></div>
+  </div>
+
+  <div id="coh-t3" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">活动 uplift = 活动期间收入相比"无活动基准"的倍数。这是整个框架里最主观的部分，但也是最重要的。</p>
+    <table>
+      <thead><tr><th>Uplift 来源</th><th>建模方式</th><th>精度</th><th>适用条件</th></tr></thead>
+      <tbody>
+        <tr><td>历史同类活动倍率</td><td>直接取历史相同活动的 ARPU 倍数均值</td><td>中</td><td>活动类型稳定、卡池强度相似</td></tr>
+        <tr><td>活动强度回归</td><td>以"卡池评分/限时折扣力度"为特征回归历史 uplift</td><td>中高</td><td>有足够历史活动样本（≥10次同类型）</td></tr>
+        <tr><td>专家估计 + 区间</td><td>运营给点估计，DS 给概率区间（蒙特卡洛）</td><td>低但诚实</td><td>新活动类型、无历史参考</td></tr>
+        <tr><td>DID 事后校准</td><td>活动结束后用 DID 算真实 uplift，下次预测时修正</td><td>高</td><td>有对照区域/平台可做比较</td></tr>
+      </tbody>
+    </table>
+    <div class="code-block">
+      <span class="lang">🐍 活动 uplift 的蒙特卡洛预测区间</span>
+      <pre>import numpy as np
+
+np.random.seed(42)
+N_SIM = 50_000
+
+# ── 已有的 DAU 预测（来自 cohort 叠加）──
+dau_base = np.array([45000] * 7)   # 活动期 7 天的基础 DAU（无活动情况）
+
+# ── ARPU 参数（来自历史数据）──
+base_arpu_mu,  base_arpu_std  = 2.5,  0.4    # 基础日 ARPU（元）
+event_mult_mu, event_mult_std = 4.2,  0.8    # 活动 ARPU 倍数（历史3次活动均值±std）
+
+# ── 蒙特卡洛：模拟活动 7 天总收入分布 ──
+sims = []
+for _ in range(N_SIM):
+    base_arpu  = np.random.normal(base_arpu_mu, base_arpu_std)
+    event_mult = np.random.normal(event_mult_mu, event_mult_std)
+    event_mult = max(event_mult, 1.0)   # uplift 至少 1x（不可能比平时差）
+
+    daily_rev = dau_base * base_arpu * event_mult
+    sims.append(daily_rev.sum())
+
+sims = np.array(sims)
+p10, p50, p90 = np.percentile(sims, [10, 50, 90])
+print(f"活动 7 天总收入预测（元）：")
+print(f"  中位数：{p50/1e4:.1f} 万")
+print(f"  80% 区间：[{p10/1e4:.1f} 万, {p90/1e4:.1f} 万]")
+print(f"  超过 150 万的概率：{(sims > 1_500_000).mean():.1%}")
+
+# ── 事后校准：实际 uplift vs 预测 uplift ──
+actual_total = 1_420_000   # 活动结束后拿到真实数据
+actual_mult  = actual_total / (dau_base.sum() * base_arpu_mu)
+print(f"\n事后校准：")
+print(f"  预测倍率中位数：{event_mult_mu:.1f}x")
+print(f"  实际倍率：{actual_mult:.1f}x")
+print(f"  偏差：{(actual_mult/event_mult_mu - 1):+.1%}  → 下次预测参数修正")</pre>
+    </div>
+  </div>
+
+  <div id="coh-t4" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">游戏/直播收入极度右偏：头部 1% 用户（鲸鱼）贡献 50-80% 收入。用全体 ARPU 均值做预测严重失真。</p>
+    <div class="def-block">
+      <div class="def-label">定义 · 用户价值分层</div>
+      <div class="def-text">按历史累计消费将用户分为鲸鱼（Whale）/ 海豚（Dolphin）/ 小鱼（Minnow），每层单独建留存和 ARPU 模型，最后加总。</div>
+      <div class="def-context">原因：鲸鱼和小鱼的留存曲线完全不同（鲸鱼 D30 留存可达 60%，小鱼可能只有 5%）；鲸鱼的 ARPU 是小鱼的 100 倍以上；用一个模型拟合所有用户会在所有层上都不准。</div>
+    </div>
+    <div class="code-block">
+      <span class="lang">🐍 分层 LTV 预测（Whale / Dolphin / Minnow）</span>
+      <pre>import numpy as np
+
+# ── 用户分层参数（来自历史数据分析）──
+segments = {
+    'whale':   {'share': 0.01, 'd1_ret': 0.75, 'beta': 0.20, 'arpu_d1': 150.0},
+    'dolphin': {'share': 0.09, 'd1_ret': 0.55, 'beta': 0.35, 'arpu_d1': 20.0},
+    'minnow':  {'share': 0.90, 'd1_ret': 0.40, 'beta': 0.55, 'arpu_d1': 1.5},
+}
+
+def power_retention(d, d1_ret, beta):
+    """幂律留存，d1_ret = 第1天留存率"""
+    return d1_ret * np.power(np.maximum(d, 1), -beta)
+
+def segment_ltv(seg, days=180):
+    """计算某分层用户的 N 天 LTV（每用户平均，元）"""
+    ltv = 0
+    for d in range(1, days + 1):
+        ret = power_retention(d, seg['d1_ret'], seg['beta'])
+        # ARPU 随留存时间增长（老用户更熟悉付费路径）
+        arpu_d = seg['arpu_d1'] * (1 + 0.005 * d)
+        ltv += ret * arpu_d
+    return ltv
+
+print(f"{'分层':<10} {'占比':>6} {'D30留存':>8} {'D180 LTV':>10} {'收入贡献':>10}")
+print("-" * 50)
+total_ltv_weighted = 0
+for name, seg in segments.items():
+    d30 = power_retention(30, seg['d1_ret'], seg['beta'])
+    ltv = segment_ltv(seg, days=180)
+    weighted = ltv * seg['share']
+    total_ltv_weighted += weighted
+    print(f"{name:<10} {seg['share']:>5.0%}  {d30:>7.1%}  {ltv:>9.0f}元  {weighted:.1f}元")
+
+print(f"\n整体 D180 LTV（加权均值）：{total_ltv_weighted:.1f} 元/用户")
+
+# 鲸鱼的收入贡献比例
+whale_ltv = segment_ltv(segments['whale'], 180) * segments['whale']['share']
+print(f"鲸鱼 1% 用户贡献：{whale_ltv/total_ltv_weighted:.0%} 的总 LTV")</pre>
+    </div>
+    <div class="callout warn"><span class="icon">⚠️</span><span><strong>鲸鱼风险：</strong>如果你的鲸鱼分层只有几十人，任何一个鲸鱼流失都会让月收入剧烈波动——这时候模型再准也没用，需要运营侧的人工维护（专属客服/礼包），而不是统计模型。DS 的职责是识别出"这个月收入下滑 20% 主要来自 3 个鲸鱼流失"，而不是假装模型能预防这件事。</span></div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>面试回答框架：</strong>被问"如何预测游戏收入"时，标准答案是：① 拒绝直接用时序 → ② 说出 cohort 留存 × DAU 叠加框架 → ③ 提活动 uplift 需要单独估计 → ④ 提分层建模防止鲸鱼干扰均值。能说到第③步已超过 80% 候选人。</span></div>
+  </div>
+
+  <!-- 实战案例 -->
+  <div class="case-box" style="margin-top:24px">
+    <div class="case-box-head">
+      <span class="case-title">📉 实战案例：手游季度收入预测（Bottom-up 完整流程）</span>
+      <div class="case-badges">
+        <span class="case-badge cb-diff-med">中级</span>
+        <span class="case-badge cb-tag">留存曲线</span>
+        <span class="case-badge cb-tag">DAU 叠加</span>
+        <span class="case-badge cb-tag">活动 uplift</span>
+        <span class="case-badge cb-tag">分层建模</span>
+      </div>
+    </div>
+    <div class="case-box-body">
+      <div class="case-meta">
+        <span>🔗 数据集：<a href="https://www.kaggle.com/datasets/aakashnain/building-a-better-mobile-game" target="_blank">Kaggle — Mobile Game Analytics Dataset</a></span>
+        <span>📁 <strong>格式：</strong>用户注册日期 + 每日活跃 + 付费流水，约 1 万用户</span>
+        <span>🎯 <strong>任务：</strong>预测未来 3 个月收入，包含 2 次大型活动期</span>
+      </div>
+      <div class="case-concepts">
+        <span class="case-concept-tag">Cohort 留存拟合</span>
+        <span class="case-concept-tag">幂律 vs 指数</span>
+        <span class="case-concept-tag">DAU 叠加模型</span>
+        <span class="case-concept-tag">活动 multiplier</span>
+        <span class="case-concept-tag">用户价值分层</span>
+        <span class="case-concept-tag">蒙特卡洛区间</span>
+      </div>
+      <ul class="case-steps">
+        <li data-n="1">数据准备：按注册周分组，计算每个 cohort 的 D1/D3/D7/D14/D30 留存率，识别留存曲线的"拐点"（通常在 D7 附近）。</li>
+        <li data-n="2">分层拟合：分别对鲸鱼（累计消费 Top 5%）/海豚/小鱼拟合幂律留存曲线；比较参数差异——鲸鱼 β≈0.2，小鱼 β≈0.6。</li>
+        <li data-n="3">DAU 预测：按未来买量计划（含活动期加量）叠加所有 cohort，模拟未来 90 天 DAU 曲线；对活动期新增 cohort 单独用活动期留存参数。</li>
+        <li data-n="4">收入叠加：基础收入 = DAU × 分层 ARPU；活动收入 = 蒙特卡洛模拟 uplift 区间（来自历史 3 次同类活动）。</li>
+        <li data-n="5">偏差分析：季度结束后比对预测 vs 实际，拆解偏差来源：买量不如预期？留存比假设差？还是活动强度不够？这个反馈回路比预测本身更有价值。</li>
+      </ul>
+      <div class="case-insight">💡 <strong>核心认知：</strong>Bottom-up 预测的价值不在于"最后数字对不对"，而在于把预测误差变得<strong>可解释和可归因</strong>。"收入比预测低 15%，其中 10% 来自买量计划未完成，5% 来自活动卡池强度不足"——这比"模型预测偏了 15%"有价值 10 倍。</div>
+    </div>
+  </div>
+
+  <div class="hands-on">
+    <span class="ho-label">动手练习</span>
+    <a href="https://www.kaggle.com/datasets/aakashnain/building-a-better-mobile-game" target="_blank" class="ho-link">Kaggle — Mobile Game Analytics：用真实数据拟合留存曲线，实现 DAU 叠加预测</a>
+  </div>
+</section>
+
+<!-- ════════════ SECTION: 推荐曝光偏差 ════════════ -->
+<section class="section" id="exposure-bias">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:#faf5ff">🔭</div>
+    <h2>推荐系统的曝光偏差（Exposure Bias）</h2>
+  </div>
+  <p class="sec-sub">推荐系统用点击数据训练，但没被推荐的内容永远没有点击——模型学到的是"系统过去推什么"而不是"用户真正喜欢什么"，这个循环会越来越严重。</p>
+
+  <div class="def-block">
+    <div class="def-label">定义 · 曝光偏差</div>
+    <div class="def-text">训练数据中只有被推荐（曝光）过的内容才有反馈，未曝光的内容因缺乏数据被系统性低估——模型的学习目标与用户真实偏好之间存在系统性偏差。</div>
+    <div class="def-context">又称 Popularity Bias 或 Feedback Loop。1% 热门内容占据大多数曝光 → 产生大量点击数据 → 模型更倾向推热门 → 热门更热，长尾内容永远出不来。Netflix、Spotify 都在论文里公开承认这是推荐系统最难解决的核心问题之一。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">影响 · 不处理的代价 · 实践价值</div>
+    <ul>
+      <li><strong>影响：</strong>信息茧房（用户只看同类内容）；新内容永远出不来（冷启动恶化）；长尾优质内容被埋没；NDCG/AUC 在测试集上表现好，但用户满意度长期下降。</li>
+      <li><strong>不处理的代价：</strong>短期指标（CTR）看起来不错，但用户 6 个月后流失率上升，多样性指标持续恶化——这是很多产品"推荐越用越窄"的根本原因。</li>
+      <li><strong>实践价值：</strong>推荐系统面试的高分话题。能说出 IPS、Exploration、Debiasing 三条路的候选人极少，说出来直接区分"调过参数的初级 DS"和"理解系统机制的中高级 DS"。</li>
+    </ul>
+  </div>
+
+  <h3>三条解法路径</h3>
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('expbias',this,'eb-t1')">IPS 逆倾向加权</button>
+    <button class="tab-btn" onclick="switchTab('expbias',this,'eb-t2')">Exploration 策略</button>
+    <button class="tab-btn" onclick="switchTab('expbias',this,'eb-t3')">热门降权 Debiasing</button>
+  </div>
+
+  <div id="eb-t1" class="tab-content active">
+    <div class="def-block">
+      <div class="def-label">方法 · IPS（逆倾向评分加权）</div>
+      <div class="def-text">给每条训练样本乘以 1/P(曝光) 的权重——曝光概率低的内容一旦被点击，贡献更大的梯度，修正系统偏向热门的倾向。</div>
+      <div class="def-context">类比：调查问卷中，某群体回复率低（P=0.1），就给他们的答案乘以 10 倍权重，让低代表性群体的声音不被淹没。IPS 在推荐里做的是同样的事。</div>
+    </div>
+    <div class="code-block">
+      <span class="lang">🐍 IPS 加权训练（修正热门内容的过度曝光偏差）</span>
+      <pre>import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+
+np.random.seed(42)
+n_items   = 1000
+n_users   = 10000
+
+# ── 模拟带曝光偏差的训练数据 ──
+# 真实用户偏好（均匀分布，所有 item 都有人喜欢）
+true_quality = np.random.uniform(0, 1, n_items)
+
+# 曝光概率：热门 item（高质量）被推的多，长尾几乎不曝光
+exposure_prob = np.power(true_quality, 2)            # 偏向高质量
+exposure_prob = exposure_prob / exposure_prob.sum() * n_users * 10
+
+# 生成曝光记录（只有被曝光的才有点击数据）
+exposed_items = np.random.choice(n_items, size=n_users * 10,
+                                  p=exposure_prob / exposure_prob.sum())
+item_features = np.random.randn(n_items, 5)          # 内容特征
+
+# 点击 = 真实偏好 + 噪声（未曝光的 item 没有标签）
+click_prob  = true_quality[exposed_items] * 0.8 + np.random.uniform(0, 0.2, len(exposed_items))
+y           = (np.random.rand(len(exposed_items)) < click_prob).astype(int)
+X           = item_features[exposed_items]
+
+# IPS 权重：曝光概率的倒数（做 clip 防止极端权重）
+exposure_freq   = np.bincount(exposed_items, minlength=n_items) / (n_users * 10)
+ips_weights     = 1.0 / (exposure_freq[exposed_items] + 1e-6)
+ips_weights     = np.clip(ips_weights, 1, 50)        # 防止长尾极端权重
+ips_weights_norm = ips_weights / ips_weights.mean()
+
+# ── 对比：有 IPS vs 无 IPS 的模型 ──
+lr_naive = LogisticRegression(max_iter=500)
+lr_naive.fit(X, y)                                   # 不加权，偏向热门
+
+lr_ips = LogisticRegression(max_iter=500)
+lr_ips.fit(X, y, sample_weight=ips_weights_norm)     # IPS 加权
+
+# 在"均匀曝光"测试集上评估（模拟真实用户偏好）
+X_test = item_features[np.random.choice(n_items, 2000)]
+y_test = (np.random.rand(2000) < true_quality[np.random.choice(n_items, 2000)]).astype(int)
+
+print(f"未加权模型 AUC：{roc_auc_score(y_test, lr_naive.predict_proba(X_test)[:,1]):.4f}")
+print(f"IPS 加权模型 AUC：{roc_auc_score(y_test, lr_ips.predict_proba(X_test)[:,1]):.4f}")
+print("\n解读：在均匀分布测试集上，IPS 模型更接近真实用户偏好（而不是历史曝光偏好）")</pre>
+    </div>
+    <div class="callout warn"><span class="icon">⚠️</span><span><strong>IPS 的局限：</strong>需要知道每个 item 被曝光的概率——如果曝光机制本身不透明（黑盒推荐系统）就无法准确估计 P(曝光)。极端长尾 item 的 IPS 权重会爆炸（P→0 时 1/P→∞），需要做 truncated IPS 或 SNIPS（Self-Normalized IPS）。</span></div>
+  </div>
+
+  <div id="eb-t2" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">不依赖偏差修正，而是主动"探索"——强制给系统不确定的 item 一些曝光机会，收集真实反馈后再更新模型。</p>
+    <table>
+      <thead><tr><th>策略</th><th>核心思路</th><th>代价</th><th>适用场景</th></tr></thead>
+      <tbody>
+        <tr><td><strong>ε-Greedy</strong></td><td>以 ε 概率随机推荐，1-ε 概率推最优</td><td>ε 比例的用户体验下降</td><td>简单，易实现，适合快速上线</td></tr>
+        <tr><td><strong>UCB（置信上界）</strong></td><td>对不确定 item 给置信区间上界加分，主动探索曝光少的 item</td><td>冷启动 item 可能质量差</td><td>item 数量可控（千级以内）</td></tr>
+        <tr><td><strong>Thompson Sampling</strong></td><td>从每个 item 的后验分布采样，不确定性高→采样方差大→自动探索</td><td>实现复杂，需贝叶斯更新</td><td>广告、feed 流，有点击反馈闭环</td></tr>
+        <tr><td><strong>强制多样性重排</strong></td><td>MMR / DPP 在最终排序阶段引入多样性约束，减少同类内容堆叠</td><td>相关性轻微下降</td><td>内容推荐、搜索结果，最易落地</td></tr>
+      </tbody>
+    </table>
+    <div class="code-block">
+      <span class="lang">🐍 Thompson Sampling（Beta-Bernoulli，适合点击率场景）</span>
+      <pre>import numpy as np
+
+np.random.seed(42)
+n_items = 200
+
+# ── 每个 item 的真实 CTR（系统不知道）──
+true_ctr = np.random.beta(2, 8, n_items)   # 均值约 20%，有差异
+
+# ── Beta 分布参数（初始化：1次成功+1次失败，非零先验）──
+alpha = np.ones(n_items)   # 点击次数 + 1
+beta  = np.ones(n_items)   # 未点击次数 + 1
+
+def thompson_recommend(alpha, beta, top_k=5):
+    """从每个 item 的 Beta 后验采样，取 Top-K"""
+    samples = np.random.beta(alpha, beta)
+    return np.argsort(samples)[-top_k:][::-1]
+
+# ── 模拟 5000 轮推荐 ──
+total_clicks, total_shown = 0, 0
+regret_history = []
+
+for t in range(5000):
+    recommended = thompson_recommend(alpha, beta)
+    for item in recommended:
+        clicked = np.random.rand() < true_ctr[item]
+        if clicked:
+            alpha[item] += 1
+            total_clicks += 1
+        else:
+            beta[item] += 1
+        total_shown += 1
+
+    if t % 500 == 0:
+        estimated_ctr = alpha / (alpha + beta)
+        top5_true = np.sort(true_ctr)[-5:][::-1].mean()
+        top5_est  = np.sort(estimated_ctr)[-5:][::-1].mean()
+        regret_history.append(top5_true - top5_est)
+
+print("Thompson Sampling 收敛过程（Top-5 真实 CTR vs 估计 CTR 差距）：")
+for i, r in enumerate(regret_history):
+    print(f"  第 {(i+1)*500:>4} 轮：差距 = {r:.4f}")</pre>
+    </div>
+  </div>
+
+  <div id="eb-t3" class="tab-content">
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">最简单直接的方法：在打分阶段对热门内容的得分做惩罚，给长尾 item 一个额外加分，人为打破马太效应。</p>
+    <div class="code-block">
+      <span class="lang">🐍 Popularity Debiasing（热门降权 + 长尾加分）</span>
+      <pre>import numpy as np
+
+np.random.seed(42)
+n_items  = 500
+n_users  = 1000
+
+# ── 模拟推荐场景：每个 item 的模型分 + 曝光次数 ──
+model_scores = np.random.uniform(0.3, 0.9, n_items)      # 模型预测 CTR
+item_exposure = np.random.pareto(1.5, n_items) * 100      # 幂律分布的曝光次数
+item_exposure = item_exposure.clip(1)
+
+# ── 方法 1：对数降权（YouTube DNN 的做法）──
+# 从训练目标里减去 log(曝光频率)，让模型学习"超出人气的额外偏好"
+log_popularity = np.log(item_exposure + 1)
+debiased_scores_log = model_scores - 0.1 * log_popularity   # 0.1 是可调超参
+
+# ── 方法 2：分位数降权（更鲁棒，不受极端热门影响）──
+percentile_rank = np.argsort(np.argsort(item_exposure)) / n_items
+debiased_scores_pct = model_scores - 0.2 * percentile_rank
+
+# ── 对比排名变化 ──
+top10_original  = np.argsort(model_scores)[-10:][::-1]
+top10_log       = np.argsort(debiased_scores_log)[-10:][::-1]
+top10_pct       = np.argsort(debiased_scores_pct)[-10:][::-1]
+
+print(f"原始 Top10 平均曝光次数：{item_exposure[top10_original].mean():.0f}")
+print(f"对数降权 Top10 平均曝光次数：{item_exposure[top10_log].mean():.0f}")
+print(f"分位数降权 Top10 平均曝光次数：{item_exposure[top10_pct].mean():.0f}")
+
+# 有多少新 item 进入了 Top10？
+new_items_log = len(set(top10_log) - set(top10_original))
+new_items_pct = len(set(top10_pct) - set(top10_original))
+print(f"\n降权后新进入 Top10 的 item 数：对数={new_items_log}，分位数={new_items_pct}")</pre>
+    </div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>三条路如何选：</strong>新系统上线/冷启动严重 → 先上 ε-Greedy（简单有效）；需要全局偏差修正 → IPS 或 Popularity Debiasing；有完整闭环点击反馈且 item 数可控 → Thompson Sampling。实际生产系统通常同时用两条：训练侧 IPS + 服务侧 Debiasing。</span></div>
+  </div>
+
+  <div class="case-box" style="margin-top:24px">
+    <div class="case-box-head">
+      <span class="case-title">🔭 实战案例：内容平台的"推荐越用越窄"问题诊断与修复</span>
+      <div class="case-badges">
+        <span class="case-badge cb-diff-med">中级</span>
+        <span class="case-badge cb-tag">曝光偏差</span>
+        <span class="case-badge cb-tag">IPS</span>
+        <span class="case-badge cb-tag">Exploration</span>
+      </div>
+    </div>
+    <div class="case-box-body">
+      <div class="case-meta">
+        <span>🎯 <strong>任务：</strong>短视频平台用户 3 个月留存下降 8%，埋点数据显示"用户看到的内容类型多样性"持续降低</span>
+      </div>
+      <div class="case-concepts">
+        <span class="case-concept-tag">多样性指标（Intra-List Diversity）</span>
+        <span class="case-concept-tag">曝光分布分析</span>
+        <span class="case-concept-tag">Popularity Debiasing</span>
+        <span class="case-concept-tag">ε-Greedy Exploration</span>
+      </div>
+      <ul class="case-steps">
+        <li data-n="1">诊断：分析推荐日志，计算每个用户 30 天内看到的 item 类别熵（Intra-List Diversity）——对比半年前，熵下降 35%，确认是推荐越来越窄而不是用户主动选择单一化。</li>
+        <li data-n="2">根因：曝光分布显示 Top 1% item 占总曝光 62%，且 3 个月前是 45%——Feedback Loop 在加速。</li>
+        <li data-n="3">修复方案 A：对数 Popularity Debiasing，降低热门 item 得分 0.15×log(曝光次数)；上线后 Top 1% item 曝光占比从 62% 降到 51%。</li>
+        <li data-n="4">修复方案 B：每个用户每次请求中，10% 的 slot 强制从用户历史未见类别中随机选——牺牲短期 CTR 0.3%，换来多样性熵恢复 18%。</li>
+        <li data-n="5">A/B 验证：多样性组 vs 对照组，7 天 CTR 差异 −0.3%（可接受），30 天留存 +1.2%（显著）——多样性改善对长期留存有正向效果，短期 CTR 轻微牺牲值得。</li>
+      </ul>
+      <div class="case-insight">💡 <strong>面试核心回答：</strong>当被问"推荐系统的主要挑战是什么"，能说出"曝光偏差导致 Feedback Loop → 多样性下降 → 长期留存损失"这条链路，比只说"冷启动"或"稀疏性"高一个层次。</div>
+    </div>
+  </div>
+
+  <div class="hands-on">
+    <span class="ho-label">动手练习</span>
+    <a href="https://www.kaggle.com/datasets/grouplens/movielens-20m-dataset" target="_blank" class="ho-link">MovieLens 20M — 用真实电影评分数据实现 IPS 加权训练，对比有无偏差修正的推荐结果多样性</a>
   </div>
 </section>
 

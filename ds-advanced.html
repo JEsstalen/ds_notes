@@ -74,7 +74,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .checklist-title{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:10px}
 .check-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text-2);line-height:1.5}
 .check-item:last-child{border-bottom:none}
-.check-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;background:var(--surface2)}
+.check-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;background:var(--surface2);cursor:pointer;transition:all .12s}
+.check-box.checked{background:var(--accent);border-color:var(--accent);background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 12 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:10px 8px}
 .track-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .track-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .track-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
@@ -171,6 +172,36 @@ tr:hover td{background:var(--surface2)}
 .sec-check-item{font-size:12.5px;color:#14532d;line-height:1.6;display:flex;gap:8px;align-items:flex-start}
 .sci-num{font-size:11px;font-weight:800;color:#15803d;background:rgba(22,163,74,.15);border-radius:4px;padding:1px 6px;flex-shrink:0;margin-top:2px}
 
+/* ── 开跑前环境准备条 ── */
+.setup-strip{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:14px 18px;margin-bottom:20px}
+.setup-strip-title{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#15803d;margin-bottom:10px}
+.setup-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.setup-col-label{font-size:10.5px;font-weight:700;color:#15803d;margin-bottom:6px}
+.setup-col-sub{font-size:11px;color:#166534;margin-bottom:6px;line-height:1.5}
+.setup-code{background:#0f172a;color:#86efac;border-radius:6px;padding:8px 12px;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;line-height:1.6;overflow-x:auto;white-space:pre}
+/* ── sprint 交付承诺条 ── */
+.sprint-commit{font-size:11.5px;color:var(--text-3);background:var(--surface2);border-radius:0 0 8px 8px;padding:7px 16px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);flex-wrap:wrap}
+.sc-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--amber);white-space:nowrap;flex-shrink:0}
+.sprint-commit a{color:var(--accent);font-weight:600;text-decoration:none}
+.sprint-commit a:hover{text-decoration:underline}
+/* ── 判断力培养指南 ── */
+.judgment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:16px}
+.judge-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:3px solid var(--accent)}
+.judge-card.j-paper{border-top-color:#4f46e5}.judge-card.j-signal{border-top-color:#0891b2}.judge-card.j-tool{border-top-color:#d97706}.judge-card.j-influence{border-top-color:#16a34a}
+.judge-kicker{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:8px}
+.judge-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.judge-body{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:10px}
+.protocol-list{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.protocol-step{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--text-2);line-height:1.5}
+.ps-num{font-size:10.5px;font-weight:800;color:#fff;background:var(--accent);border-radius:4px;padding:1px 6px;flex-shrink:0;margin-top:1px}
+.judge-prompt{background:var(--surface2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text-2);line-height:1.55;margin-top:10px}
+.judge-prompt strong{color:var(--text)}
+.judge-matrix{margin-top:16px;overflow-x:auto}
+.practice-rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:14px}
+.rhythm-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px}
+.rhythm-time{font-size:10px;font-weight:800;color:var(--accent);background:var(--accent-light);padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:7px}
+.rhythm-task{font-size:12.5px;color:var(--text-2);line-height:1.5}
+
 #hamburger{display:none;position:fixed;bottom:20px;right:20px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;color:white;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 @media(max-width:768px){#sidebar{transform:translateX(-100%);transition:transform .2s}#sidebar.open{transform:none}#main{margin-left:0;padding:0 16px 60px}#hamburger{display:grid;place-items:center}.hero h1{font-size:28px}.checklist-grid,.track-grid,.card-grid,.challenge-grid,.bridge-grid{grid-template-columns:1fr}}
 </style>
@@ -227,6 +258,7 @@ tr:hover td{background:var(--surface2)}
         <a href="#sysdesign">ML 系统设计</a>
         <a href="#capstone">综合实战项目</a>
         <a href="#bridge">衔接专家图谱</a>
+        <a href="#judgment">判断力培养指南</a>
       </div>
     </div>
   </div>
@@ -374,9 +406,38 @@ tr:hover td{background:var(--surface2)}
 
 <section id="roadmap" class="section">
   <div class="sec-head"><span class="sec-num">01</span><div class="sec-head-text"><h2>进阶路线图</h2><p>不是所有方向都要同时学。优先选择一条主轨，按冲刺节奏做出可展示的产物</p></div></div>
+  <!-- ── 开跑前环境准备 ── -->
+  <div class="setup-strip">
+    <div class="setup-strip-title">开跑前：3 分钟环境准备（选你走的轨复制粘贴）</div>
+    <div class="setup-cols">
+      <div>
+        <div class="setup-col-label">ML 工程化轨</div>
+        <div class="setup-col-sub">需要 Python 3.10+，建议用 venv 隔离：</div>
+        <div class="setup-code">pip install great-expectations mlflow \
+    fastapi uvicorn pydantic \
+    evidently lightgbm scikit-learn pandas</div>
+      </div>
+      <div>
+        <div class="setup-col-label">LLM 应用轨</div>
+        <div class="setup-col-sub">需要 OpenAI API Key（或 BGE 本地 embedding）：</div>
+        <div class="setup-code">pip install langchain langchain-openai \
+    faiss-cpu rank_bm25 ragas \
+    langfuse langgraph openai</div>
+      </div>
+      <div>
+        <div class="setup-col-label">分析深化轨</div>
+        <div class="setup-col-sub">公开数据集推荐：<a href="https://www.kaggle.com/datasets/jackdaoud/marketing-data" target="_blank" style="color:#15803d;font-weight:600">Kaggle 营销数据</a></div>
+        <div class="setup-code">pip install econml statsmodels \
+    pandas numpy matplotlib \
+    pyfixest</div>
+      </div>
+    </div>
+  </div>
+
   <div class="track-grid">
     <div class="track-card">
       <div class="track-head"><div class="track-title">ML 工程化轨</div><div class="track-meta">8 周 · 优先级最高 · 从 notebook 到生产</div></div>
+      <div class="sprint-commit"><span class="sc-label">交付约束</span>每个 Sprint 结束时，把「验证」项截图贴到你的 <a href="https://github.com/new" target="_blank">GitHub 仓库 Issue</a> 或私人 Notion 页，无产物视为未完成。</div>
       <div class="sprint-list">
         <div class="sprint-item">
           <span class="sprint-week">1-2周</span>
@@ -418,6 +479,7 @@ tr:hover td{background:var(--surface2)}
     </div>
     <div class="track-card">
       <div class="track-head"><div class="track-title">LLM 应用轨</div><div class="track-meta">6 周 · 从 POC 到可靠 RAG/Agent</div></div>
+      <div class="sprint-commit"><span class="sc-label">交付约束</span>每周必须保存 5 个问题、检索日志和失败案例；没有失败案例，说明评估集太简单。</div>
       <div class="sprint-list">
         <div class="sprint-item">
           <span class="sprint-week">第1周</span>
@@ -459,6 +521,7 @@ tr:hover td{background:var(--surface2)}
     </div>
     <div class="track-card">
       <div class="track-head"><div class="track-title">分析深化轨</div><div class="track-meta">6 周 · 从"有结果"到"结果可信"</div></div>
+      <div class="sprint-commit"><span class="sc-label">交付约束</span>每个 Sprint 输出一个 Jupyter Notebook 推到 GitHub，含结果截图和一段"你发现了什么"的中文说明。</div>
       <div class="sprint-list">
         <div class="sprint-item">
           <span class="sprint-week">1-2周</span>
@@ -964,6 +1027,96 @@ print(est.ate_, est.ate_interval())</div>
   <div class="callout info"><strong>最好的过渡方式：</strong>不要把 expert 页当教材顺序读，而是把它当雷达。先进阶做项目，有上下文后再回去看论文和前沿难题。</div>
 </section>
 
+<!-- ═══ 判断力培养指南 ═══ -->
+<section id="judgment" class="section">
+  <div class="sec-head"><span class="sec-num">06.5</span><div class="sec-head-text"><h2>判断力培养指南</h2><p>技术知识会过期，但判断力——知道什么时候用什么方法、如何快速评估一篇新论文、如何影响团队方向——是 DS 真正的核心竞争力</p></div></div>
+
+  <div class="callout info"><strong>为什么本页还差这一步：</strong>本页教你"怎么做"，但 expert 级别的跃迁依赖的是"知道为什么这样做比那样做更好"的判断力。这种判断力不靠读更多文章获得，而是靠刻意训练三件事：读论文的方式、追前沿的节奏、遇到新工具的评估框架。</div>
+
+  <div class="judgment-grid">
+
+    <div class="judge-card j-paper">
+      <div class="judge-kicker">论文阅读</div>
+      <div class="judge-title">30 分钟读论文协议</div>
+      <p class="judge-body">大多数人读论文要么从头逐字读（太慢）、要么只看摘要（太浅）。这个协议在 30 分钟内让你判断一篇论文的价值，并提取对你工作有用的东西——不要求你搞懂所有公式。</p>
+      <div class="protocol-list">
+        <div class="protocol-step"><span class="ps-num">1</span><span><strong>3 分钟读摘要 + 引言第一段：</strong>能否用一句话说出"这篇论文要解决什么问题"？如果不能，跳过。</span></div>
+        <div class="protocol-step"><span class="ps-num">2</span><span><strong>5 分钟看图表和结论段：</strong>主要实验结果是什么？提升了多少？在什么数据集上？如果数字不比 baseline 好多少，优先级降低。</span></div>
+        <div class="protocol-step"><span class="ps-num">3</span><span><strong>10 分钟读方法核心段：</strong>只需理解"核心操作是什么"——改了哪个组件、加了什么模块。不需要推导数学。</span></div>
+        <div class="protocol-step"><span class="ps-num">4</span><span><strong>5 分钟提取实践影响：</strong>问自己："这篇论文改变了什么实践？我的哪个项目会因此做不同的决策？"答案写在你的笔记里。</span></div>
+        <div class="protocol-step"><span class="ps-num">5</span><span><strong>7 分钟决策：</strong>值得深读？加入下周计划。不值得？写一行摘要留档，以后参考时能找到。</span></div>
+      </div>
+      <div class="judge-prompt"><strong>核心习惯：</strong>每读完一篇，必须写出"这篇改变了什么实践"，哪怕只有一句话。没有这句话，30 分钟的阅读价值归零——因为你记不住，也无法在讨论中引用。</div>
+    </div>
+
+    <div class="judge-card j-signal">
+      <div class="judge-kicker">信息管理</div>
+      <div class="judge-title">每周 1 小时追前沿的节奏</div>
+      <p class="judge-body">信息焦虑不来自"不够关注"，而来自"关注了太多噪音"。DS 领域每天有数百篇 arXiv 文章发出——直接刷 arXiv 是低效的；正确的做法是建立过滤层 + 固定处理节奏。</p>
+      <div class="practice-rhythm">
+        <div class="rhythm-item">
+          <span class="rhythm-time">每天 5 分钟</span>
+          <p class="rhythm-task"><strong>HF Daily Papers</strong>（huggingface.co/papers）——编辑已过滤一遍，看标题和点赞数决定是否值得打开。不要直接上 arXiv。</p>
+        </div>
+        <div class="rhythm-item">
+          <span class="rhythm-time">每周一次</span>
+          <p class="rhythm-task">用本页 §06 的链接浏览一次 expert 页<strong>技术雷达</strong>和<strong>论文路线图</strong>，检查哪些方向有新进展、哪些工具的成熟度在变化。</p>
+        </div>
+        <div class="rhythm-item">
+          <span class="rhythm-time">每月一次</span>
+          <p class="rhythm-task">用 30 分钟协议精读 1-2 篇这个月让你觉得"必须搞懂"的论文。数量不重要，提取出"实践影响"才重要。</p>
+        </div>
+        <div class="rhythm-item">
+          <span class="rhythm-time">每季度一次</span>
+          <p class="rhythm-task">回看你的"实践影响"笔记，检查：这些论文/工具里，有没有你已经在工作中用起来的？有没有你当时觉得重要但后来没有行动的？</p>
+        </div>
+      </div>
+      <div class="judge-prompt" style="margin-top:12px"><strong>防信息过载原则：</strong>订阅总量控制在"每天读完所有标题不超过 10 分钟"以内。超出就退订，不是你不够勤奋，是你需要更好的过滤器。</div>
+    </div>
+
+    <div class="judge-card j-tool">
+      <div class="judge-kicker">工具评估</div>
+      <div class="judge-title">遇到新工具时的三问框架</div>
+      <p class="judge-body">每个月都有新工具宣称"改变了 AI 工程"。没有框架的人会反复被新工具分散注意力；有框架的人能在 5 分钟内判断一个工具是否值得投入。</p>
+      <div class="judge-matrix">
+        <table>
+          <thead><tr><th>问题</th><th>怎么找答案</th><th>危险信号</th></tr></thead>
+          <tbody>
+            <tr><td><strong>①  它在解决什么具体问题？</strong></td><td>看官网 Hero 区的第一句话；看 GitHub README 的第一个 Example</td><td>解决的问题你没有遇到过 → 现在不需要</td></tr>
+            <tr><td><strong>② 谁在生产环境中用了它？</strong><br><span style="font-size:11px;color:var(--text-3)">（不是 demo，不是 benchmark）</span></td><td>搜 GitHub Issues 里有没有"in production"相关讨论；看 ADOPTERS.md；看 conference talks</td><td>只有 demo + benchmark，没有 case study → Trial 级别，别 Adopt</td></tr>
+            <tr><td><strong>③ 切换成本是多少？</strong></td><td>估算：集成需要多少小时？如果这工具消亡，回退需要多少小时？</td><td>集成后高度耦合、难以回退 → 除非问题 ① 非常严重，否则等待</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="judge-prompt" style="margin-top:12px"><strong>实操建议：</strong>把这三问的答案写成一段 Slack 消息或内部 doc，发给团队。这个动作本身就是在建立影响力——你变成了团队里"帮大家做工具评估"的人，而不是被工具热潮淹没的人。</div>
+    </div>
+
+    <div class="judge-card j-influence">
+      <div class="judge-kicker">影响力构建</div>
+      <div class="judge-title">从"分析师"到"意见领袖"的主动练习</div>
+      <p class="judge-body">expert 级别 DS 和中级 DS 最大的差距不在技术，而在影响力：你的工作能不能影响你所在团队以外的人？这不靠等机会，靠刻意练习。</p>
+      <div class="protocol-list">
+        <div class="protocol-step"><span class="ps-num" style="background:#16a34a">①</span><span><strong>每月写一份技术笔记：</strong>不需要发布，可以只是团队内部文档。主题：你上个月遇到的一个非显而易见的问题 + 你的解法 + 为什么这个解法比另一个更好。写出来的过程本身就是在训练判断力。</span></div>
+        <div class="protocol-step"><span class="ps-num" style="background:#16a34a">②</span><span><strong>每季度 review 一位 junior DS 的工作：</strong>不是挑错，是问"这个方法有没有另一种选择？那个选择在什么场景下更好？"这个练习会逼迫你把自己的判断显式化，而不是停留在直觉层面。</span></div>
+        <div class="protocol-step"><span class="ps-num" style="background:#16a34a">③</span><span><strong>每半年在团队会议里提出一个方法改进：</strong>例如"我们现在的 A/B 实验没有计算 SRM，建议增加这步"——不要只在执行任务，要开始塑造方法论。被采纳是加分，不被采纳而你能说清楚"为什么建议这个"是更大的加分。</span></div>
+        <div class="protocol-step"><span class="ps-num" style="background:#16a34a">④</span><span><strong>做完一个完整项目后，写一份"我学到了什么"的事后复盘：</strong>不是项目报告，是"如果重做一次，我会在哪些决策上做不同的选择"。这份文档比任何论文都更直接地训练你的判断力。</span></div>
+      </div>
+      <div class="judge-prompt"><strong>判断力积累的本质：</strong>你做了多少次"提前预判某件事会有问题，结果你是对的（或错的）"。每次预判都是一次校准机会——记录下来，一年后你会发现自己的判断准确率在提升。</div>
+    </div>
+
+  </div>
+
+  <div class="callout tip" style="margin-top:20px"><strong>进入 expert 级别的实际信号：</strong>当有人在会议上提出一个技术方案，你能在 2 分钟内说出"这个方案在什么场景下成立、在什么场景下会出问题"——不需要查资料，不需要推导——这就是判断力在工作。这个状态不是突然到来的，是上面四个练习叠加 6-12 个月后的自然结果。</div>
+
+  <div class="sec-check">
+    <div class="sec-check-title">判断力自检：三个月后来这里再看一遍</div>
+    <div class="sec-check-list">
+      <div class="sec-check-item"><span class="sci-num">Q1</span>过去一个月里，你有没有用 30 分钟协议读过至少一篇论文，并写出了"这篇改变了什么实践"？如果没有，阻碍你的是什么——时间、找不到论文，还是不知道读什么方向？</div>
+      <div class="sec-check-item"><span class="sci-num">Q2</span>过去三个月里，有没有一次你提出了一个技术方向建议（无论是工具选型、方法改进还是实验设计），并且说清楚了"为什么这个比另一个更好"？如果还没有，下一个机会在哪里？</div>
+    </div>
+  </div>
+</section>
+
 <div style="padding:40px 0;text-align:center;color:var(--text-3);font-size:12px;border-top:1px solid var(--border);font-family:system-ui">
   数据进阶工程图谱 · Advanced Map · 从基础到专家的桥接层 · 2026<br>
   <a href="index.html" style="color:var(--accent);text-decoration:none;margin-top:6px;display:inline-block">← 返回基础笔记</a>
@@ -1004,6 +1157,26 @@ function switchTab(group, btn, targetId) {
 navLinks.forEach(a => a.addEventListener('click', () => {
   document.getElementById('sidebar').classList.remove('open');
 }));
+
+// Checklist persistence
+const CKEY = 'ds_advanced_checks';
+function saveChecks() {
+  const state = {};
+  document.querySelectorAll('.check-box').forEach((el, i) => {
+    state[i] = el.classList.contains('checked');
+  });
+  localStorage.setItem(CKEY, JSON.stringify(state));
+}
+function loadChecks() {
+  try {
+    const state = JSON.parse(localStorage.getItem(CKEY) || '{}');
+    document.querySelectorAll('.check-box').forEach((el, i) => {
+      if (state[i]) el.classList.add('checked');
+      el.addEventListener('click', () => { el.classList.toggle('checked'); saveChecks(); });
+    });
+  } catch(e) {}
+}
+loadChecks();
 </script>
 </body>
 </html>
