@@ -578,7 +578,7 @@ tr:hover td{background:var(--surface2)}
     <div class="card-grid">
       <div class="card"><h3>数据验证</h3><p>训练前先跑 schema check、取值范围断言、类别枚举检查和分布漂移检测。数据验证不是 QA 的额外步骤，而是训练管道的入口门。</p></div>
       <div class="card"><h3>MLflow 追踪</h3><p>重点记录：数据版本、特征版本、参数、指标、模型 artifact、重要图表和 commit hash。不要把每个中间变量都追踪进去，否则 experiment UI 会变成垃圾场。</p></div>
-      <div class="card"><h3>模型 Registry</h3><p>模型进入 registry 才算候选上线版本。每个版本至少应有 stage、训练数据��间窗、主指标、负责人、回滚说明。</p></div>
+      <div class="card"><h3>模型 Registry</h3><p>模型进入 registry 才算候选上线版本。每个版本至少应有 stage、训练数据时间窗、主指标、负责人、回滚说明。</p></div>
     </div>
     <div class="callout tip"><strong>最低可用训练管道：</strong>load data → validate data → build features → train → evaluate → register model。每一步都应该可单独重跑，并保留输入输出。</div>
   </div>
