@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语专家图谱 · 进阶判断力与持续成长</title>
+<style>
+:root{--bg:#f8fafc;--surface:#fff;--surface2:#f1f5f9;--border:#e2e8f0;--accent:#4f46e5;--accent-light:rgba(79,70,229,.08);--green:#16a34a;--green-light:rgba(22,163,74,.08);--amber:#d97706;--amber-light:rgba(217,119,6,.08);--red:#dc2626;--red-light:rgba(220,38,38,.08);--purple:#7c3aed;--purple-light:rgba(124,58,237,.08);--text:#0f172a;--text-2:#334155;--text-3:#64748b;--nav-w:260px;--nav-bg:#1e293b;--nav-border:#334155;--nav-text:#e2e8f0;--nav-text3:#94a3b8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Noto Sans SC",sans-serif}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#a5b4fc);z-index:20;width:0}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--nav-w);background:var(--nav-bg);border-right:1px solid var(--nav-border);padding:24px 18px;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
+.brand{color:#fff;font-weight:800;font-size:18px;line-height:1.3}.brand small{display:block;color:var(--nav-text3);font-size:11px;margin-top:6px}
+.nav-items{margin:20px 0;display:grid;gap:2px}
+.nav-items a{color:var(--nav-text);text-decoration:none;padding:7px 10px;border-radius:7px;font-size:13px;display:block}
+.nav-items a.active,.nav-items a:hover{background:#334155;color:#fff}
+.nav-section{color:var(--nav-text3);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:10px 10px 4px}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--nav-border);padding-top:14px;display:grid;gap:6px}
+.sidebar-foot a{color:#c7d2fe;text-decoration:none;font-size:13px}
+.main{margin-left:var(--nav-w);padding:0 44px 80px}.content-wrap{max-width:920px;margin:0 auto}
+.hero{padding:60px 0 32px}
+.hero-eyebrow{color:var(--accent);font-weight:800;letter-spacing:.06em;font-size:12px;text-transform:uppercase}
+h1{font-size:44px;line-height:1.08;margin:14px 0 16px;letter-spacing:-.04em}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:17px;color:var(--text-2);max-width:720px;margin:0 0 18px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.chip{background:var(--accent-light);color:#4338ca;border:1px solid rgba(79,70,229,.2);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.notice{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:14px 16px;color:var(--text-2);font-size:14px;margin-bottom:20px}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;margin:20px 0;box-shadow:0 8px 24px rgba(15,23,42,.04)}
+.sec-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
+.sec-num{background:var(--accent);color:#fff;border-radius:10px;padding:5px 9px;font-weight:900;font-size:14px;flex-shrink:0}
+.sec-title h2{margin:0;font-size:26px;letter-spacing:-.02em}
+.sec-title p{margin:3px 0 0;color:var(--text-3);font-size:14px}
+/* diagnostic */
+.diag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:14px 0}
+.diag-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.diag-skill{font-weight:900;font-size:15px;margin-bottom:6px}
+.diag-q{font-size:13px;color:var(--text-2);margin:4px 0}
+.diag-signal{font-size:12px;color:var(--text-3);border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+/* level table */
+.col-table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+.col-table th{background:var(--surface2);padding:8px 10px;text-align:left;border:1px solid var(--border);font-weight:900}
+.col-table td{padding:7px 10px;border:1px solid var(--border);vertical-align:top}
+.col-table tr:nth-child(even){background:#fafafa}
+/* radar */
+.radar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.radar-col{background:#0f172a;border-radius:16px;padding:16px;color:#fff}
+.radar-col h3{margin:0 0 10px;font-size:14px;font-weight:900}
+.radar-pill{display:block;border-radius:999px;padding:7px 10px;margin:7px 0;font-size:13px;font-weight:700;cursor:pointer;transition:transform .1s}
+.radar-pill:hover{transform:translateX(2px)}
+.rp-Adopt{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.3)}
+.rp-Trial{background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3)}
+.rp-Assess{background:rgba(245,158,11,.15);color:#fcd34d;border:1px solid rgba(245,158,11,.3)}
+.rp-Hold{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.radar-detail{display:none;background:#111827;color:#e5e7eb;border-radius:14px;padding:16px;margin-top:12px}
+.radar-detail.show{display:block}
+.rdp-title{font-size:18px;font-weight:900;margin-bottom:6px}
+.rdp-ring{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:900;margin-bottom:8px}
+.rdp-desc{color:#cbd5e1;margin-bottom:8px}
+.rdp-why{color:#e5e7eb;font-size:14px}
+/* self-test */
+.selftest{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px;margin:14px 0}
+.st-q{font-weight:700;margin-bottom:8px}
+.st-options{display:grid;gap:6px}
+.st-opt{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:14px;transition:all .12s}
+.st-opt:hover{border-color:var(--accent);background:var(--accent-light)}
+.st-opt.correct{background:var(--green-light);border-color:#16a34a;color:var(--green)}
+.st-opt.wrong{background:var(--red-light);border-color:#dc2626;color:var(--red)}
+.st-explain{display:none;margin-top:8px;padding:10px;background:#f8fafc;border-radius:10px;font-size:13px;color:var(--text-2);border:1px solid var(--border)}
+.st-explain.show{display:block}
+/* tab */
+.tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-size:13px;cursor:pointer;font-weight:700;color:var(--text-2)}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab-content{display:none}.tab-content.active{display:block}
+/* callout */
+.callout{border-radius:12px;padding:12px 14px;margin:12px 0;font-size:14px}
+.callout.tip{background:var(--green-light);border:1px solid rgba(22,163,74,.2)}
+.callout.warn{background:var(--amber-light);border:1px solid rgba(217,119,6,.22)}
+.callout.info{background:var(--accent-light);border:1px solid rgba(79,70,229,.18)}
+.callout strong{display:block;margin-bottom:3px}
+/* tools */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:14px 0}
+.tool-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.tool-name{font-weight:900;font-size:16px;margin-bottom:4px}
+.tool-use{font-size:13px;color:var(--text-2);margin-bottom:8px}
+.tool-do{font-size:13px;background:var(--accent-light);border-radius:8px;padding:6px 10px;color:#4338ca}
+.tool-card a{color:var(--accent);font-weight:700;text-decoration:none;font-size:13px}
+/* feeds */
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:14px 0}
+.feed-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.feed-card h3{margin:0 0 8px;font-size:15px}
+.feed-card a{display:block;color:var(--accent);font-weight:700;text-decoration:none;font-size:13px;margin:3px 0}
+.feed-card .feed-note{font-size:12px;color:var(--text-3);margin-top:6px}
+/* progress check */
+.progress-check{display:grid;gap:10px;margin:14px 0}
+.pc-item{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px}
+.pc-skill{font-weight:900}
+.pc-now{color:var(--text-2);font-size:13px}
+.pc-next{color:var(--accent);font-size:13px}
+/* page footer */
+.page-footer{margin:32px 0 0;color:var(--text-3);font-size:14px}
+.page-footer a{color:var(--accent);font-weight:700;text-decoration:none}
+.menu-btn{display:none;position:fixed;right:16px;bottom:16px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:11px 14px;font-weight:900;z-index:30;font-size:14px}
+@media(max-width:900px){.radar-grid{grid-template-columns:repeat(2,1fr)}.pc-item{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{display:none}.sidebar.open{display:flex}.main{margin-left:0;padding:0 18px 60px}h1{font-size:32px}.radar-grid{grid-template-columns:1fr}.menu-btn{display:block}}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand">英语日常职场沟通<small>专家图谱 · 诊断与持续成长</small></div>
+  <nav class="nav-items">
+    <div class="nav-section">自我诊断</div>
+    <a href="#s01">01 精准能力诊断</a>
+    <a href="#s02">02 真实程度自测</a>
+    <div class="nav-section">工具与方法</div>
+    <a href="#s03">03 AI 工具使用雷达</a>
+    <a href="#s04">04 工具体系地图</a>
+    <div class="nav-section">持续进步</div>
+    <a href="#s05">05 停滞的真正原因</a>
+    <a href="#s06">06 建立可持续输入系统</a>
+    <a href="#s07">07 资源与社区</a>
+    <a href="#s08">08 下一步阶段规划</a>
+  </nav>
+  <div class="sidebar-foot">
+    <a href="english-advanced.html">← 进阶实战手册</a>
+    <a href="english-practice.html">场景练习地图</a>
+    <a href="english.html">← 基础手册</a>
+  </div>
+</aside>
+<button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">菜单</button>
+
+<main class="main"><div class="content-wrap">
+<header class="hero">
+  <div class="hero-eyebrow">英语沟通 · 专家图谱 · 2026</div>
+  <h1>找到真正卡住你的问题，<em>设计可持续的进步系统</em></h1>
+  <p class="hero-sub">这页不给词块，给判断力：你的英语到底卡在哪里？哪些工具和方法真的有用？如何不靠课程也能持续进步？</p>
+  <div class="chip-row"><span class="chip">精准诊断</span><span class="chip">AI工具雷达</span><span class="chip">停滞原因</span><span class="chip">可持续输入</span><span class="chip">成长路径</span></div>
+  <div class="notice">用法：从诊断开始——先知道自己真正的瓶颈，才能决定把时间花在哪里。</div>
+</header>
+
+<!-- S01 诊断 -->
+<section class="section" id="s01">
+  <div class="sec-head"><span class="sec-num">01</span><div class="sec-title"><h2>精准能力诊断</h2><p>不是"我英语怎么样"，而是具体到：哪个场景、哪类错误、哪个原因。</p></div></div>
+
+  <p style="font-size:14px;color:var(--text-2);margin-bottom:14px">下面每个技能维度给出可观察的诊断问题，不是主观打分。找到你第一个回答"不"的地方，那就是优先级最高的瓶颈。</p>
+
+  <div class="diag-grid">
+    <div class="diag-card">
+      <div class="diag-skill">听力</div>
+      <div class="diag-q">✓ 不看字幕能听懂 TED 80%？</div>
+      <div class="diag-q">✓ 知道听不懂时是哪类原因？</div>
+      <div class="diag-signal">如果都是"不"→ 先做基础手册 §02 连读规则，再每天精听一段。</div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-skill">口语流利度</div>
+      <div class="diag-q">✓ 1 分钟不间断描述昨天做了什么？</div>
+      <div class="diag-q">✓ 被追问时不用准备也能接话？</div>
+      <div class="diag-signal">如果第二项是"不"→ 瓶颈在反应，不在词汇量。需要增加"即时输出"练习。</div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-skill">词汇激活</div>
+      <div class="diag-q">✓ 写邮件时不需要翻字典？</div>
+      <div class="diag-q">✓ 写 150 词不重复使用同一个动词超过 2 次？</div>
+      <div class="diag-signal">如果第二项是"不"→ 被动词汇已经够，主动激活词汇不足。基础手册 §03 的词块激活练习是关键。</div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-skill">写作自然度</div>
+      <div class="diag-q">✓ 邮件发出后通常第一次就被正确理解？</div>
+      <div class="diag-q">✓ 自己能识别中式表达并修改？</div>
+      <div class="diag-signal">如果第二项是"不"→ 看进阶手册 §07 中式英语对照表，每周系统修改 3 类错误。</div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-skill">语域判断</div>
+      <div class="diag-q">✓ 对上级和熟悉同事说话方式明显不同？</div>
+      <div class="diag-q">✓ 收到对方邮件能判断对方的语气预期？</div>
+      <div class="diag-signal">如果是"不"→ 进阶手册 §02 语域调节表，每次沟通前有意识判断对方级别。</div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-skill">发音</div>
+      <div class="diag-q">✓ 别人不需要要求你重复？</div>
+      <div class="diag-q">✓ 自己能感知词尾辅音（-t/-d/-k）？</div>
+      <div class="diag-signal">如果第一项是"不"→ 可懂度问题，先解决；基础手册 §01 难点音。不要还没可懂度就追求口音。</div>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>最常见诊断错误：</strong>把"背更多词"当成所有问题的答案。实际上，口语停顿通常是反应速度问题（不是词汇量），写作中式通常是搭配问题（不是语法问题），听不懂通常是连读问题（不是语速问题）。</div>
+</section>
+
+<!-- S02 真实程度测试 -->
+<section class="section" id="s02">
+  <div class="sec-head"><span class="sec-num">02</span><div class="sec-title"><h2>真实程度自测</h2><p>判断题，不是知识测试。每题说明你的判断依据。</p></div></div>
+
+  <div class="selftest" id="q1">
+    <div class="st-q">Q1 · 同事说 "Let's table this." 会议上你该怎么理解？</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q1','a','w')">A. 把这件事提到议程上讨论</div>
+      <div class="st-opt" onclick="answer('q1','b','c')">B. 暂时搁置，之后再讨论</div>
+      <div class="st-opt" onclick="answer('q1','c','w')">C. 需要更多时间，不能现在决定</div>
+    </div>
+    <div class="st-explain" id="q1-explain">
+      <strong>易错点：</strong>"Table" 在美式英语中意思是「搁置/暂缓」，在英式英语中意思正好相反，是「提到议程」。在北美职场里，"Let's table this" = "让我们先把这件事搁置"。遇到这种歧义词，要看场景和对象。
+    </div>
+  </div>
+
+  <div class="selftest" id="q2">
+    <div class="st-q">Q2 · 你想婉拒一个你不喜欢的方案，用哪个表达最合适？</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q2','a','w')">A. I totally disagree with this approach.</div>
+      <div class="st-opt" onclick="answer('q2','b','c')">B. I see where you're coming from, but I wonder if [alternative] might work better here.</div>
+      <div class="st-opt" onclick="answer('q2','c','w')">C. This is not a good idea.</div>
+    </div>
+    <div class="st-explain" id="q2-explain">
+      <strong>B 是最佳答案：</strong>先承认对方的视角（"I see where you're coming from"），然后用 "I wonder if" 提出替代，而不是直接否定。A 和 C 虽然清楚，但在大多数职场语境会显得激进或粗鲁。
+    </div>
+  </div>
+
+  <div class="selftest" id="q3">
+    <div class="st-q">Q3 · 邮件结尾你想让对方确认是否收到，哪句最自然？</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q3','a','w')">A. Please revert at the earliest.</div>
+      <div class="st-opt" onclick="answer('q3','b','w')">B. Please kindly confirm receipt of this email.</div>
+      <div class="st-opt" onclick="answer('q3','c','c')">C. Could you let me know you got this?</div>
+    </div>
+    <div class="st-explain" id="q3-explain">
+      <strong>C 是最自然的：</strong>A（"revert"在亚洲商务英语中有用，但国际场景中不常见）；B（正确但过于正式、啰嗦）；C 简单直接，适合大多数职场邮件。
+    </div>
+  </div>
+
+  <div class="selftest" id="q4">
+    <div class="st-q">Q4 · 同事问 "How are you holding up?" 他/她最可能在问什么？</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q4','a','c')">A. 关心你最近是否撑得住，通常在你忙碌或有压力时问</div>
+      <div class="st-opt" onclick="answer('q4','b','w')">B. 问你有没有保持好的健康习惯</div>
+      <div class="st-opt" onclick="answer('q4','c','w')">C. 这是个礼貌问候，等同于 "How are you?"</div>
+    </div>
+    <div class="st-explain" id="q4-explain">
+      <strong>A 正确：</strong>"How are you holding up?" 有关心的语气，通常用于对方正在经历困难、高压或忙碌阶段。比 "How are you?" 更有温度，暗示说话者知道你最近不容易。回答可以是："I'm doing okay, just a lot going on this week!"
+    </div>
+  </div>
+
+  <div class="selftest" id="q5">
+    <div class="st-q">Q5 · 听力：你总是能识别 "gonna / wanna / gotta" 等缩略形式，但有时还是听不懂整句话。最可能的原因是什么？</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q5','a','w')">A. 词汇量不够，生词太多</div>
+      <div class="st-opt" onclick="answer('q5','b','c')">B. 功能词（介词、冠词、助动词）的弱读形式没有熟悉</div>
+      <div class="st-opt" onclick="answer('q5','c','w')">C. 语速太快，需要练习更快的处理速度</div>
+    </div>
+    <div class="st-explain" id="q5-explain">
+      <strong>B 最可能：</strong>能识别缩略说明内容词已经掌握；但 "of/for/a/the/at/it/him/her" 等功能词在流速英语中几乎全部弱读成 /ə/ 或被省略，这些是"不可见的词"，专门练精听时要特别注意标记这类弱读。
+    </div>
+  </div>
+
+  <div class="selftest" id="q6">
+    <div class="st-q">Q6 · 改错题：下面这句邮件哪里最不自然？"Please kindly revert to me at the earliest convenience regarding the attached document."</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q6','a','w')">A. "Please kindly" 太礼貌了，应该更直接</div>
+      <div class="st-opt" onclick="answer('q6','b','c')">B. 整句话堆砌了太多正式套语，实际上读起来生硬；"revert" 用法也只在部分地区商业英语中通行</div>
+      <div class="st-opt" onclick="answer('q6','c','w')">C. "attached document" 说法错误，应该是 "the attachment"</div>
+    </div>
+    <div class="st-explain" id="q6-explain">
+      <strong>B 正确：</strong>这句话里"please kindly"、"revert"（回复）、"at the earliest convenience"同时出现，每一个单独用都勉强，三个叠在一起就显得非常过时和生硬。更自然的写法："Could you let me know your thoughts on the attached document when you get a chance?" — 一句话，清楚，有礼貌，不堆砌。C 错误："attached document" 完全正确。
+    </div>
+  </div>
+
+  <div class="selftest" id="q7">
+    <div class="st-q">Q7 · 你的同事说完一个方案后停下来看着你，你不同意但不想直接否定，下面哪个接话最好？</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q7','a','w')">A. "I don't think that's going to work."</div>
+      <div class="st-opt" onclick="answer('q7','b','w')">B. "That's interesting, but no."</div>
+      <div class="st-opt" onclick="answer('q7','c','c')">C. "I see where you're coming from — I wonder if we've thought about what happens when [X scenario]?"</div>
+    </div>
+    <div class="st-explain" id="q7-explain">
+      <strong>C 最佳：</strong>先用 "I see where you're coming from" 承认对方的出发点（不是假装同意），然后用提问的形式（"I wonder if..."）引入你的顾虑，让对方自己思考而不是被否定。这是英语职场里不同意对方时最有效的结构。A 直接否定，B 虽然简短但语气很生硬。
+    </div>
+  </div>
+
+  <div class="selftest" id="q8">
+    <div class="st-q">Q8 · 语法判断：下面四句话，哪一句有明确的语法错误？</div>
+    <div class="st-options">
+      <div class="st-opt" onclick="answer('q8','a','c')">A. "I look forward to hear from you."</div>
+      <div class="st-opt" onclick="answer('q8','b','w')">B. "She's been working here since 2019."</div>
+      <div class="st-opt" onclick="answer('q8','c','w')">C. "Could you give me some advice?"</div>
+    </div>
+    <div class="st-explain" id="q8-explain">
+      <strong>A 有语法错误：</strong>"look forward to" 后面必须接动名词（-ing 形式），不能接不定式。正确写法："I look forward to <em>hearing</em> from you." 这是中文母语者极高频的错误——因为中文里"期待……"后面可以直接跟动词原形。B 和 C 都完全正确：B 用现在完成进行时表示持续到现在的动作；C 中 advice 是不可数名词，用 some 正确。
+    </div>
+  </div>
+</section>
+
+<!-- S03 AI雷达 -->
+<section class="section" id="s03">
+  <div class="sec-head"><span class="sec-num">03</span><div class="sec-title"><h2>AI 工具使用雷达</h2><p>哪些 AI 用法真的有助于语言进步，哪些只是让你感觉在学。</p></div></div>
+
+  <div class="radar-grid">
+    <div class="radar-col"><h3>Adopt · 现在就用</h3>
+      <span class="radar-pill rp-Adopt" onclick="rd('r1','Adopt','角色扮演练口语','让 AI 扮演你的同事或客户，进行 10 分钟会议模拟。','最有效的用法是：告诉 AI 只纠正一个维度（如"只告诉我哪里停顿了"）。什么都纠正反而没用。<br><strong>30天实验：</strong>每天 10 分钟，让 AI 扮演你的英语母语同事进行晨会发言模拟；第 30 天对比第 1 天的停顿次数。')">角色扮演练口语</span>
+      <span class="radar-pill rp-Adopt" onclick="rd('r2','Adopt','草稿→改写反馈','先自己写完草稿，再让 AI 指出不自然的表达并解释原因。','关键：一定先写完再问。否则你跳过了最有学习价值的那一步——用自己的语言犯错。<br><strong>30天实验：</strong>每天写一段 80 词的英文，提交给 AI 要求"只指出 3 处不自然的搭配"，记录每次的改动类型是否在减少。')">草稿→改写反馈</span>
+      <span class="radar-pill rp-Adopt" onclick="rd('r3','Adopt','生成例句','给 AI 一个词块，要求生成 5 个不同场景下的真实例句。','比词典例句更灵活，可以指定"给我职场邮件场景的例句"或"口语中怎么用"。<br><strong>30天实验：</strong>每天取出一个新词块，让 AI 生成 3 个场景例句，选 1 个造自己的句子并录音说出来。')">生成例句</span>
+    </div>
+    <div class="radar-col"><h3>Trial · 有条件用</h3>
+      <span class="radar-pill rp-Trial" onclick="rd('r4','Trial','全文语法润色','把整段文字交给 AI 直接润色成自然英文。','风险：你不知道为什么被改，下次还会犯同样的错误。有效用法：先自改一遍，再对比 AI 版本，只学习你没想到的那些改动。<br><strong>30天实验：</strong>写 15 篇短文，每篇先自改再 AI 润色；统计"AI 改的但我看不懂为什么"的数量是否在减少。')">全文语法润色</span>
+      <span class="radar-pill rp-Trial" onclick="rd('r5','Trial','听力材料改写','把一段难的英语材料让 AI 改写成更简单的版本。','适合材料太难时降低难度；风险是降完之后就不想挑战原版了。建议：改写版读完立刻回头试听原版。<br><strong>30天实验：</strong>选 5 段难度超出的材料，AI 改写后先读改写版，再听原版，记录第二次是否听懂比例提升。')">听力材料改写</span>
+      <span class="radar-pill rp-Trial" onclick="rd('r6','Trial','评估口语录音','把自己的口语录音转文字，再让 AI 分析。','转文字工具（如 Whisper/Speechify）精度有限；AI 的发音反馈需要真人交叉验证。适合分析停顿和词汇多样度，不适合判断发音是否准确。<br><strong>30天实验：</strong>每周一次录音转文字，让 AI 分析词汇多样度和句子完整度，记录 4 周变化。')">评估口语录音</span>
+    </div>
+    <div class="radar-col"><h3>Assess · 谨慎评估</h3>
+      <span class="radar-pill rp-Assess" onclick="rd('r7','Assess','完全依赖 AI 写邮件','让 AI 直接帮你写所有英文邮件。','你的英语不会进步，因为错误没有机会暴露。偶尔可以用来参考格式，但不能替代自己写初稿。<br><strong>实验：</strong>停止让 AI 写初稿一个月，自己写完再参考。记录你实际犯的错误类型，这才是真正的学习机会。')">完全依赖 AI 写邮件</span>
+      <span class="radar-pill rp-Assess" onclick="rd('r8','Assess','用 AI 解释语法规则','把每个你不确定的语法规则都问 AI。','对于解释固定规则有用，但 AI 的语法解释有时不一致或过度理论化。对于"为什么这样更自然"的问题，语料库（COCA）通常比 AI 更可靠。<br><strong>判断标准：</strong>如果你想知道"这个词用法对不对"→ 用语料库；如果你想理解规则 → AI 可以。')">用 AI 解释语法规则</span>
+    </div>
+    <div class="radar-col"><h3>Hold · 不推荐</h3>
+      <span class="radar-pill rp-Hold" onclick="rd('r9','Hold','让 AI 评分你的英语','让 AI 给你的英语打 80 分或 B2 等级。','AI 的评分没有标准依据，你不知道这个分数比谁高。真正有意义的指标：停顿次数、词汇重复率、被对方要求重复的次数——这些是可以自己测量的。<br><strong>替代做法：</strong>用真实任务的成功率评估——发出的邮件第一次就被正确理解了吗？')">让 AI 给你打分</span>
+      <span class="radar-pill rp-Hold" onclick="rd('r10','Hold','用 AI 代替真实对话','用 AI 聊天替代与真人的英语交流。','AI 不会打断你、不会误解你、不会有真实反应——而这些才是真实对话的训练核心。AI 对话可以作为热身，但不能替代真实互动。<br><strong>替代做法：</strong>找一个固定的语言交换伙伴，或加入英语口语社群。')">用 AI 代替真实对话</span>
+    </div>
+  </div>
+  <div class="radar-detail" id="radar-detail"></div>
+</section>
+
+<!-- S04 工具地图 -->
+<section class="section" id="s04">
+  <div class="sec-head"><span class="sec-num">04</span><div class="sec-title"><h2>工具体系地图</h2><p>每个工具解决一个具体问题，不是越多越好。</p></div></div>
+
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-name">YouGlish</div>
+      <div class="tool-use">问题：不知道一个词在真实语境里怎么发音/使用</div>
+      <div class="tool-do">搜索词块，看 5 个真实视频片段，选 2 个模仿朗读</div>
+      <a href="https://youglish.com/" target="_blank">访问 →</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">COCA / SkELL</div>
+      <div class="tool-use">问题：不确定一个词的搭配是否自然</div>
+      <div class="tool-do">输入目标词，看频率最高的 5 个搭配，用到写作中</div>
+      <a href="https://skell.sketchengine.eu/" target="_blank">SkELL →</a> · <a href="https://www.english-corpora.org/coca/" target="_blank">COCA →</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">LanguageTool</div>
+      <div class="tool-use">问题：写完一段英文，想快速发现明显错误</div>
+      <div class="tool-do">先自改一轮，再粘贴检查；只接受你能解释原因的修改</div>
+      <a href="https://languagetool.org/" target="_blank">访问 →</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Anki</div>
+      <div class="tool-use">问题：记了很多词块但总忘</div>
+      <div class="tool-do">建词块卡（正面：中文或场景；背面：英文词块+例句+录音），每天 10 分钟</div>
+      <a href="https://apps.ankiweb.net/" target="_blank">访问 →</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Elsa Speak</div>
+      <div class="tool-use">问题：不确定自己哪个音发不准</div>
+      <div class="tool-do">练 20 组最小对立音；用 Elsa 的即时反馈定位问题音</div>
+      <a href="https://elsaspeak.com/" target="_blank">访问 →</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Lextutor VP</div>
+      <div class="tool-use">问题：想知道自己的写作词汇多样度</div>
+      <div class="tool-do">粘贴你的文章，看 K1/K2/AWL 分布；目标 K1 不超过 70%</div>
+      <a href="https://www.lextutor.ca/vp/eng/" target="_blank">访问 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- S05 停滞原因 -->
+<section class="section" id="s05">
+  <div class="sec-head"><span class="sec-num">05</span><div class="sec-title"><h2>停滞的真正原因</h2><p>学了很久感觉没进步——通常是其中一种。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s05',this,'s05-plateau')">常见停滞模式</button>
+    <button class="tab-btn" onclick="st('s05',this,'s05-fix')">对应解法</button>
+  </div>
+
+  <div id="s05-plateau" class="tab-content active">
+    <table class="col-table">
+      <thead><tr><th>症状</th><th>你以为是</th><th>真正的原因</th></tr></thead>
+      <tbody>
+        <tr><td>听了很多，听力不变</td><td>需要更多输入时长</td><td>大量泛听但从不精听，连读/弱读缺口没有修复</td></tr>
+        <tr><td>词汇量大，写作还是简单</td><td>需要背更多词</td><td>被动词汇足够，但主动激活词汇低（从来不在真实输出中用）</td></tr>
+        <tr><td>语法都会，表达还是中式</td><td>需要更多语法练习</td><td>语法正确但搭配错误——这是词块问题，不是语法问题</td></tr>
+        <tr><td>练了很多，真实场景一紧张就崩</td><td>需要更多练习量</td><td>从来没有压力下的练习，真实场景的认知负担和练习时完全不同</td></tr>
+        <tr><td>英语够用，但感觉在原地踏步</td><td>需要更高级的材料</td><td>没有新的使用场景——语言需要功能驱动，"够用"之后没有新任务</td></tr>
+        <tr><td>学了很久，还是不自信开口</td><td>需要更多词汇/语法</td><td>目标是"完美才开口"——这让练习机会本身消失了</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s05-fix" class="tab-content">
+    <table class="col-table">
+      <thead><tr><th>真正的原因</th><th>具体解法</th><th>验证方式</th></tr></thead>
+      <tbody>
+        <tr><td>连读/弱读缺口</td><td>每天精听 1 段，只标注弱读和连读出现的位置</td><td>1 个月后同一段材料，裸听能写出 70% 以上的词</td></tr>
+        <tr><td>主动激活词汇低</td><td>每天强制在口语或写作中使用当天的 2 个新词块</td><td>一周后翻出词块卡，能即兴造句用出 80%</td></tr>
+        <tr><td>搭配错误</td><td>写完之后用 SkELL/COCA 检查 5 个动词-名词搭配</td><td>自己批改时能识别并说明搭配错在哪里</td></tr>
+        <tr><td>没有压力练习</td><td>使用"被打断场景"练习：让 AI 随时追问，不允许准备</td><td>能连续回答 3 个追问而不停顿</td></tr>
+        <tr><td>没有新使用场景</td><td>为自己设定新的真实任务：英文演讲/英文博客/英文会议</td><td>完成一次任务并能复盘 3 个具体改进点</td></tr>
+        <tr><td>"完美才开口"心理</td><td>每天强制完成 1 次 60 秒录音，不准重录</td><td>30 天后回听第 1 天和第 30 天，找 3 个具体差别</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S06 可持续输入 -->
+<section class="section" id="s06">
+  <div class="sec-head"><span class="sec-num">06</span><div class="sec-title"><h2>建立可持续输入系统</h2><p>不是要你订阅更多，而是少而精、可持续吸收。</p></div></div>
+
+  <p style="font-size:14px;color:var(--text-2);margin-bottom:14px"><strong>原则：</strong>每个输入渠道对应一个输出动作。只听不输出 = 输入进了大脑但没有连线到表达系统。</p>
+
+  <table class="col-table">
+    <thead><tr><th>材料类型</th><th>难度</th><th>配套输出动作</th><th>推荐资源</th></tr></thead>
+    <tbody>
+      <tr><td>短播客（3-5 分钟）</td><td>I+1</td><td>精听：裸听→标漏听→跟读→复述</td><td>VOA Learning English, ESL Pod</td></tr>
+      <tr><td>TED Talk（10-18 分钟）</td><td>中等</td><td>先无字幕听，写摘要，再看字幕对比</td><td>ted.com/talks</td></tr>
+      <tr><td>职场播客（20-40 分钟）</td><td>挑战</td><td>泛听，只标 3 个想用的表达</td><td>How I Built This, Worklife with Adam Grant</td></tr>
+      <tr><td>英文文章（300-600 词）</td><td>可选</td><td>读完后 90 秒口头或书面总结</td><td>BBC Worklife, The Economist Espresso</td></tr>
+      <tr><td>真实工作英语</td><td>真实场景</td><td>每收一封英文邮件，抄 1 个你觉得自然的表达</td><td>你的工作邮件本身</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip"><strong>每周最小循环：</strong>2 次精听（20 分钟/次）+ 1 次阅读总结（15 分钟）+ 3 次口语录音（60 秒/次）。总共约 85 分钟，可以分散在一周内完成。</div>
+</section>
+
+<!-- S07 资源 -->
+<section class="section" id="s07">
+  <div class="sec-head"><span class="sec-num">07</span><div class="sec-title"><h2>资源与社区</h2><p>精选，不是大全。每个都说明为什么值得用。</p></div></div>
+
+  <div class="feed-grid">
+    <div class="feed-card">
+      <h3>听力材料</h3>
+      <a href="https://learningenglish.voanews.com/" target="_blank">VOA Learning English</a>
+      <a href="https://www.bbc.co.uk/learningenglish" target="_blank">BBC Learning English</a>
+      <a href="https://elllo.org/" target="_blank">ELLLO（真实对话）</a>
+      <a href="https://www.npr.org/podcasts/" target="_blank">NPR Podcasts（挑战级）</a>
+      <div class="feed-note">VOA 有文本，适合精听；NPR 是原速母语者，用于测速。</div>
+    </div>
+    <div class="feed-card">
+      <h3>发音</h3>
+      <a href="https://youglish.com/" target="_blank">YouGlish（真实语境发音）</a>
+      <a href="https://www.youtube.com/@rachelsenglish" target="_blank">Rachel's English（美音）</a>
+      <a href="https://www.youtube.com/@EnglishwithLucy" target="_blank">English with Lucy（英音）</a>
+      <a href="https://elsaspeak.com/" target="_blank">ELSA Speak（AI 反馈）</a>
+      <div class="feed-note">YouGlish 查单词，Rachel 和 Lucy 看规则，ELSA 做练习。</div>
+    </div>
+    <div class="feed-card">
+      <h3>词汇与写作</h3>
+      <a href="https://skell.sketchengine.eu/" target="_blank">SkELL（搭配查询）</a>
+      <a href="https://www.oxfordlearnersdictionaries.com/" target="_blank">Oxford Learner's Dict.</a>
+      <a href="https://www.lextutor.ca/vp/eng/" target="_blank">Lextutor VP（词汇分析）</a>
+      <a href="https://languagetool.org/" target="_blank">LanguageTool</a>
+      <div class="feed-note">先查 SkELL 确认搭配，再用 Oxford 看例句，写完用 LanguageTool 检查。</div>
+    </div>
+    <div class="feed-card">
+      <h3>口语练习社群</h3>
+      <a href="https://www.italki.com/" target="_blank">italki（语言伙伴）</a>
+      <a href="https://www.tandem.net/" target="_blank">Tandem（语言交换）</a>
+      <a href="https://www.reddit.com/r/languagelearning/" target="_blank">r/languagelearning</a>
+      <a href="https://www.conversationexchange.com/" target="_blank">Conversation Exchange</a>
+      <div class="feed-note">italki 可以找专业老师一对一；Tandem 适合找免费语言交换伙伴。</div>
+    </div>
+  </div>
+</section>
+
+<!-- S08 成长路径 -->
+<section class="section" id="s08">
+  <div class="sec-head"><span class="sec-num">08</span><div class="sec-title"><h2>下一阶段规划</h2><p>不是无限往上卷，而是找到你下一个实际需要突破的维度。</p></div></div>
+
+  <div class="progress-check">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-weight:900;font-size:13px;color:var(--text-3);padding:0 12px">
+      <span>维度</span><span>目前能做到</span><span>下一步目标</span>
+    </div>
+    <div class="pc-item">
+      <div class="pc-skill">日常听力</div>
+      <div class="pc-now">TED 有字幕能懂 90%</div>
+      <div class="pc-next">→ 无字幕 TED 能懂 70% + 写出摘要</div>
+    </div>
+    <div class="pc-item">
+      <div class="pc-skill">口语反应</div>
+      <div class="pc-now">准备好的内容能说</div>
+      <div class="pc-next">→ 被追问时能连续回答 3 个追问</div>
+    </div>
+    <div class="pc-item">
+      <div class="pc-skill">词块激活</div>
+      <div class="pc-now">认识很多词</div>
+      <div class="pc-next">→ 写 150 词邮件，主动使用 5 个非 get/do 词块</div>
+    </div>
+    <div class="pc-item">
+      <div class="pc-skill">邮件写作</div>
+      <div class="pc-now">能写清楚，但有时太正式</div>
+      <div class="pc-next">→ 能根据收件人调整语气，第一次就被正确理解</div>
+    </div>
+    <div class="pc-item">
+      <div class="pc-skill">会议参与</div>
+      <div class="pc-now">能跟上内容，但少发言</div>
+      <div class="pc-next">→ 每次会议至少用 1 个礼貌打断句或追问句</div>
+    </div>
+    <div class="pc-item">
+      <div class="pc-skill">长期成长</div>
+      <div class="pc-now">靠学习资源驱动</div>
+      <div class="pc-next">→ 靠真实任务驱动（英文写作/演讲/带外国同事）</div>
+    </div>
+  </div>
+
+  <div class="callout info"><strong>判断你准备好进入下一阶段的信号：</strong>当英语变成完成任务的工具而不是任务本身，当你更多想"我要表达什么"而不是"我要怎么说"，你已经完成了最重要的跨越。</div>
+</section>
+
+<footer class="page-footer">
+  <a href="english-advanced.html">← 进阶实战手册</a> | <a href="english-practice.html">场景练习地图</a> | <a href="english.html">← 基础手册</a>
+</footer>
+</div></main>
+
+<script>
+function st(group,btn,id){
+  const sec=btn.closest('.section');
+  sec.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  sec.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+const RING_COLORS={Adopt:'#22c55e',Trial:'#6366f1',Assess:'#f59e0b',Hold:'#ef4444'};
+const RING_BG={Adopt:'rgba(34,197,94,.15)',Trial:'rgba(99,102,241,.15)',Assess:'rgba(245,158,11,.15)',Hold:'rgba(239,68,68,.15)'};
+const RING_TEXT={Adopt:'#86efac',Trial:'#a5b4fc',Assess:'#fcd34d',Hold:'#fca5a5'};
+function rd(id,ring,name,desc,why){
+  const p=document.getElementById('radar-detail');
+  p.innerHTML=`<div class="rdp-title">${name}</div><span class="rdp-ring" style="background:${RING_BG[ring]};color:${RING_TEXT[ring]};border:1px solid ${RING_COLORS[ring]}40">${ring}</span><p class="rdp-desc">${desc}</p><p class="rdp-why">${why}</p>`;
+  p.classList.add('show');
+  p.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function answer(qid,opt,correct){
+  const sec=document.getElementById(qid);
+  sec.querySelectorAll('.st-opt').forEach(el=>el.style.pointerEvents='none');
+  const clicked=sec.querySelectorAll('.st-opt');
+  const idx={'a':0,'b':1,'c':2}[opt];
+  clicked[idx].classList.add(correct==='c'?'correct':'wrong');
+  const exp=document.getElementById(qid+'-explain');
+  exp.classList.add('show');
+}
+const navLinks=document.querySelectorAll('.nav-items a[href^="#"]');
+const sections=document.querySelectorAll('.section');
+sections.forEach(s=>new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.classList.remove('active'));const a=document.querySelector(`.nav-items a[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('prog').style.width=`${Math.min(1,h.scrollTop/(h.scrollHeight-h.clientHeight))*100}%`});
+</script>
+</body>
+</html>

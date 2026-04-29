@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语基础手册 · 发音 词块 语法 口语</title>
+<style>
+:root{--bg:#f8fafc;--surface:#fff;--surface2:#f1f5f9;--border:#e2e8f0;--accent:#2563eb;--accent-light:rgba(37,99,235,.08);--green:#16a34a;--green-light:rgba(22,163,74,.08);--amber:#d97706;--amber-light:rgba(217,119,6,.08);--red:#dc2626;--red-light:rgba(220,38,38,.08);--purple:#7c3aed;--purple-light:rgba(124,58,237,.08);--text:#0f172a;--text-2:#334155;--text-3:#64748b;--nav-w:260px;--nav-bg:#1e293b;--nav-border:#334155;--nav-text:#e2e8f0;--nav-text3:#94a3b8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Noto Sans SC",sans-serif}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#60a5fa);z-index:20;width:0;transition:width .1s}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--nav-w);background:var(--nav-bg);border-right:1px solid var(--nav-border);padding:24px 18px;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
+.brand{color:#fff;font-weight:800;font-size:18px;line-height:1.3}.brand small{display:block;color:var(--nav-text3);font-size:11px;margin-top:6px}
+.nav-items{margin:20px 0;display:grid;gap:2px}
+.nav-items a{color:var(--nav-text);text-decoration:none;padding:7px 10px;border-radius:7px;font-size:13px;display:block}
+.nav-items a.active,.nav-items a:hover{background:#334155;color:#fff}
+.nav-section{color:var(--nav-text3);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:10px 10px 4px}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--nav-border);padding-top:14px;display:grid;gap:6px}
+.sidebar-foot a{color:#bfdbfe;text-decoration:none;font-size:13px}
+.main{margin-left:var(--nav-w);padding:0 44px 80px}.content-wrap{max-width:900px;margin:0 auto}
+.hero{padding:60px 0 32px}
+.hero-eyebrow{color:var(--accent);font-weight:800;letter-spacing:.06em;font-size:12px;text-transform:uppercase}
+h1{font-size:44px;line-height:1.08;margin:14px 0 16px;letter-spacing:-.04em}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:17px;color:var(--text-2);max-width:720px;margin:0 0 18px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.chip{background:var(--accent-light);color:#1d4ed8;border:1px solid rgba(37,99,235,.18);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.notice{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:14px 16px;color:var(--text-2);font-size:14px}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;margin:20px 0;box-shadow:0 8px 24px rgba(15,23,42,.04)}
+.sec-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
+.sec-num{background:var(--accent);color:#fff;border-radius:10px;padding:5px 9px;font-weight:900;font-size:14px;flex-shrink:0}
+.sec-title h2{margin:0;font-size:26px;letter-spacing:-.02em}
+.sec-title p{margin:3px 0 0;color:var(--text-3);font-size:14px}
+/* phonetics */
+.ipa-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:14px 0}
+.ipa-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.ipa-symbol{font-size:28px;font-weight:900;color:var(--accent);font-family:monospace;line-height:1}
+.ipa-name{font-size:12px;color:var(--text-3);margin:2px 0}
+.ipa-example{font-size:13px;font-weight:700}
+.ipa-trap{font-size:12px;color:var(--red);margin-top:4px}
+/* connected speech */
+.rule-block{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:10px 0}
+.rule-label{display:inline-block;background:var(--accent);color:#fff;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:900;margin-bottom:6px}
+.rule-title{font-weight:900;font-size:15px;margin-bottom:6px}
+.eg-row{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:14px}
+.eg-orig{color:var(--text-3);text-decoration:line-through;min-width:140px}
+.eg-pron{color:var(--green);font-weight:700}
+.arrow{color:var(--text-3)}
+/* collocations */
+.col-table{width:100%;border-collapse:collapse;font-size:14px}
+.col-table th{background:var(--surface2);padding:8px 10px;text-align:left;border:1px solid var(--border);font-weight:900}
+.col-table td{padding:7px 10px;border:1px solid var(--border);vertical-align:top}
+.col-table tr:nth-child(even){background:#fafafa}
+.col-tag{display:inline-block;background:var(--accent-light);color:var(--accent);border-radius:999px;padding:1px 6px;font-size:11px;font-weight:700;margin:1px}
+.col-tag.work{background:#f0fdf4;color:#15803d}
+.col-tag.daily{background:#faf5ff;color:#6d28d9}
+.col-tag.mistake{background:var(--red-light);color:var(--red)}
+/* grammar */
+.grammar-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:10px 0}
+.gc-tense{font-weight:900;color:var(--accent);font-size:15px;margin-bottom:4px}
+.gc-when{font-size:13px;color:var(--text-2);margin-bottom:8px}
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.wrong-box,.right-box{border-radius:10px;padding:10px 12px;font-size:13px}
+.wrong-box{background:var(--red-light);border:1px solid rgba(220,38,38,.2)}
+.right-box{background:var(--green-light);border:1px solid rgba(22,163,74,.2)}
+.box-label{font-size:11px;font-weight:900;margin-bottom:4px}
+.wrong-box .box-label{color:var(--red)}.right-box .box-label{color:var(--green)}
+/* phrases */
+.function-group{margin:16px 0}
+.fg-title{font-weight:900;font-size:15px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fg-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.phrase-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.phrase-en{font-weight:700;font-size:14px;color:var(--text)}
+.phrase-cn{font-size:12px;color:var(--text-3);margin:2px 0}
+.phrase-note{font-size:12px;color:var(--amber);margin-top:3px}
+.phrase-card.upgrade .phrase-en{color:var(--green)}
+/* tab system */
+.tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-size:13px;cursor:pointer;font-weight:700;color:var(--text-2);transition:all .1s}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab-content{display:none}.tab-content.active{display:block}
+/* callouts */
+.callout{border-radius:12px;padding:12px 14px;margin:12px 0;font-size:14px}
+.callout.tip{background:var(--green-light);border:1px solid rgba(22,163,74,.2)}
+.callout.warn{background:var(--amber-light);border:1px solid rgba(217,119,6,.22)}
+.callout.info{background:var(--accent-light);border:1px solid rgba(37,99,235,.18)}
+.callout strong{display:block;margin-bottom:3px}
+/* checklist */
+.checklist{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:14px 0}
+.checklist-title{font-weight:900;margin-bottom:10px}
+.check-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border)}
+.check-row:last-child{border-bottom:0}
+.check-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:4px;background:var(--surface2);cursor:pointer;transition:all .12s}
+.check-box.checked{background:var(--accent);border-color:var(--accent);background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 12 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:10px 8px}
+/* page footer */
+.page-footer{margin:32px 0 0;color:var(--text-3);font-size:14px}
+.page-footer a{color:var(--accent);font-weight:700;text-decoration:none}
+.menu-btn{display:none;position:fixed;right:16px;bottom:16px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:11px 14px;font-weight:900;z-index:30;font-size:14px}
+@media(max-width:768px){.sidebar{display:none}.sidebar.open{display:flex}.main{margin-left:0;padding:0 18px 60px}h1{font-size:32px}.compare-row{grid-template-columns:1fr}.ipa-grid{grid-template-columns:repeat(2,1fr)}.menu-btn{display:block}}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand">英语日常职场沟通<small>基础手册 · 直接可用的语言材料</small></div>
+  <nav class="nav-items">
+    <div class="nav-section">发音</div>
+    <a href="#s01">01 中文母语者难点音</a>
+    <a href="#s02">02 连读与弱读规则</a>
+    <div class="nav-section">词汇</div>
+    <a href="#s03">03 核心职场词块库</a>
+    <a href="#s04">04 日常高频词块</a>
+    <div class="nav-section">语法</div>
+    <a href="#s05">05 四大时态对照</a>
+    <a href="#s06">06 常见中式语法错误</a>
+    <div class="nav-section">口语</div>
+    <a href="#s07">07 功能短语库</a>
+    <a href="#s08">08 书面英语基础模板</a>
+    <div class="nav-section">练习</div>
+    <a href="#s09">09 开始前清单</a>
+  </nav>
+  <div class="sidebar-foot">
+    <a href="english-practice.html">场景练习地图 →</a>
+    <a href="english-advanced.html">进入进阶实战手册 →</a>
+    <a href="english-expert.html">专家图谱 →</a>
+  </div>
+</aside>
+<button class="menu-btn" id="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">菜单</button>
+
+<main class="main"><div class="content-wrap">
+<header class="hero">
+  <div class="hero-eyebrow">英语沟通 · 基础手册 · 2026</div>
+  <h1>日常和职场英语，<em>打开就能用的参考材料</em></h1>
+  <p class="hero-sub">这页不解释"为什么要学"，直接给你：发音难点 + 连读规则 + 词块库 + 语法对照 + 口语功能短语。适合有一定基础、想让表达更自然的人。</p>
+  <div class="chip-row"><span class="chip">IPA 难点音</span><span class="chip">连读弱读</span><span class="chip">职场词块</span><span class="chip">时态对照</span><span class="chip">口语短语</span></div>
+  <div class="notice">用法：用侧边栏跳到你需要的那节。发音部分要配合大声朗读；词块和短语部分建议选 5 个每天造句。</div>
+</header>
+
+<!-- ===== S01 难点音 ===== -->
+<section class="section" id="s01">
+  <div class="sec-head"><span class="sec-num">01</span><div class="sec-title"><h2>中文母语者的发音难点</h2><p>不是全部 IPA，只是最容易被中文发音干扰的音。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s01',this,'s01-vowel')">元音难点</button>
+    <button class="tab-btn" onclick="st('s01',this,'s01-cons')">辅音难点</button>
+  </div>
+  <div id="s01-vowel" class="tab-content active">
+    <div class="ipa-grid">
+      <div class="ipa-card"><div class="ipa-symbol">/ɪ/</div><div class="ipa-name">短 i（放松）</div><div class="ipa-example">sit · bit · live · gym</div><div class="ipa-trap">⚠ 不要拉长成 /iː/，sit ≠ seat</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/iː/</div><div class="ipa-name">长 ee（拉长）</div><div class="ipa-example">seat · beat · leave · see</div><div class="ipa-trap">⚠ 要明显比 /ɪ/ 更长更紧</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/æ/</div><div class="ipa-name">开嘴 a（嘴角向两侧）</div><div class="ipa-example">cat · bad · man · back</div><div class="ipa-trap">⚠ 不是"啊"也不是"诶"，嘴角明显拉开</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/ʌ/</div><div class="ipa-name">短 u（下巴放松）</div><div class="ipa-example">cut · but · come · up</div><div class="ipa-trap">⚠ 常被读成 /ɑː/ 或 /uː/</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/ɑː/</div><div class="ipa-name">长 ah（嘴大张）</div><div class="ipa-example">car · far · father · palm</div><div class="ipa-trap">⚠ 美音中 hot/stop 用的是近似但更短的 /ɑ/，不是英音 /ɒ/；和 car/father 音色相似但更短</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/ə/</div><div class="ipa-name">schwa（最常见弱读音）</div><div class="ipa-example">about · problem · support</div><div class="ipa-trap">⚠ 非重读音节全变成这个，不要逐字清晰</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/ɒ/ /ɔː/</div><div class="ipa-name">o 音（英/美音有别）</div><div class="ipa-example">not · hot · call · saw</div><div class="ipa-trap">⚠ 美音 /ɑ/，英音 /ɒ/；call/saw 用 /ɔː/</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/ʊ/ vs /uː/</div><div class="ipa-name">短 vs 长 oo</div><div class="ipa-example">book·cook vs food·mood</div><div class="ipa-trap">⚠ book 不读 /buːk/，很多人混淆</div></div>
+    </div>
+  </div>
+  <div id="s01-cons" class="tab-content">
+    <div class="ipa-grid">
+      <div class="ipa-card"><div class="ipa-symbol">/θ/</div><div class="ipa-name">th（无声，舌尖咬住）</div><div class="ipa-example">think · both · teeth · three</div><div class="ipa-trap">⚠ 不是 /s/，不是 /f/，舌尖必须碰到上牙</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/ð/</div><div class="ipa-name">th（有声，舌尖咬住）</div><div class="ipa-example">this · that · them · breathe</div><div class="ipa-trap">⚠ 不是 /d/ 或 /z/；the/this/that 都是这个音</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/v/</div><div class="ipa-name">v（上牙咬下唇）</div><div class="ipa-example">very · voice · have · live</div><div class="ipa-trap">⚠ 不是 /w/；very ≠ "wery"</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/w/</div><div class="ipa-name">w（嘴唇先撮圆）</div><div class="ipa-example">work · want · week · always</div><div class="ipa-trap">⚠ 不是 /v/；没有"乌"的过渡感</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/r/</div><div class="ipa-name">r（舌头卷起不碰）</div><div class="ipa-example">right · read · hard · were</div><div class="ipa-trap">⚠ 舌头不能碰到任何地方，卷而不触</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/l/</div><div class="ipa-name">l（舌尖抵上齿龈）</div><div class="ipa-example">like · tell · feel · hold</div><div class="ipa-trap">⚠ 词尾 /l/ 特别容易丢失（feel/call）</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">词尾辅音</div><div class="ipa-name">不要省略</div><div class="ipa-example">-t: but · cat · project<br>-d: need · said<br>-k: work · check</div><div class="ipa-trap">⚠ 中文无辅音收尾，这些音极易被省略</div></div>
+      <div class="ipa-card"><div class="ipa-symbol">/n/ vs /ŋ/</div><div class="ipa-name">n 和 ng 的区别</div><div class="ipa-example">run vs rung<br>sin vs sing</div><div class="ipa-trap">⚠ running 结尾是 /ŋ/ 不是 /n/</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S02 连读弱读 ===== -->
+<section class="section" id="s02">
+  <div class="sec-head"><span class="sec-num">02</span><div class="sec-title"><h2>连读与弱读：为什么你听不懂母语者说话</h2><p>不是语速问题，是这五种语音现象把单词"吃掉了"。</p></div></div>
+
+  <div class="rule-block">
+    <span class="rule-label">规则 1</span>
+    <div class="rule-title">连接连读（Linking）— 辅音 + 元音，连在一起</div>
+    <div class="eg-row"><span class="eg-orig">pick up</span><span class="arrow">→</span><span class="eg-pron">"pi-kup"</span></div>
+    <div class="eg-row"><span class="eg-orig">turn it off</span><span class="arrow">→</span><span class="eg-pron">"tur-ni-toff"</span></div>
+    <div class="eg-row"><span class="eg-orig">an apple</span><span class="arrow">→</span><span class="eg-pron">"a-napple"</span></div>
+    <div class="eg-row"><span class="eg-orig">take it easy</span><span class="arrow">→</span><span class="eg-pron">"tei-ki-tee-zy"</span></div>
+  </div>
+
+  <div class="rule-block">
+    <span class="rule-label">规则 2</span>
+    <div class="rule-title">省音（Elision）— 某些音在特定位置会消失</div>
+    <div class="eg-row"><span class="eg-orig">next day</span><span class="arrow">→</span><span class="eg-pron">"nex-day"（t 消失）</span></div>
+    <div class="eg-row"><span class="eg-orig">last night</span><span class="arrow">→</span><span class="eg-pron">"las-night"</span></div>
+    <div class="eg-row"><span class="eg-orig">most common</span><span class="arrow">→</span><span class="eg-pron">"mos-common"</span></div>
+    <div class="eg-row"><span class="eg-orig">I want to go</span><span class="arrow">→</span><span class="eg-pron">"I wanna go"</span></div>
+  </div>
+
+  <div class="rule-block">
+    <span class="rule-label">规则 3</span>
+    <div class="rule-title">弱读（Reduction）— 功能词变成 schwa /ə/</div>
+    <p style="font-size:14px;color:var(--text-2);margin:4px 0 8px">不强调的介词、助动词、冠词在句子中都会缩短。</p>
+    <div class="eg-row"><span class="eg-orig">and → /ænd/</span><span class="arrow">→</span><span class="eg-pron">/ənd/ 或 /n/（coffee 'n cake）</span></div>
+    <div class="eg-row"><span class="eg-orig">can → /kæn/</span><span class="arrow">→</span><span class="eg-pron">/kən/（I can do it = "I-kn-do-it"）</span></div>
+    <div class="eg-row"><span class="eg-orig">to → /tuː/</span><span class="arrow">→</span><span class="eg-pron">/tə/（I want to = "I wanna"）</span></div>
+    <div class="eg-row"><span class="eg-orig">for → /fɔː/</span><span class="arrow">→</span><span class="eg-pron">/fər/（waiting for you）</span></div>
+    <div class="eg-row"><span class="eg-orig">him/her → 清晰</span><span class="arrow">→</span><span class="eg-pron">/ɪm/ /ər/（Tell him → "Tell-im"）</span></div>
+  </div>
+
+  <div class="rule-block">
+    <span class="rule-label">规则 4</span>
+    <div class="rule-title">浊化（Flapping，美音）— /t/ 在元音之间变成 /d/</div>
+    <div class="eg-row"><span class="eg-orig">water</span><span class="arrow">→</span><span class="eg-pron">"wa-der"（美音）</span></div>
+    <div class="eg-row"><span class="eg-orig">better</span><span class="arrow">→</span><span class="eg-pron">"be-der"</span></div>
+    <div class="eg-row"><span class="eg-orig">city</span><span class="arrow">→</span><span class="eg-pron">"si-dee"</span></div>
+    <div class="eg-row"><span class="eg-orig">meeting</span><span class="arrow">→</span><span class="eg-pron">"mee-ding"</span></div>
+  </div>
+
+  <div class="rule-block">
+    <span class="rule-label">规则 5</span>
+    <div class="rule-title">句子重音 — 内容词重读，功能词弱化</div>
+    <p style="font-size:14px;color:var(--text-2);margin:4px 0 8px">句子重音决定意义侧重；不同单词重读，意思会变。</p>
+    <div class="eg-row"><span class="eg-pron" style="font-weight:900">I</span><span style="font-size:14px"> didn't say he stole the money.（是别人说的）</span></div>
+    <div class="eg-row"><span style="font-size:14px">I didn't say he </span><span class="eg-pron" style="font-weight:900">stole</span><span style="font-size:14px"> the money.（但他拿了）</span></div>
+    <div class="eg-row"><span style="font-size:14px">I didn't say he stole </span><span class="eg-pron" style="font-weight:900">the money.（但他拿了别的东西）</span></div>
+  </div>
+
+  <div class="callout tip"><strong>练习方法：</strong>找任意一段 TED 或播客，先逐词听，再找出上面 5 种现象各出现几次。理解这些规则后，"听不懂"通常变成"知道在哪里丢失了"。</div>
+</section>
+
+<!-- ===== S03 职场词块 ===== -->
+<section class="section" id="s03">
+  <div class="sec-head"><span class="sec-num">03</span><div class="sec-title"><h2>核心职场词块库</h2><p>按功能分组，不是按话题。每个词块都是可以直接说出来的完整单元。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s03',this,'s03-progress')">进展与状态</button>
+    <button class="tab-btn" onclick="st('s03',this,'s03-problem')">问题与请求</button>
+    <button class="tab-btn" onclick="st('s03',this,'s03-agree')">同意与反对</button>
+    <button class="tab-btn" onclick="st('s03',this,'s03-mistake')">常见搭配错误</button>
+  </div>
+
+  <div id="s03-progress" class="tab-content active">
+    <table class="col-table">
+      <thead><tr><th>词块</th><th>用法说明</th><th>中式错误</th></tr></thead>
+      <tbody>
+        <tr><td><strong>We're on track to</strong> finish by Friday</td><td>进展顺利，按计划进行</td><td>× "We are going according to plan"（过于书面）</td></tr>
+        <tr><td><strong>We're running behind on</strong> the report</td><td>某项任务落后于计划</td><td>× "We are late for the report"（错误介词）</td></tr>
+        <tr><td><strong>I'm working on</strong> the slides right now</td><td>正在处理某事</td><td>× "I am doing the slides"（do 太泛）</td></tr>
+        <tr><td><strong>We hit a snag with</strong> the API</td><td>遇到了一个障碍/问题</td><td>× "We have a problem"（太模糊）</td></tr>
+        <tr><td><strong>We wrapped up</strong> the testing phase</td><td>完成/结束某阶段</td><td>× "We finished" 可以，但 wrapped up 更自然</td></tr>
+        <tr><td><strong>I'll loop you in</strong> on the decision</td><td>让你了解情况/加入沟通</td><td>× "I will tell you"（太直接）</td></tr>
+        <tr><td><strong>Let me get back to you on</strong> that</td><td>之后再回复你这个问题</td><td>× "I will reply you later"（reply you 不正确）</td></tr>
+        <tr><td><strong>Could you give me an update on</strong> X?</td><td>请告知某事的最新进展</td><td>× "Can you tell me about X?"（可以但不够职业）</td></tr>
+        <tr><td>The deadline is <strong>coming up</strong></td><td>截止日期快到了</td><td>× "The deadline is approaching"（书面可，口语少）</td></tr>
+        <tr><td><strong>We're a bit behind schedule</strong></td><td>略有延迟</td><td>× "We are delayed"（太被动）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s03-problem" class="tab-content">
+    <table class="col-table">
+      <thead><tr><th>词块</th><th>用法说明</th><th>语气强度</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Could you help me with</strong> X?</td><td>请求帮助，礼貌</td><td>低</td></tr>
+        <tr><td><strong>I was wondering if you could</strong> X</td><td>间接请求，更礼貌</td><td>很低（正式场合）</td></tr>
+        <tr><td><strong>Would it be possible to</strong> X?</td><td>非常礼貌的请求</td><td>最低</td></tr>
+        <tr><td><strong>I need you to</strong> send me the file</td><td>明确需求，较直接</td><td>中（对同级）</td></tr>
+        <tr><td><strong>We ran into an issue with</strong> X</td><td>遇到了问题</td><td>中性陈述</td></tr>
+        <tr><td><strong>I'm not sure how to handle</strong> X</td><td>表达不确定，寻求指引</td><td>中性</td></tr>
+        <tr><td><strong>I think there might be</strong> a misunderstanding</td><td>委婉指出可能的误解</td><td>低（外交风格）</td></tr>
+        <tr><td><strong>Can we push back</strong> the deadline?</td><td>能否延后截止时间？</td><td>中</td></tr>
+        <tr><td><strong>I need to flag</strong> a potential risk</td><td>提出需要注意的风险</td><td>中（较正式）</td></tr>
+        <tr><td><strong>Just a heads up:</strong> X might be delayed</td><td>提前告知，非正式</td><td>友好，非正式</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s03-agree" class="tab-content">
+    <table class="col-table">
+      <thead><tr><th>词块</th><th>使用场景</th></tr></thead>
+      <tbody>
+        <tr><td><strong>That makes sense.</strong></td><td>表示理解并接受对方逻辑</td></tr>
+        <tr><td><strong>I'm on board with that.</strong></td><td>表示同意方案/计划</td></tr>
+        <tr><td><strong>I think that's the right call.</strong></td><td>认为这是正确的决定</td></tr>
+        <tr><td><strong>I'd go with</strong> option B.</td><td>表达倾向选择</td></tr>
+        <tr><td><strong>I see where you're coming from</strong>, but...</td><td>承认对方立场但接下来表示不同意</td></tr>
+        <tr><td><strong>I'm not sure I agree with</strong> that.</td><td>温和表示不同意</td></tr>
+        <tr><td><strong>Have you considered</strong> X?</td><td>提出另一角度，不直接否定</td></tr>
+        <tr><td><strong>What if we</strong> tried a different approach?</td><td>建议改变方向</td></tr>
+        <tr><td><strong>That's a fair point</strong>, but my concern is...</td><td>承认后表达顾虑</td></tr>
+        <tr><td><strong>I'd push back on</strong> that a little.</td><td>直接表示不同意，但不激进</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s03-mistake" class="tab-content">
+    <p style="color:var(--text-2);font-size:14px;margin-bottom:12px">这些是中文母语者最频繁用错的搭配——不是语法错，但母语者不这样说。</p>
+    <table class="col-table">
+      <thead><tr><th>你可能会说</th><th>母语者实际怎么说</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>× discuss about X</td><td>✓ discuss X</td><td>discuss 不需要 about</td></tr>
+        <tr><td>× make a research</td><td>✓ do research / conduct research</td><td>research 不与 make 搭配</td></tr>
+        <tr><td>× give me a suggestion</td><td>✓ give me some advice / make a suggestion</td><td>suggestion 可数，advice 不可数</td></tr>
+        <tr><td>× I very like it</td><td>✓ I really like it</td><td>very 不修饰动词</td></tr>
+        <tr><td>× reach to an agreement</td><td>✓ reach an agreement</td><td>reach 不需要 to</td></tr>
+        <tr><td>× according to my opinion</td><td>✓ in my opinion / I think</td><td>opinion 不与 according to 搭配</td></tr>
+        <tr><td>× explain to me the plan</td><td>✓ explain the plan to me</td><td>explain 的宾语紧跟在后</td></tr>
+        <tr><td>× open the computer</td><td>✓ turn on the computer</td><td>开电器用 turn on</td></tr>
+        <tr><td>× make a phone</td><td>✓ make a phone call</td><td>打电话的固定说法</td></tr>
+        <tr><td>× I look forward to see you</td><td>✓ I look forward to seeing you</td><td>look forward to 后接动名词</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== S04 日常词块 ===== -->
+<section class="section" id="s04">
+  <div class="sec-head"><span class="sec-num">04</span><div class="sec-title"><h2>日常高频词块</h2><p>不是单词表，是实际对话中反复出现的自然表达单元。</p></div></div>
+
+  <div class="function-group">
+    <div class="fg-title"><span class="dot"></span>表达感受和反应</div>
+    <div class="phrase-grid">
+      <div class="phrase-card"><div class="phrase-en">That's exactly what I meant.</div><div class="phrase-cn">那正是我的意思。</div></div>
+      <div class="phrase-card"><div class="phrase-en">Fair enough.</div><div class="phrase-cn">可以理解 / 说得通。</div></div>
+      <div class="phrase-card"><div class="phrase-en">That's a bit much.</div><div class="phrase-cn">有点过分了 / 有点多了。</div></div>
+      <div class="phrase-card"><div class="phrase-en">It's not a big deal.</div><div class="phrase-cn">没什么大不了的。</div></div>
+      <div class="phrase-card"><div class="phrase-en">I'm not feeling it today.</div><div class="phrase-cn">我今天状态不太好 / 没什么劲。</div></div>
+      <div class="phrase-card"><div class="phrase-en">That caught me off guard.</div><div class="phrase-cn">那让我有点措手不及。</div></div>
+    </div>
+  </div>
+
+  <div class="function-group">
+    <div class="fg-title"><span class="dot"></span>过渡和衔接</div>
+    <div class="phrase-grid">
+      <div class="phrase-card"><div class="phrase-en">Come to think of it...</div><div class="phrase-cn">仔细想想... / 回头一想...</div></div>
+      <div class="phrase-card"><div class="phrase-en">On top of that,</div><div class="phrase-cn">除此之外 / 而且</div></div>
+      <div class="phrase-card"><div class="phrase-en">Either way,</div><div class="phrase-cn">不管怎样 / 两种情况都是</div></div>
+      <div class="phrase-card"><div class="phrase-en">That said,</div><div class="phrase-cn">话虽如此 / 不过</div></div>
+      <div class="phrase-card"><div class="phrase-en">Long story short,</div><div class="phrase-cn">长话短说</div></div>
+      <div class="phrase-card"><div class="phrase-en">As far as I know,</div><div class="phrase-cn">就我所知</div></div>
+    </div>
+  </div>
+
+  <div class="function-group">
+    <div class="fg-title"><span class="dot"></span>时间和频率</div>
+    <div class="phrase-grid">
+      <div class="phrase-card"><div class="phrase-en">every now and then</div><div class="phrase-cn">偶尔，不时</div></div>
+      <div class="phrase-card"><div class="phrase-en">from time to time</div><div class="phrase-cn">时不时地</div></div>
+      <div class="phrase-card"><div class="phrase-en">off and on</div><div class="phrase-cn">断断续续</div></div>
+      <div class="phrase-card"><div class="phrase-en">right around [time]</div><div class="phrase-cn">大概在…左右（around 3pm）</div></div>
+      <div class="phrase-card"><div class="phrase-en">at the last minute</div><div class="phrase-cn">在最后一刻</div></div>
+      <div class="phrase-card"><div class="phrase-en">sooner or later</div><div class="phrase-cn">迟早</div></div>
+    </div>
+  </div>
+
+  <div class="callout info"><strong>每日练习建议：</strong>选 3 个词块，造一个与你今天真实经历相关的句子。不需要完整故事，一句就够，比如"Fair enough, I'll adjust the deadline."</div>
+</section>
+
+<!-- ===== S05 四大时态 ===== -->
+<section class="section" id="s05">
+  <div class="sec-head"><span class="sec-num">05</span><div class="sec-title"><h2>四大时态：什么情况用哪个</h2><p>不是背规则，是看中文和英文在时间表达上的核心差异。</p></div></div>
+
+  <div class="callout warn"><strong>中英最大差异：</strong>中文用"了、过、在、会"表达时间，英文用动词形式本身。中文可以说"我昨天吃饭"，英文必须说 "I ate"（过去时），不能说 "I eat yesterday"。</div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">一般现在时 Simple Present</div>
+    <div class="gc-when">用于：习惯、规律、事实、状态</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">× 中式思维</div>I am go to work every day. / She is work here.</div>
+      <div class="right-box"><div class="box-label">✓ 正确</div>I go to work every day. / She works here.<br><small>状态动词（work/live/like）不用进行时</small></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-3)">注意：<em>I'm hungry. / I have a question.</em> — 状态用 be 或 have，不用进行时。</p>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">一般过去时 Simple Past</div>
+    <div class="gc-when">用于：过去发生的事，已完成</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">× 中式思维</div>Yesterday I go to the meeting. / I already finish it.</div>
+      <div class="right-box"><div class="box-label">✓ 正确</div>Yesterday I went to the meeting. / I already finished it.<br><small>有时间标记词（yesterday/last week）必须用过去时</small></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-3)">常见不规则动词：go→went · say→said · make→made · tell→told · come→came · get→got · think→thought · know→knew</p>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">现在进行时 Present Continuous</div>
+    <div class="gc-when">用于：正在发生的事；或表示近期安排（当临时未来用）</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">× 中式思维</div>I work on the report now. / She always is complaining.</div>
+      <div class="right-box"><div class="box-label">✓ 正确</div>I'm working on the report now. / She always complains.<br><small>always 表示习惯，用一般现在时</small></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-3)">进行时不用于：know / like / want / need / belong / understand（状态动词）</p>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">现在完成时 Present Perfect</div>
+    <div class="gc-when">用于：过去发生但与现在有关联（结果/经历/近期）</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">× 中式思维</div>I already sent the email. (如果是刚完成且对现在有意义) / Did you ever go to London?</div>
+      <div class="right-box"><div class="box-label">✓ 正确</div>I've already sent the email. / Have you ever been to London?<br><small>already/just/yet/ever/never/since/for → 现在完成时信号词</small></div>
+    </div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">× 仍然错误</div>I have sent it yesterday.</div>
+      <div class="right-box"><div class="box-label">✓ 有确定时间点用过去时</div>I sent it yesterday.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S06 中式语法错误 ===== -->
+<section class="section" id="s06">
+  <div class="sec-head"><span class="sec-num">06</span><div class="sec-title"><h2>最常见中式语法错误</h2><p>这 10 类错误覆盖了中文母语者 80% 的产出错误。</p></div></div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">① 可数/不可数名词</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">×</div>Can you give me some informations? / I need an advice.</div>
+      <div class="right-box"><div class="box-label">✓</div>Can you give me some information? / I need some advice.<br><small>不可数：information / advice / feedback / news / equipment / furniture / progress / research</small></div>
+    </div>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">② 冠词 a/an/the/无冠词</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">×</div>I went to hospital. / She is best manager.</div>
+      <div class="right-box"><div class="box-label">✓</div>I went to the hospital. / She is the best manager.<br><small>第一次提：a/an；之后提或特指：the；泛指复数或不可数：无冠词</small></div>
+    </div>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">③ Because...so... 双连词</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">×</div>Because I was tired, so I went home early.</div>
+      <div class="right-box"><div class="box-label">✓</div>Because I was tired, I went home early.<br>或：I was tired, so I went home early.</div>
+    </div>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">④ 主谓一致</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">×</div>The team are ready. / Everyone are here.</div>
+      <div class="right-box"><div class="box-label">✓（美式英语）</div>The team is ready. / Everyone is here.<br><small>英式英语中 team/committee 可用复数，但美式更常用单数</small></div>
+    </div>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">⑤ 时间/地点介词混用</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">×</div>at Monday / in the morning of Tuesday / on 3pm</div>
+      <div class="right-box"><div class="box-label">✓</div>on Monday / on Tuesday morning / at 3pm<br><small>on + 星期/具体日期；at + 时刻/节点；in + 月份/年份/早中晚（in the morning）</small></div>
+    </div>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">⑥ 疑问句语序</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">×</div>You know where is the file? / What he said?</div>
+      <div class="right-box"><div class="box-label">✓</div>Do you know where the file is? / What did he say?<br><small>间接疑问句用陈述语序；直接疑问句需助动词提前</small></div>
+    </div>
+  </div>
+
+  <div class="grammar-card">
+    <div class="gc-tense">⑦ 动名词 vs 不定式</div>
+    <div class="compare-row">
+      <div class="wrong-box"><div class="box-label">×</div>I enjoy to watch movies. / She avoided to answer.</div>
+      <div class="right-box"><div class="box-label">✓</div>I enjoy watching movies. / She avoided answering.<br><small>enjoy/avoid/finish/mind/suggest/consider 后接 -ing；want/need/decide/plan/hope 后接 to+V</small></div>
+    </div>
+  </div>
+
+  <div class="callout tip"><strong>修改建议：</strong>写完一段英文后，只检查这 7 类——不要全量改，容易让你对自己失去信心。每次选 1-2 类专项检查，稳定了再加。</div>
+</section>
+
+<!-- ===== S07 功能短语 ===== -->
+<section class="section" id="s07">
+  <div class="sec-head"><span class="sec-num">07</span><div class="sec-title"><h2>口语功能短语库</h2><p>按"你想完成什么沟通动作"分类。这些短语在压力下也能直接调用。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s07',this,'s07-open')">开启/结束话题</button>
+    <button class="tab-btn" onclick="st('s07',this,'s07-clarify')">澄清与确认</button>
+    <button class="tab-btn" onclick="st('s07',this,'s07-opinion')">表达观点</button>
+    <button class="tab-btn" onclick="st('s07',this,'s07-buy')">争取时间</button>
+  </div>
+
+  <div id="s07-open" class="tab-content active">
+    <div class="function-group">
+      <div class="fg-title"><span class="dot"></span>开启话题</div>
+      <div class="phrase-grid">
+        <div class="phrase-card"><div class="phrase-en">I wanted to bring up...</div><div class="phrase-cn">我想提一件事...</div></div>
+        <div class="phrase-card"><div class="phrase-en">Can I ask you something?</div><div class="phrase-cn">我能问你个问题吗？</div></div>
+        <div class="phrase-card"><div class="phrase-en">So, I've been thinking about...</div><div class="phrase-cn">我一直在想...</div></div>
+        <div class="phrase-card"><div class="phrase-en">Quick question:</div><div class="phrase-cn">快速问一下：</div></div>
+        <div class="phrase-card"><div class="phrase-en">Going back to what you said...</div><div class="phrase-cn">回到你刚才说的...</div></div>
+        <div class="phrase-card"><div class="phrase-en">Before we wrap up,</div><div class="phrase-cn">在结束之前，</div></div>
+      </div>
+    </div>
+    <div class="function-group">
+      <div class="fg-title"><span class="dot"></span>结束/收尾</div>
+      <div class="phrase-grid">
+        <div class="phrase-card"><div class="phrase-en">Let's leave it there for now.</div><div class="phrase-cn">我们先到这儿。</div></div>
+        <div class="phrase-card"><div class="phrase-en">To sum up,</div><div class="phrase-cn">总结一下，</div></div>
+        <div class="phrase-card"><div class="phrase-en">I'll follow up with you on this.</div><div class="phrase-cn">这件事我之后再跟进你。</div></div>
+        <div class="phrase-card"><div class="phrase-en">Does that work for you?</div><div class="phrase-cn">这对你来说可以吗？</div></div>
+        <div class="phrase-card"><div class="phrase-en">Let's circle back on that.</div><div class="phrase-cn">这个我们之后再谈。</div></div>
+        <div class="phrase-card"><div class="phrase-en">Thanks for your time.</div><div class="phrase-cn">谢谢你的时间。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="s07-clarify" class="tab-content">
+    <div class="function-group">
+      <div class="fg-title"><span class="dot"></span>没听清楚</div>
+      <div class="phrase-grid">
+        <div class="phrase-card"><div class="phrase-en">Sorry, could you say that again?</div><div class="phrase-cn">不好意思，能再说一遍吗？</div></div>
+        <div class="phrase-card"><div class="phrase-en">I didn't quite catch that.</div><div class="phrase-cn">我没完全听清。</div></div>
+        <div class="phrase-card"><div class="phrase-en">Could you speak a bit slower?</div><div class="phrase-cn">能说慢一点吗？</div></div>
+        <div class="phrase-card"><div class="phrase-en">Sorry, the line's a bit unclear.</div><div class="phrase-cn">不好意思，线路不太清楚。（视频/电话）</div></div>
+      </div>
+    </div>
+    <div class="function-group">
+      <div class="fg-title"><span class="dot"></span>确认理解</div>
+      <div class="phrase-grid">
+        <div class="phrase-card"><div class="phrase-en">So what you're saying is...</div><div class="phrase-cn">所以你的意思是...</div></div>
+        <div class="phrase-card"><div class="phrase-en">Just to make sure I understand,</div><div class="phrase-cn">确认一下我理解的对不对，</div></div>
+        <div class="phrase-card"><div class="phrase-en">Does that mean [restatement]?</div><div class="phrase-cn">这是不是意思是[用自己的话复述]？</div></div>
+        <div class="phrase-card"><div class="phrase-en">Let me make sure I've got this right.</div><div class="phrase-cn">让我确认一下我理解对了。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="s07-opinion" class="tab-content">
+    <div class="function-group">
+      <div class="fg-title"><span class="dot"></span>表达自己的观点</div>
+      <div class="phrase-grid">
+        <div class="phrase-card"><div class="phrase-en">In my view, / From my perspective,</div><div class="phrase-cn">在我看来，</div></div>
+        <div class="phrase-card"><div class="phrase-en">I feel like [clause]</div><div class="phrase-cn">我觉得...（更口语、不那么确定）</div></div>
+        <div class="phrase-card"><div class="phrase-en">I'm pretty confident that</div><div class="phrase-cn">我相当确信...</div></div>
+        <div class="phrase-card"><div class="phrase-en">My gut feeling is that</div><div class="phrase-cn">我直觉上觉得...</div></div>
+        <div class="phrase-card"><div class="phrase-en">The way I see it,</div><div class="phrase-cn">依我看，</div></div>
+        <div class="phrase-card"><div class="phrase-en">Honestly, I think</div><div class="phrase-cn">说实话，我觉得</div></div>
+      </div>
+    </div>
+    <div class="function-group">
+      <div class="fg-title"><span class="dot"></span>不确定时</div>
+      <div class="phrase-grid">
+        <div class="phrase-card"><div class="phrase-en">I'm not 100% sure, but...</div><div class="phrase-cn">我不是百分之百确定，但...</div></div>
+        <div class="phrase-card"><div class="phrase-en">I might be wrong, but</div><div class="phrase-cn">我可能有误，但</div></div>
+        <div class="phrase-card"><div class="phrase-en">Off the top of my head,</div><div class="phrase-cn">我随便想了一下（不经深思）</div></div>
+        <div class="phrase-card"><div class="phrase-en">I'd have to double-check on that.</div><div class="phrase-cn">这个我需要再确认一下。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="s07-buy" class="tab-content">
+    <div class="function-group">
+      <div class="fg-title"><span class="dot"></span>争取思考时间（说话时想不出词）</div>
+      <div class="phrase-grid">
+        <div class="phrase-card"><div class="phrase-en">That's a good question...</div><div class="phrase-cn">这是个好问题...（经典缓冲）</div><div class="phrase-note">⚠ 不要用太多次，显得套路</div></div>
+        <div class="phrase-card"><div class="phrase-en">Let me think about that for a second.</div><div class="phrase-cn">让我想一下。</div></div>
+        <div class="phrase-card"><div class="phrase-en">How should I put this...</div><div class="phrase-cn">怎么说呢...</div></div>
+        <div class="phrase-card"><div class="phrase-en">It's hard to explain, but basically...</div><div class="phrase-cn">有点难解释，但简单说...</div></div>
+        <div class="phrase-card"><div class="phrase-en">What I mean is...</div><div class="phrase-cn">我的意思是...</div></div>
+        <div class="phrase-card"><div class="phrase-en">Well, um... actually,</div><div class="phrase-cn">呃... 实际上，（填充词，不要说太多）</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S08 书面模板 ===== -->
+<section class="section" id="s08">
+  <div class="sec-head"><span class="sec-num">08</span><div class="sec-title"><h2>书面英语基础模板</h2><p>邮件、消息和简短报告的通用结构，不需要每次从零开始。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s08',this,'s08-email')">邮件开头/结尾</button>
+    <button class="tab-btn" onclick="st('s08',this,'s08-msg')">即时消息（Slack/Teams）</button>
+    <button class="tab-btn" onclick="st('s08',this,'s08-update')">进展更新</button>
+  </div>
+
+  <div id="s08-email" class="tab-content active">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:12px"><strong>开头（按语气从正式到非正式）：</strong></p>
+    <table class="col-table">
+      <thead><tr><th>语气</th><th>开头句</th><th>适用</th></tr></thead>
+      <tbody>
+        <tr><td>正式</td><td>I hope this email finds you well.</td><td>首次联系，不熟悉的对象</td></tr>
+        <tr><td>正式</td><td>I am writing to [enquire about / follow up on / request]...</td><td>明确目的</td></tr>
+        <tr><td>中性</td><td>I wanted to reach out about...</td><td>大多数职场场景</td></tr>
+        <tr><td>中性</td><td>Just a quick note about...</td><td>内容简单，不需要铺垫</td></tr>
+        <tr><td>非正式</td><td>Hey [Name], hope you're doing well!</td><td>认识的同事</td></tr>
+        <tr><td>非正式</td><td>Following up on our chat...</td><td>刚开过会或聊过天</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:14px;color:var(--text-2);margin:14px 0 8px"><strong>结尾（最常用）：</strong></p>
+    <table class="col-table">
+      <thead><tr><th>语气</th><th>结尾句 + 签名前</th></tr></thead>
+      <tbody>
+        <tr><td>正式</td><td>Please feel free to reach out if you have any questions. / Yours sincerely,</td></tr>
+        <tr><td>中性</td><td>Let me know if you need anything else. / Thanks, / Best,</td></tr>
+        <tr><td>非正式</td><td>Cheers! / Talk soon!</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s08-msg" class="tab-content">
+    <table class="col-table">
+      <thead><tr><th>场景</th><th>示例消息</th></tr></thead>
+      <tbody>
+        <tr><td>问一个快速问题</td><td>Hey, quick question — do you know if [X] has been finalized yet?</td></tr>
+        <tr><td>通知一件事</td><td>FYI — the meeting's been moved to 3pm. Just wanted to give you a heads up.</td></tr>
+        <tr><td>请求确认</td><td>Could you confirm you got the file I sent earlier? Want to make sure it went through.</td></tr>
+        <tr><td>跟进一件事</td><td>Just circling back on [X] — did you get a chance to look at it?</td></tr>
+        <tr><td>道谢</td><td>Thanks for sorting that out so quickly — really appreciate it!</td></tr>
+        <tr><td>说之后回复</td><td>Got it. I'll look into it and get back to you this afternoon.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s08-update" class="tab-content">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:12px">一段标准的进展更新，适合周报、站会发言和邮件正文：</p>
+    <div style="background:#0f172a;color:#e2e8f0;border-radius:14px;padding:16px 18px;font-family:monospace;font-size:14px;line-height:1.7">
+      <span style="color:#93c5fd">// 上周完成</span><br>
+      Last week, we <em style="color:#86efac">finished</em> the initial design review and <em style="color:#86efac">got sign-off</em> from the product team.<br><br>
+      <span style="color:#93c5fd">// 当前状态</span><br>
+      We're currently <em style="color:#86efac">working on</em> the first prototype. We're <em style="color:#86efac">on track</em> to complete it by Thursday.<br><br>
+      <span style="color:#93c5fd">// 问题/风险（如有）</span><br>
+      One thing to flag: we <em style="color:#86efac">hit a snag with</em> the API integration — we're looking into it and <em style="color:#86efac">should have an update</em> by tomorrow.<br><br>
+      <span style="color:#93c5fd">// 下一步</span><br>
+      Next steps: <em style="color:#86efac">finalize</em> the prototype and <em style="color:#86efac">set up</em> a review session with the stakeholders.
+    </div>
+    <div class="callout tip" style="margin-top:12px"><strong>替换原则：</strong>把蓝色部分换成你自己的动词词块，框架保持不变。每个框里只说一件事，不要在"完成"框里也提问题。</div>
+  </div>
+</section>
+
+<!-- ===== S09 开始前清单 ===== -->
+<section class="section" id="s09">
+  <div class="sec-head"><span class="sec-num">09</span><div class="sec-title"><h2>开始前清单：建立你的每日最小练习</h2><p>不是学习计划，是把这些材料变成可用能力的最小动作。</p></div></div>
+
+  <div class="checklist">
+    <div class="checklist-title">每天 20-30 分钟，选 2-3 项</div>
+    <div class="check-row"><span class="check-box"></span><span><strong>发音：</strong>选今天的音（如 /θ/），用 YouGlish 看 5 个真实句子，然后自己说 10 遍含这个音的词。</span></div>
+    <div class="check-row"><span class="check-box"></span><span><strong>词块：</strong>从 §03 或 §04 选 3 个新词块，造 3 个与今天真实相关的句子，写下来。</span></div>
+    <div class="check-row"><span class="check-box"></span><span><strong>听力：</strong>听一段 2-3 分钟英语（VOA/播客），不看字幕，写下 5 个听到的关键词，再听一遍验证。</span></div>
+    <div class="check-row"><span class="check-box"></span><span><strong>口语：</strong>用手机录音，说 60 秒关于今天做了什么，不能停超过 3 秒。保存，之后回听。</span></div>
+    <div class="check-row"><span class="check-box"></span><span><strong>写作：</strong>写一条英语消息（给任意对象），把草稿和 §08 模板对照，用 LanguageTool 检查一次。</span></div>
+    <div class="check-row"><span class="check-box"></span><span><strong>语法自检：</strong>取出昨天写的任意一段英文，只检查 §06 中的第 ① 或 ③ 类错误，修改并记录。</span></div>
+  </div>
+
+  <div class="callout info"><strong>不需要全做：</strong>这一页是参考手册，不是课程。你可以今天只用 §07 准备一个会议，明天只用 §03 写一封邮件。能反复翻阅、用到哪里查哪里，才是它的正确用法。</div>
+</section>
+
+<footer class="page-footer">
+  <a href="english-practice.html">场景练习地图</a> | <a href="english-advanced.html">进入进阶实战手册 →</a> | <a href="english-expert.html">专家图谱 →</a>
+</footer>
+</div></main>
+
+<script>
+function st(group,btn,id){
+  const sec=btn.closest('.section');
+  sec.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  sec.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+const CKEY='english_checks';
+function saveC(){const s={};document.querySelectorAll('.check-box').forEach((el,i)=>{s[i]=el.classList.contains('checked')});localStorage.setItem(CKEY,JSON.stringify(s))}
+function loadC(){try{const s=JSON.parse(localStorage.getItem(CKEY)||'{}');document.querySelectorAll('.check-box').forEach((el,i)=>{if(s[i])el.classList.add('checked');el.addEventListener('click',()=>{el.classList.toggle('checked');saveC()})})}catch(e){}}
+loadC();
+const navLinks=document.querySelectorAll('.nav-items a[href^="#"]');
+const sections=document.querySelectorAll('.section');
+new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.classList.remove('active'));const a=document.querySelector(`.nav-items a[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'}).observe&&sections.forEach(s=>new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.classList.remove('active'));const a=document.querySelector(`.nav-items a[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('prog').style.width=`${Math.min(1,h.scrollTop/(h.scrollHeight-h.clientHeight))*100}%`});
+</script>
+</body>
+</html>

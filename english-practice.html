@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语场景练习地图 · 日常 · 社交 · 职场</title>
+<style>
+:root{--bg:#f8fafc;--surface:#fff;--surface2:#f1f5f9;--border:#e2e8f0;--accent:#0f766e;--accent-light:rgba(15,118,110,.08);--green:#16a34a;--green-light:rgba(22,163,74,.08);--amber:#d97706;--amber-light:rgba(217,119,6,.08);--red:#dc2626;--red-light:rgba(220,38,38,.08);--blue:#2563eb;--blue-light:rgba(37,99,235,.08);--purple:#7c3aed;--purple-light:rgba(124,58,237,.08);--text:#0f172a;--text-2:#334155;--text-3:#64748b;--nav-w:260px;--nav-bg:#1e293b;--nav-border:#334155;--nav-text:#e2e8f0;--nav-text3:#94a3b8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Noto Sans SC",sans-serif}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#2dd4bf);z-index:20;width:0}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--nav-w);background:var(--nav-bg);border-right:1px solid var(--nav-border);padding:24px 18px;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
+.brand{color:#fff;font-weight:800;font-size:18px;line-height:1.3}.brand small{display:block;color:var(--nav-text3);font-size:11px;margin-top:6px}
+.nav-items{margin:18px 0;display:grid;gap:2px}
+.nav-items a{color:var(--nav-text);text-decoration:none;padding:7px 10px;border-radius:7px;font-size:13px;display:block}
+.nav-items a.active,.nav-items a:hover{background:#334155;color:#fff}
+.nav-section{color:var(--nav-text3);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:10px 10px 4px}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--nav-border);padding-top:14px;display:grid;gap:6px}
+.sidebar-foot a{color:#99f6e4;text-decoration:none;font-size:13px}
+.main{margin-left:var(--nav-w);padding:0 44px 80px}.content-wrap{max-width:940px;margin:0 auto}
+.hero{padding:60px 0 30px}
+.hero-eyebrow{color:var(--accent);font-weight:800;letter-spacing:.06em;font-size:12px;text-transform:uppercase}
+h1{font-size:44px;line-height:1.08;margin:14px 0 16px;letter-spacing:-.04em}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:17px;color:var(--text-2);max-width:720px;margin:0 0 16px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.chip{background:var(--accent-light);color:#0f766e;border:1px solid rgba(15,118,110,.2);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.notice{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:14px 16px;color:var(--text-2);font-size:14px}
+
+/* category header */
+.cat-head{display:flex;align-items:center;gap:14px;padding:14px 0 6px;margin-top:10px}
+.cat-icon{font-size:28px;line-height:1}
+.cat-title{font-size:22px;font-weight:900;letter-spacing:-.02em}
+.cat-sub{font-size:14px;color:var(--text-3)}
+
+/* scenario card */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;margin:16px 0;box-shadow:0 6px 20px rgba(15,23,42,.04)}
+.sec-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
+.sec-emoji{font-size:24px;flex-shrink:0;margin-top:2px}
+.sec-title h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.sec-title p{margin:3px 0 0;color:var(--text-3);font-size:13px}
+
+/* phrases */
+.phrases-label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);margin:14px 0 8px}
+.phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;margin-bottom:16px}
+.phrase-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.phrase-en{font-weight:700;font-size:14px;color:var(--text)}
+.phrase-cn{font-size:12px;color:var(--text-3);margin:2px 0}
+.phrase-note{font-size:12px;color:var(--amber);margin-top:2px}
+
+/* mini dialogue */
+.dialogue{background:#0f172a;border-radius:14px;padding:16px 18px;margin:14px 0}
+.dialogue-label{font-size:11px;color:#94a3b8;font-weight:900;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.dl{display:flex;gap:10px;padding:5px 0;font-size:14px;line-height:1.6}
+.dl-speaker{font-weight:900;min-width:22px;flex-shrink:0}
+.dl-a .dl-speaker{color:#93c5fd}
+.dl-b .dl-speaker{color:#86efac}
+.dl-text{color:#e2e8f0}
+.dl-note{color:#6ee7b7;font-size:12px;margin-left:6px}
+.dl-cn{color:#94a3b8;font-size:12px;display:block;margin-top:1px}
+
+/* resources */
+.res-label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);margin:14px 0 8px}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.res-card{border-radius:14px;padding:14px;border:1px solid var(--border);background:var(--surface2);display:flex;flex-direction:column;gap:6px}
+.res-name{font-weight:900;font-size:15px}
+.res-tag{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;margin-bottom:2px}
+.tag-free{background:#dcfce7;color:#15803d}
+.tag-app{background:#ede9fe;color:#6d28d9}
+.tag-video{background:#fef3c7;color:#92400e}
+.tag-audio{background:#dbeafe;color:#1e40af}
+.tag-web{background:#f1f5f9;color:#475569}
+.tag-ai{background:#fce7f3;color:#9d174d}
+.res-desc{font-size:13px;color:var(--text-2);flex:1}
+.res-howto{font-size:12px;color:var(--accent);font-weight:700;border-top:1px solid var(--border);padding-top:6px;margin-top:2px}
+.res-link{display:inline-block;margin-top:6px;background:var(--accent);color:#fff;border-radius:8px;padding:5px 12px;font-size:13px;font-weight:700;text-decoration:none}
+.res-link:hover{opacity:.88}
+
+/* task box */
+.task-box{background:var(--green-light);border:1px solid rgba(22,163,74,.2);border-radius:14px;padding:14px 16px;margin:14px 0}
+.task-label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--green);margin-bottom:8px}
+.task-list{display:grid;gap:6px}
+.task-item{display:flex;gap:10px;font-size:14px;color:var(--text-2)}
+.task-num{background:var(--green);color:#fff;border-radius:999px;padding:0 7px;font-size:12px;font-weight:900;flex-shrink:0;line-height:1.8}
+
+/* callout */
+.callout{border-radius:12px;padding:12px 14px;margin:12px 0;font-size:14px}
+.callout.tip{background:var(--green-light);border:1px solid rgba(22,163,74,.2)}
+.callout.warn{background:var(--amber-light);border:1px solid rgba(217,119,6,.22)}
+.callout.info{background:var(--blue-light);border:1px solid rgba(37,99,235,.18)}
+.callout strong{display:block;margin-bottom:3px}
+
+/* page footer */
+.page-footer{margin:32px 0 0;color:var(--text-3);font-size:14px}
+.page-footer a{color:var(--accent);font-weight:700;text-decoration:none}
+.menu-btn{display:none;position:fixed;right:16px;bottom:16px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:11px 14px;font-weight:900;z-index:30;font-size:14px}
+@media(max-width:768px){.sidebar{display:none}.sidebar.open{display:flex}.main{margin-left:0;padding:0 18px 60px}h1{font-size:30px}.res-grid,.phrase-grid{grid-template-columns:1fr}.menu-btn{display:block}}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand">英语场景练习地图<small>日常 · 社交 · 职场 · 完整覆盖</small></div>
+  <nav class="nav-items">
+    <div class="nav-section">日常生活</div>
+    <a href="#s-cafe">☕ 咖啡店 · 餐厅</a>
+    <a href="#s-shop">🛍️ 购物 · 退换货</a>
+    <a href="#s-transit">🚇 交通 · 问路</a>
+    <a href="#s-phone">📞 电话 · 客服</a>
+    <a href="#s-doctor">🏥 看医生 · 药店</a>
+    <div class="nav-section">社交</div>
+    <a href="#s-greet">👋 打招呼 · 初次见面</a>
+    <a href="#s-smalltalk">💬 Small Talk 日常闲聊</a>
+    <a href="#s-compliment">🌟 夸人 · 接受赞美</a>
+    <a href="#s-party">🎉 派对 · 社交场合</a>
+    <div class="nav-section">职场</div>
+    <a href="#s-meeting">📊 会议 · 站会</a>
+    <a href="#s-network">🤝 职场 Networking</a>
+    <a href="#s-feedback">💡 给反馈 · 接受批评</a>
+    <div class="nav-section">资源推荐</div>
+    <a href="#s-resources">📚 综合资源总览</a>
+  </nav>
+  <div class="sidebar-foot">
+    <a href="english.html">基础手册</a>
+    <a href="english-advanced.html">进阶实战手册</a>
+    <a href="english-expert.html">专家图谱</a>
+  </div>
+</aside>
+<button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">菜单</button>
+
+<main class="main"><div class="content-wrap">
+<header class="hero">
+  <div class="hero-eyebrow">英语场景练习地图 · 2026</div>
+  <h1>把英语<em>练进真实场景里</em></h1>
+  <p class="hero-sub">词块记了，模板看了，但练的都是想象出来的情况——这页把常见真实场景拆开：每个场景给核心短语 + 示例对话 + 最好的外部练习资源 + 具体的练习任务。</p>
+  <div class="chip-row"><span class="chip">日常生活</span><span class="chip">社交闲聊</span><span class="chip">Small Talk</span><span class="chip">职场场景</span><span class="chip">外部资源</span></div>
+  <div class="notice"><strong>用法：</strong>找到你今天要用到或想练的场景，先读短语，再看示例对话，然后点进外部资源做真正的练习。这页不是用来读完的，是用来反复回来查的。</div>
+</header>
+
+<!-- =================== 日常生活 =================== -->
+<div class="cat-head" id="daily"><div class="cat-icon">🗓️</div><div><div class="cat-title">日常生活场景</div><div class="cat-sub">最容易遇到、最需要临场反应的场合</div></div></div>
+
+<!-- 咖啡店餐厅 -->
+<section class="section" id="s-cafe">
+  <div class="sec-head"><span class="sec-emoji">☕</span><div class="sec-title"><h2>咖啡店 · 餐厅</h2><p>点餐、修改订单、询问推荐、结账——每次都是真实练习机会</p></div></div>
+
+  <div class="phrases-label">必备短语</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Can I get a [drink], please?</div><div class="phrase-cn">我要一杯……（最自然的点餐说法）</div></div>
+    <div class="phrase-card"><div class="phrase-en">What do you recommend?</div><div class="phrase-cn">你有什么推荐的？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'll have the same.</div><div class="phrase-cn">我要一样的。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Can I make a substitution? / Can I swap [X] for [Y]?</div><div class="phrase-cn">可以换一个食材吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Is this dish spicy?</div><div class="phrase-cn">这道菜辣吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Could I get the check/bill, please?</div><div class="phrase-cn">麻烦结账（check = 美式；bill = 英式）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Can we split the bill?</div><div class="phrase-cn">可以分开付吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I think there might be a mistake with my order.</div><div class="phrase-cn">我觉得我的订单可能有错。</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 咖啡店</div>
+    <div class="dl dl-b"><span class="dl-speaker">店员</span><span class="dl-text">Hi there! What can I get for you today?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Hi! Can I get a medium latte, please? <span class="dl-note">点餐</span></span><span class="dl-cn">我要一杯中杯拿铁，谢谢。</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">店员</span><span class="dl-text">Sure! Any milk preference? We have oat, almond, or regular.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Oat milk, please. And can I get that iced? <span class="dl-note">追加修改</span></span><span class="dl-cn">燕麦奶，可以做冰的吗？</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">店员</span><span class="dl-text">Of course! Name for the order?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">[Your name]. And can I also grab one of those croissants?</span><span class="dl-cn">顺便买个羊角面包。grab = 拿/要</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">店员</span><span class="dl-text">That'll be $7.50. <br>Cash or card?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Card, thanks. <span class="dl-note">结账</span></span></div>
+  </div>
+
+  <div class="res-label">练这个场景用这些资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">ELLLO · 餐厅/咖啡情景对话</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">音频+文本</span>
+      <div class="res-desc">1500+ 真实对话，有餐厅、点餐、咖啡店专题；每段对话配文本和生词，可以精听。</div>
+      <div class="res-howto">用法：搜 "restaurant" 或 "ordering food"，精听 3 段，抄下 5 个你不会的短语。</div>
+      <a class="res-link" href="https://www.elllo.org/" target="_blank">打开 ELLLO →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">Basic English Speaking · 餐厅专题</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">视频+文本</span>
+      <div class="res-desc">YouTube 系列，餐厅点餐完整对话视频，语速适中，有字幕和文本，适合跟读。</div>
+      <div class="res-howto">用法：看完视频，关掉字幕，模仿顾客那一方的台词朗读一遍。</div>
+      <a class="res-link" href="https://basicenglishspeaking.com/daily-english-conversation-topics/" target="_blank">打开资源 →</a>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <div class="task-label">练习任务</div>
+    <div class="task-list">
+      <div class="task-item"><span class="task-num">1</span><span><strong>跟读：</strong>选上面 ELLLO 的一段点餐对话，精听后大声跟读顾客台词，注意连读和语调。</span></div>
+      <div class="task-item"><span class="task-num">2</span><span><strong>即兴：</strong>打开 ChatGPT，说"Act as a barista, I'll practice ordering coffee. Go first." 做一次完整对话，不准停顿超过 4 秒。</span></div>
+      <div class="task-item"><span class="task-num">3</span><span><strong>真实：</strong>下次去任何一家咖啡店或餐厅，用英语完成全程点餐（哪怕对方是中文环境，在心里说一遍也算）。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 购物 -->
+<section class="section" id="s-shop">
+  <div class="sec-head"><span class="sec-emoji">🛍️</span><div class="sec-title"><h2>购物 · 退换货</h2><p>问尺码、找东西、退货是被动词汇最多但主动用得最少的场景</p></div></div>
+
+  <div class="phrases-label">必备短语</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Do you have this in a [size/color]?</div><div class="phrase-cn">这个有[尺码/颜色]的吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'm just browsing, thanks.</div><div class="phrase-cn">我随便看看，谢谢。（不想被打扰时）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Can I try this on?</div><div class="phrase-cn">我可以试穿吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Where are the fitting rooms?</div><div class="phrase-cn">试衣间在哪里？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'd like to return / exchange this.</div><div class="phrase-cn">我想退货/换货。</div></div>
+    <div class="phrase-card"><div class="phrase-en">I have the receipt.</div><div class="phrase-cn">我有收据。</div></div>
+    <div class="phrase-card"><div class="phrase-en">It doesn't fit / It's the wrong size.</div><div class="phrase-cn">不合身/尺码不对。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Can I get store credit instead?</div><div class="phrase-cn">可以给我换成店内抵用金吗？</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 退货</div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Hi, I'd like to return this jacket, please. <span class="dl-note">开门见山</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">店员</span><span class="dl-text">Of course! Do you have your receipt?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Yes, here you go. I bought it last week but it's a bit too small. <span class="dl-note">说原因，简短即可</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">店员</span><span class="dl-text">No problem. Would you like a refund or would you prefer to exchange it for a larger size?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">I'd prefer to exchange it, actually. Do you have it in a large? <span class="dl-note">prefer to = 更倾向于</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">店员</span><span class="dl-text">Let me check the back for you.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Thank you, I appreciate it. <span class="dl-note">比 "thank you" 更温暖</span></span></div>
+  </div>
+
+  <div class="res-label">练这个场景用这些资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">EnglishCurrent · 购物情景练习</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-web">网页练习</span>
+      <div class="res-desc">专门的购物、试衣、退换货情景词汇和表达练习，有词汇表和练习题。</div>
+      <div class="res-howto">用法：完成练习题后，把答案大声读出来，不只是默默选选项。</div>
+      <a class="res-link" href="https://www.englishcurrent.com/speaking/speaking-situations-general-esl/" target="_blank">打开练习 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">ELLLO · 购物对话</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">音频+文本</span>
+      <div class="res-desc">有真实购物场景对话，包括讨价还价、问尺码、找东西，配原声音频。</div>
+      <div class="res-howto">用法：搜 "shopping" 找相关对话，精听后模仿顾客角色朗读。</div>
+      <a class="res-link" href="https://www.elllo.org/" target="_blank">打开 ELLLO →</a>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <div class="task-label">练习任务</div>
+    <div class="task-list">
+      <div class="task-item"><span class="task-num">1</span><span><strong>对话练习：</strong>用 ChatGPT："You're a shop assistant. I want to return a shirt. Help me practice." 完成一次退货对话。</span></div>
+      <div class="task-item"><span class="task-num">2</span><span><strong>造句：</strong>用今天学的 3 个短语各写一个符合你实际情况的句子，然后大声说出来。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 交通问路 -->
+<section class="section" id="s-transit">
+  <div class="sec-head"><span class="sec-emoji">🚇</span><div class="sec-title"><h2>交通 · 问路</h2><p>问路和指路——听得出来是另一个难点，要同时处理方向词和指令</p></div></div>
+
+  <div class="phrases-label">必备短语</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Excuse me, could you tell me how to get to [place]?</div><div class="phrase-cn">不好意思，请问去[地方]怎么走？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Is it within walking distance?</div><div class="phrase-cn">走路能到吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">How long does it take?</div><div class="phrase-cn">大概要多久？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Take the [line] toward [direction] and get off at [station].</div><div class="phrase-cn">坐[线路]往[方向]，在[站]下车。</div></div>
+    <div class="phrase-card"><div class="phrase-en">You'll see it on your left/right.</div><div class="phrase-cn">你会看到它在你的左/右边。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Sorry, I'm not from around here.</div><div class="phrase-cn">不好意思，我对这里不熟。（当别人问你时）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Go straight / Turn left / Turn right</div><div class="phrase-cn">直走 / 左转 / 右转</div></div>
+    <div class="phrase-card"><div class="phrase-en">It's right around the corner.</div><div class="phrase-cn">就在转角处，很近。</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 问路</div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Excuse me! Could you tell me how to get to the Central Library from here? <span class="dl-note">礼貌开口</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">路人</span><span class="dl-text">Sure! Go straight down this street for about two blocks.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">OK — two blocks straight, got it. And then? <span class="dl-note">复述确认 + 追问</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">路人</span><span class="dl-text">Then turn left at the traffic lights. You'll see a coffee shop on the corner — the library is right there on your right. Can't miss it.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Is it within walking distance, or should I take the subway? <span class="dl-note">问距离</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">路人</span><span class="dl-text">Walking's fine — maybe ten minutes.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Perfect. Thanks so much!</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">路人</span><span class="dl-text">No problem, good luck!</span></div>
+  </div>
+
+  <div class="res-label">练这个场景用这些资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">BBC Learning English · 方向与交通</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">视频</span>
+      <div class="res-desc">BBC 有专门的问路对话系列，真实语境、母语者录音，有文本可以对照。</div>
+      <div class="res-howto">用法：看完一个对话，合上字幕，自己用地图上一个真实地点重新说一遍指路。</div>
+      <a class="res-link" href="https://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak" target="_blank">打开 BBC →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">American English Dialogs · 交通场景</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-web">PDF对话</span>
+      <div class="res-desc">美国国务院出品的真实情景对话 PDF，有打车、问路、公共交通等完整对话。</div>
+      <div class="res-howto">用法：下载 PDF，选一段对话和朋友各演一个角色，或自己录音两个角色都演。</div>
+      <a class="res-link" href="https://americanenglish.state.gov/resources/english-teaching-forum-journal" target="_blank">打开资源 →</a>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <div class="task-label">练习任务</div>
+    <div class="task-list">
+      <div class="task-item"><span class="task-num">1</span><span><strong>描述练习：</strong>选你家附近一个地点，用英语向一个假想的外国朋友描述怎么从地铁站走过去，时间限制 60 秒，录音。</span></div>
+      <div class="task-item"><span class="task-num">2</span><span><strong>听力：</strong>在 YouTube 搜 "giving directions English dialogue"，选一个 2-3 分钟视频，精听后用自己的话复述指路步骤。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 电话客服 -->
+<section class="section" id="s-phone">
+  <div class="sec-head"><span class="sec-emoji">📞</span><div class="sec-title"><h2>电话 · 客服</h2><p>没有肢体语言、不能看嘴型、对方语速快——电话是最难的场景之一</p></div></div>
+
+  <div class="phrases-label">必备短语</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Hi, I'm calling about [issue].</div><div class="phrase-cn">你好，我打来是关于[问题]的。</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'd like to [make a reservation / cancel / reschedule].</div><div class="phrase-cn">我想[预约/取消/改期]。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Sorry, could you repeat that?</div><div class="phrase-cn">不好意思，能再说一遍吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Could you spell that for me?</div><div class="phrase-cn">能帮我拼一下吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'm sorry, I didn't quite catch the last part.</div><div class="phrase-cn">不好意思，最后那部分我没听清。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Let me confirm: [restate what you heard].</div><div class="phrase-cn">让我确认一下：[复述]。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Is there anything else I should know?</div><div class="phrase-cn">还有什么我需要了解的吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Thank you for your help. Have a great day!</div><div class="phrase-cn">谢谢你的帮助，祝你今天愉快！</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 打电话预约</div>
+    <div class="dl dl-b"><span class="dl-speaker">对方</span><span class="dl-text">Good afternoon, Dr. Smith's office, how can I help you?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Hi, I'm calling to make an appointment, please. <span class="dl-note">开门见山</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">对方</span><span class="dl-text">Sure! Is this for a new patient or existing patient?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Existing. My name is [name]. <span class="dl-note">直接提供对方需要的信息</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">对方</span><span class="dl-text">Great, we have Thursday at 2:15 or Friday at 10:30. Which works better for you?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Thursday at 2:15 works. <span class="dl-note">简短确认，不需要解释</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">对方</span><span class="dl-text">Perfect! Can I get a callback number?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Sure, it's [number]. Could you read that back to me? <span class="dl-note">主动要求确认，专业做法</span></span></div>
+  </div>
+
+  <div class="res-label">练这个场景用这些资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">ESL Fast · 电话对话练习</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">音频对话</span>
+      <div class="res-desc">2500+ 真实对话，电话场景有专门分类，包括预约、客服、紧急情况等，配音频。</div>
+      <div class="res-howto">用法：听完后遮住文本，只看提示词，自己试着重建对话。</div>
+      <a class="res-link" href="https://www.eslfast.com/" target="_blank">打开 ESL Fast →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">ChatGPT · 打电话模拟</div>
+      <span class="res-tag tag-ai">AI</span><span class="res-tag tag-free">免费</span>
+      <div class="res-desc">对话模式模拟打电话：让 AI 扮演客服，你用文字"打电话"，AI 不会等你，也会追问。</div>
+      <div class="res-howto">提示词：「You are a customer service agent for a hotel. I am calling to make a reservation. Speak naturally and ask follow-up questions.」</div>
+      <a class="res-link" href="https://chatgpt.com/" target="_blank">打开 ChatGPT →</a>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>电话最难的原因：</strong>无法看口型、对方语速不受你控制、听不懂时沉默会很尴尬。解法：提前准备好 3 句缓冲语（"Sorry, could you repeat that?" / "Let me confirm..." / "Sorry, the line's a bit unclear"），遇到任何卡壳先说这三句。</div>
+</section>
+
+<!-- 医院 -->
+<section class="section" id="s-doctor">
+  <div class="sec-head"><span class="sec-emoji">🏥</span><div class="sec-title"><h2>看医生 · 药店</h2><p>描述症状、理解诊断、问用药——关键时刻不能靠手势</p></div></div>
+
+  <div class="phrases-label">必备短语</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">I have a [headache / sore throat / fever / stomachache].</div><div class="phrase-cn">我[头疼/喉咙痛/发烧/胃疼]。</div></div>
+    <div class="phrase-card"><div class="phrase-en">It started [X] days ago.</div><div class="phrase-cn">从[X]天前开始的。</div></div>
+    <div class="phrase-card"><div class="phrase-en">It gets worse when I [do something].</div><div class="phrase-cn">当我[做某事]时会加重。</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'm allergic to [penicillin / shellfish / nuts].</div><div class="phrase-cn">我对[青霉素/贝类/坚果]过敏。</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'm on medication for [condition].</div><div class="phrase-cn">我在为[病症]服药。</div></div>
+    <div class="phrase-card"><div class="phrase-en">What are the side effects?</div><div class="phrase-cn">有什么副作用？</div></div>
+    <div class="phrase-card"><div class="phrase-en">How many times a day should I take this?</div><div class="phrase-cn">每天要吃几次？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Do I need a prescription for this?</div><div class="phrase-cn">这个需要处方吗？</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 看诊</div>
+    <div class="dl dl-b"><span class="dl-speaker">医生</span><span class="dl-text">So, what brings you in today?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">I have a sore throat and a low fever. It started about three days ago. <span class="dl-note">描述症状 + 起始时间</span></span><span class="dl-cn">我喉咙痛，有点低烧，大概三天前开始的。</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">医生</span><span class="dl-text">Are you having any other symptoms? Cough, runny nose?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">A little bit of a cough, but no runny nose. The throat pain gets worse when I swallow. <span class="dl-note">加重情况</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">医生</span><span class="dl-text">Any allergies to medications?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">I'm allergic to penicillin. <span class="dl-note">过敏信息要主动说</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">医生</span><span class="dl-text">Got it. I'll prescribe a different antibiotic. Take it twice a day for five days.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Should I take it with food? And what are the side effects? <span class="dl-note">问用药方式和副作用</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">医生</span><span class="dl-text">Yes, take it with food to avoid an upset stomach. You might feel a little drowsy.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">OK, understood. Thank you, doctor.</span></div>
+  </div>
+
+  <div class="res-label">练这个场景用这些资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">ELLLO · 医疗健康对话</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">音频+文本</span>
+      <div class="res-desc">有就医、描述症状、药店等真实对话，语速自然，可以精听练习。</div>
+      <div class="res-howto">搜 "health" 或 "doctor"，先听，再试着自己描述一个你有过的症状。</div>
+      <a class="res-link" href="https://www.elllo.org/" target="_blank">打开 ELLLO →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">BBC Learning English · 健康词汇</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">视频</span>
+      <div class="res-desc">BBC 健康相关词汇和对话系列，包含描述疼痛、看诊对话等，真实英式英语。</div>
+      <div class="res-howto">看完对话后，描述自己上一次生病时的症状（用英语），练习时态和身体词汇。</div>
+      <a class="res-link" href="https://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak" target="_blank">打开 BBC →</a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 社交 =================== -->
+<div class="cat-head" id="social"><div class="cat-icon">💬</div><div><div class="cat-title">社交场景</div><div class="cat-sub">Small talk 和社交英语——最被忽视、但最影响第一印象的部分</div></div></div>
+
+<!-- 打招呼 -->
+<section class="section" id="s-greet">
+  <div class="sec-head"><span class="sec-emoji">👋</span><div class="sec-title"><h2>打招呼 · 初次见面</h2><p>第一次自我介绍——大多数人准备的是内容，但忘了准备接话和提问</p></div></div>
+
+  <div class="phrases-label">自我介绍框架</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Hi, I'm [name]. Nice to meet you!</div><div class="phrase-cn">基础款，但后面一定要加问题</div></div>
+    <div class="phrase-card"><div class="phrase-en">I work in / I'm studying [field].</div><div class="phrase-cn">说职业/专业，不要只说公司名字</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'm based in [city], but I'm originally from [place].</div><div class="phrase-cn">说两个地方更有话题</div></div>
+    <div class="phrase-card"><div class="phrase-en">What about you? / And you are...?</div><div class="phrase-cn">自我介绍后立刻反问，是社交礼仪</div></div>
+    <div class="phrase-card"><div class="phrase-en">Oh, interesting! How long have you been doing that?</div><div class="phrase-cn">接话的万能句，表现真实兴趣</div></div>
+    <div class="phrase-card"><div class="phrase-en">How do you know [host/organizer]?</div><div class="phrase-cn">活动/派对上认识新人的开场问题</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 活动上初次认识</div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Hi! I don't think we've met — I'm Jamie. <span class="dl-note">主动开口，不等对方</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Oh, hi! I'm Sam. Nice to meet you.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Are you here for the design conference too? <span class="dl-note">用场景建立共同话题</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Yeah! First time here, actually. What about you?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Second year. It gets better, I promise! <span class="dl-note">分享信息 + 幽默，建立好感</span> So what do you do in design?</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">I'm a UX designer at a startup. You?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Oh nice, I'm in product. We probably have a lot to talk about! <span class="dl-note">建立连接点</span></span></div>
+  </div>
+
+  <div class="res-label">练这个场景用这些资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">SmallTalk2Me</div>
+      <span class="res-tag tag-ai">AI对话</span><span class="res-tag tag-free">免费层</span>
+      <div class="res-desc">AI 驱动的英语口语对话平台，可以直接练自我介绍、打招呼和初次见面场景，有即时反馈。</div>
+      <div class="res-howto">选 "introductions" 或 "first meeting" 场景，和 AI 完成一次完整的初次见面对话，看反馈分析。</div>
+      <a class="res-link" href="https://smalltalk2.me/" target="_blank">打开练习 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">EnglishClub · 初次见面</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-web">网页</span>
+      <div class="res-desc">专门的初次见面表达、问题和文化背景介绍，含练习题。</div>
+      <div class="res-howto">读完后写下你自己的「30 秒自我介绍」，包括 1 个反问问题，背下来并录音。</div>
+      <a class="res-link" href="https://www.englishclub.com/speaking/small-talk.php" target="_blank">打开练习 →</a>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <div class="task-label">练习任务</div>
+    <div class="task-list">
+      <div class="task-item"><span class="task-num">1</span><span><strong>写下来：</strong>写一段 60 秒的自我介绍，包含：名字、做什么、来自哪里、一个兴趣爱好、一个反问问题。</span></div>
+      <div class="task-item"><span class="task-num">2</span><span><strong>录音：</strong>录下这段介绍，检查：是否自然？是否有停顿超过 3 秒？结尾有没有问对方问题？</span></div>
+      <div class="task-item"><span class="task-num">3</span><span><strong>即兴练：</strong>到 SmallTalk2Me 做一次 "introduction" 场景，不准看你写好的稿子。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Small Talk -->
+<section class="section" id="s-smalltalk">
+  <div class="sec-head"><span class="sec-emoji">💬</span><div class="sec-title"><h2>Small Talk · 日常闲聊</h2><p>不是浪费时间——Small talk 是建立关系的基础设施，缺少它会让人觉得你冷漠</p></div></div>
+
+  <div class="callout info"><strong>Small Talk 的结构：</strong>开话题 → 给一点自己的信息 → 问对方一个问题 → 接话并延续。缺少任何一步，对话都会死掉。最常见的问题是只回答不反问，让对方觉得你不感兴趣。</div>
+
+  <div class="phrases-label">按场景分组的 Small Talk 句型</div>
+
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">How's your week going?</div><div class="phrase-cn">你这周怎么样？（周中万能问法）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Not too bad — pretty busy, but good. You?</div><div class="phrase-cn">还好，有点忙，但不错。你呢？（回答模板：总体 + 细节 + 反问）</div></div>
+    <div class="phrase-card"><div class="phrase-en">How was your weekend? / Any fun plans this weekend?</div><div class="phrase-cn">周末过得怎么样？/ 周末有什么计划？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I heard you went to [place] — how was it?</div><div class="phrase-cn">我听说你去了[地方]——怎么样？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Did you catch the game / that show last night?</div><div class="phrase-cn">你昨晚看球了吗/看那个节目了吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">Have you tried that new [restaurant/place] yet?</div><div class="phrase-cn">你去了那家新开的[餐厅/地方]了吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I know what you mean. / Tell me about it.</div><div class="phrase-cn">我懂你。/ 可不是吗。（表达共鸣）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Oh nice, how did that go?</div><div class="phrase-cn">哦不错，然后呢 / 那怎么样了？（延续话题的万能接话）</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 周一早上同事闲聊</div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Morning! How was your weekend?</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Pretty good! We went hiking on Saturday — first time in months. <span class="dl-note">总体 + 细节</span> It was tiring but so worth it. You?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Oh nice! Where'd you go? <span class="dl-note">Where'd = Where did（口语缩读）</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Just the hills outside the city. Nothing fancy, but the view was amazing. <span class="dl-note">not fancy, but... = 自谦后给亮点</span></span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">I've been meaning to do that. Maybe I'll finally drag myself out there next weekend. <span class="dl-note">I've been meaning to = 我一直想做但还没做</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">You should! It's worth it. Anyway, ready for the week? <span class="dl-note">Anyway = 自然转换话题</span></span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Ha, barely. Coffee first. <span class="dl-note">幽默收尾，显得轻松</span></span></div>
+  </div>
+
+  <div class="res-label">最好的 Small Talk 练习资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">BBC Learning English · Small Talk</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">视频+播客</span>
+      <div class="res-desc">BBC 官方的 Small Talk 系列，覆盖话题开启、维持对话、结束对话，有真实母语者示范，每集 3-6 分钟。</div>
+      <div class="res-howto">用法：看完一集，找出 3 个你没想到的表达，然后当天用 ChatGPT 做一次小型 small talk 练习。</div>
+      <a class="res-link" href="https://www.bbc.co.uk/learningenglish" target="_blank">打开 BBC →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">SmallTalk2Me · AI 互动练习</div>
+      <span class="res-tag tag-ai">AI</span><span class="res-tag tag-free">免费层</span>
+      <div class="res-desc">250 万用户，专门做 small talk 场景练习，AI 模拟真实对话，有发音、语法、流利度反馈，可以反复练同一场景。</div>
+      <div class="res-howto">用法：每天做 5 分钟 "casual conversation" 练习，重点看 AI 是否觉得你给了足够的信息量（不能只说 "good" / "fine"）。</div>
+      <a class="res-link" href="https://smalltalk2.me/" target="_blank">打开练习 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">Rachel's English · 真实对话</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">YouTube</span>
+      <div class="res-desc">540 万订阅，Rachel 专门分析母语者真实闲聊的节奏、填充词、连读——不只教词汇，教如何"听起来自然"。</div>
+      <div class="res-howto">用法：找 "real conversation" 系列，边听边注意母语者怎么接话、怎么转换话题、用了哪些填充词。</div>
+      <a class="res-link" href="https://www.youtube.com/@rachelsenglish" target="_blank">打开频道 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">Shadow English Podcast</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">播客</span>
+      <div class="res-desc">专门设计用于跟读练习的播客，日常对话场景，语速清晰，有 Spotify 和 Apple Podcasts。</div>
+      <div class="res-howto">用法：听一遍了解内容，第二遍逐句暂停跟读，注意语调和语气，不只是词汇。</div>
+      <a class="res-link" href="https://open.spotify.com/show/69oQvsoqtRlIOIj1CTrcoc" target="_blank">打开 Spotify →</a>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <div class="task-label">本周 Small Talk 训练</div>
+    <div class="task-list">
+      <div class="task-item"><span class="task-num">1</span><span><strong>准备 3 个话题：</strong>想好这周你可以聊的 3 件事（周末经历/最近看了什么/有什么计划），用英语各准备 30 秒。</span></div>
+      <div class="task-item"><span class="task-num">2</span><span><strong>练接话：</strong>打开 ChatGPT 说："Let's have casual small talk. Start with a question about my weekend." 只用 "good / fine / OK" 回答一次，看对话是否死掉——然后用带细节的回答再来一次。</span></div>
+      <div class="task-item"><span class="task-num">3</span><span><strong>每天一次真实练习：</strong>任意英语环境（同事/语言伙伴/外国朋友），主动开一次 small talk，目标：对话持续 3 个来回以上。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 夸人和被夸 -->
+<section class="section" id="s-compliment">
+  <div class="sec-head"><span class="sec-emoji">🌟</span><div class="sec-title"><h2>夸人 · 接受赞美</h2><p>英语文化里夸人比中文更频繁、更直接——接受赞美也有固定套路</p></div></div>
+
+  <div class="phrases-label">夸人的表达</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">That's a great [idea / point / question]!</div><div class="phrase-cn">这个[想法/观点/问题]很棒！</div></div>
+    <div class="phrase-card"><div class="phrase-en">You did a really good job on [X].</div><div class="phrase-cn">你[X]做得真的很好。</div></div>
+    <div class="phrase-card"><div class="phrase-en">I love your [outfit / jacket / style].</div><div class="phrase-cn">我很喜欢你的[穿搭/夹克/风格]。</div></div>
+    <div class="phrase-card"><div class="phrase-en">That presentation was really impressive.</div><div class="phrase-cn">那次演示真的很出色。</div></div>
+  </div>
+
+  <div class="phrases-label">接受赞美（不要只说 "thank you"，要加一句）</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Thanks! I really appreciate that.</div><div class="phrase-cn">谢谢！这对我来说很重要。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Oh, thanks! I actually got it from [place].</div><div class="phrase-cn">谢谢！这是从[地方]买的。（衣服被夸时）</div></div>
+    <div class="phrase-card"><div class="phrase-en">That means a lot coming from you.</div><div class="phrase-cn">你这样说让我很开心。（对很尊重的人）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Aw, you're too kind!</div><div class="phrase-cn">哎呀，你太客气了！（友好场合）</div><div class="phrase-note">⚠ 中国人常说"哪里哪里"，但英语里否认赞美会让对方尴尬</div></div>
+  </div>
+
+  <div class="callout tip"><strong>文化差异：</strong>中文习惯谦虚否认赞美（"哪里哪里，我还差得远"），但英语文化里直接谢谢并接受才是礼貌。拒绝赞美会让对方觉得他的判断力被否定。</div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 夸人与接受赞美</div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Hey, your presentation this morning was really impressive. The data visualizations were so clear. <span class="dl-note">具体夸到细节，比 "good job" 有力多了</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Oh, thank you! That means a lot — I spent a lot of time on those charts. <span class="dl-note">接受 + 分享一个背后的故事，不否认</span></span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">It showed! And I love your jacket, by the way. The color is great on you.</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Aw, thanks! I actually just got it last weekend — I wasn't sure about the color at first. <span class="dl-note">接受 + 加一句细节，对话自然延续</span></span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Well, it was definitely the right call!</span></div>
+  </div>
+
+  <div class="callout warn"><strong>常见错误：</strong>被夸时说"No no, it wasn't that good"或"I still have a lot to improve"——这在英语文化里会让对方觉得尴尬，好像他们的称赞是错的。直接说谢谢，加一句话，就够了。</div>
+</section>
+
+<!-- 派对 -->
+<section class="section" id="s-party">
+  <div class="sec-head"><span class="sec-emoji">🎉</span><div class="sec-title"><h2>派对 · 社交场合</h2><p>人多嘈杂、互相不认识——需要主动开话题的能力，以及如何自然离开对话</p></div></div>
+
+  <div class="phrases-label">派对和社交场合常用句</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">How do you know [host's name]?</div><div class="phrase-cn">你怎么认识[主人]的？（派对上最好用的破冰问题）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Have you been to one of these before?</div><div class="phrase-cn">你之前来过这种[活动]吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">What do you do when you're not [at this event]?</div><div class="phrase-cn">你平时做什么？（比"你是做什么的"更轻松）</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'm going to grab another drink — it was really nice meeting you!</div><div class="phrase-cn">我去拿杯饮料——认识你真的很高兴！（礼貌离开对话）</div></div>
+    <div class="phrase-card"><div class="phrase-en">I should go catch up with [person] — let's exchange numbers!</div><div class="phrase-cn">我得去找[某人]聊聊——我们留个联系方式吧！</div></div>
+    <div class="phrase-card"><div class="phrase-en">This is [friend's name] — you two should definitely talk!</div><div class="phrase-cn">这是[朋友名字]——你们两个绝对应该聊聊！（介绍朋友认识）</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 派对破冰</div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Hi! I don't think we've met — I'm Alex. <span class="dl-note">主动开口，给名字</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Hey, I'm Chris! Good to meet you.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">How do you know Maya? <span class="dl-note">派对上最自然的破冰问题</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">We went to college together, actually. You?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Oh nice! We work together. She always throws the best parties. <span class="dl-note">建立共同话题</span> What do you do now?</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">I'm in marketing — at a startup downtown. You?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">I'm in product design. We probably have some overlap! <span class="dl-note">找共同点</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Ha, definitely. Hey, let me grab a drink — want anything?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">I'm good, thanks! But let's keep talking — I want to hear about the startup. <span class="dl-note">礼貌留住对话</span></span></div>
+  </div>
+
+  <div class="res-label">练社交英语的资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">ELLLO · 社交对话</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">音频</span>
+      <div class="res-desc">有派对、朋友聚会、活动等真实社交场景对话，语速自然，非常适合精听练习。</div>
+      <div class="res-howto">搜 "party" / "social" / "friends"，精听后跟读，注意轻松语气和节奏。</div>
+      <a class="res-link" href="https://www.elllo.org/" target="_blank">打开 ELLLO →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">English with Lucy · 社交英语</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">YouTube</span>
+      <div class="res-desc">英式英语，Lucy 有专门的社交场合、约会、派对英语系列，自然有趣，适合听语感。</div>
+      <div class="res-howto">用法：看一集，找出你之前不知道的 3 个表达，用 ChatGPT 在对话中各用一次。</div>
+      <a class="res-link" href="https://www.youtube.com/@EnglishwithLucy" target="_blank">打开频道 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 职场 =================== -->
+<div class="cat-head" id="work"><div class="cat-icon">💼</div><div><div class="cat-title">职场场景</div><div class="cat-sub">工作中的英语——内容和语气都要拿捏</div></div></div>
+
+<!-- 会议 -->
+<section class="section" id="s-meeting">
+  <div class="sec-head"><span class="sec-emoji">📊</span><div class="sec-title"><h2>会议 · 站会</h2><p>进阶手册里有完整脚本，这里专门练"即兴应对追问"——最难的部分</p></div></div>
+
+  <div class="phrases-label">被追问时的即兴应对</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Good question — let me think about that for a second.</div><div class="phrase-cn">好问题，让我想一下。（争取思考时间）</div></div>
+    <div class="phrase-card"><div class="phrase-en">I don't have the exact numbers with me, but roughly speaking...</div><div class="phrase-cn">我手边没有准确数字，但大概来说……</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'll need to double-check on that and follow up with you.</div><div class="phrase-cn">这个我需要核实一下再告诉你。</div></div>
+    <div class="phrase-card"><div class="phrase-en">That's a bit outside my area, but [colleague] would know.</div><div class="phrase-cn">这有点超出我的范围，但[同事]应该知道。</div></div>
+    <div class="phrase-card"><div class="phrase-en">To be honest, I'm not sure yet — we're still figuring that out.</div><div class="phrase-cn">说实话，我们还在弄清楚这件事。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Can I get back to you on that? I want to make sure I give you the right answer.</div><div class="phrase-cn">我能之后再回复你吗？我想给你准确的答案。</div></div>
+  </div>
+
+  <div class="res-label">练会议英语的资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">British Council · 职场英语</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">视频+练习</span>
+      <div class="res-desc">英国文化协会的职场英语系列，会议、演示、电话会议都有真实视频示范和交互练习。</div>
+      <div class="res-howto">看完视频，用 ChatGPT 模拟同样场景，让 AI 追问你 3 个问题。</div>
+      <a class="res-link" href="https://learnenglish.britishcouncil.org/business-english" target="_blank">打开 BC →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">6 Minute English · BBC</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">播客</span>
+      <div class="res-desc">每集 6 分钟，两个母语者讨论真实商业/职场话题，有文本，适合听语速和话题表达。</div>
+      <div class="res-howto">听完后用 1 分钟英语总结这集的主题和两个你同意的观点，练习即兴表达。</div>
+      <a class="res-link" href="https://www.bbc.co.uk/learningenglish/english/features/6-minute-english" target="_blank">打开播客 →</a>
+    </div>
+  </div>
+
+  <div class="task-box">
+    <div class="task-label">高难度练习：被追问模拟</div>
+    <div class="task-list">
+      <div class="task-item"><span class="task-num">1</span><span>用 ChatGPT："I'll give you an update on a project. Then ask me 3 aggressive follow-up questions that I need to answer on the spot."</span></div>
+      <div class="task-item"><span class="task-num">2</span><span>发言 60 秒，然后回答 AI 的追问，不能停顿超过 5 秒，不能说"I don't know"——必须用一个缓冲句接着说。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Networking -->
+<section class="section" id="s-network">
+  <div class="sec-head"><span class="sec-emoji">🤝</span><div class="sec-title"><h2>职场 Networking</h2><p>Networking 最难的不是自我介绍，而是找到共同话题并保持对话</p></div></div>
+
+  <div class="phrases-label">关键短语</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">What brings you to [event]?</div><div class="phrase-cn">你是为什么来这个活动的？</div></div>
+    <div class="phrase-card"><div class="phrase-en">What kind of work do you do?</div><div class="phrase-cn">你是做什么工作的？（比"What's your job"更自然）</div></div>
+    <div class="phrase-card"><div class="phrase-en">That's interesting — how did you get into that?</div><div class="phrase-cn">那很有意思——你是怎么进入这个行业的？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'd love to hear more about that sometime.</div><div class="phrase-cn">我很想之后多了解一下。（留下联系的铺垫）</div></div>
+    <div class="phrase-card"><div class="phrase-en">Can I get your LinkedIn / card?</div><div class="phrase-cn">可以加你 LinkedIn / 要你名片吗？</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'll reach out — great meeting you!</div><div class="phrase-cn">我会联系你的——很高兴认识你！</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 职场活动 Networking</div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Hi, I'm Jamie — I work in data at Acme. <span class="dl-note">自我介绍加职位/公司，给对方接话点</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Hey Jamie, I'm Sam. I'm a product manager at Loft Tech. What brings you to this event?</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Mostly to meet people in the AI space — we're starting to build out some ML features. What about you? <span class="dl-note">说目的 + 反问，对话不停</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Same, honestly. We're exploring how to integrate AI into our product roadmap.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">That's interesting — how did you get into product after a data background? <span class="dl-note">问职业路径，话题自然深入</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Long story — happy to tell you. I'd love to hear more about your ML work too.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">你</span><span class="dl-text">Definitely. Can I get your LinkedIn? I think there's a lot we could learn from each other. <span class="dl-note">自然收尾 + 留联系</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Absolutely, here you go. I'll reach out this week.</span></div>
+  </div>
+
+  <div class="res-label">推荐资源</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">Worklife with Adam Grant · 播客</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">播客</span>
+      <div class="res-desc">职场心理学播客，讨论 networking、职场关系等真实话题，语速自然，有大量可以直接用的表达。</div>
+      <div class="res-howto">听一集，记下 3 个 networking 相关表达，然后在 ChatGPT 里做一次 networking 对话练习。</div>
+      <a class="res-link" href="https://www.ted.com/podcasts/worklife" target="_blank">打开播客 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- 给反馈 -->
+<section class="section" id="s-feedback">
+  <div class="sec-head"><span class="sec-emoji">💡</span><div class="sec-title"><h2>给反馈 · 接受批评</h2><p>直接批评和委婉批评之间有很多层——英语职场文化更倾向于建设性框架</p></div></div>
+
+  <div class="phrases-label">给建设性反馈</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">I think this is really solid. One thing I'd consider changing is...</div><div class="phrase-cn">我觉得这个很扎实。有一点我会考虑改一下……</div></div>
+    <div class="phrase-card"><div class="phrase-en">This is great — could we also think about...?</div><div class="phrase-cn">这个很好——我们是否也可以考虑一下……？</div></div>
+    <div class="phrase-card"><div class="phrase-en">The structure works well. My only concern is [specific issue].</div><div class="phrase-cn">结构很好。我唯一的顾虑是[具体问题]。</div></div>
+    <div class="phrase-card"><div class="phrase-en">What if we tried [alternative approach]?</div><div class="phrase-cn">如果我们试试[另一个方案]呢？</div></div>
+  </div>
+
+  <div class="phrases-label">接受批评</div>
+  <div class="phrase-grid">
+    <div class="phrase-card"><div class="phrase-en">Thanks for the feedback — that's a fair point.</div><div class="phrase-cn">感谢反馈——这一点说得有道理。</div></div>
+    <div class="phrase-card"><div class="phrase-en">I hadn't thought of it that way.</div><div class="phrase-cn">我之前没有从这个角度想。</div></div>
+    <div class="phrase-card"><div class="phrase-en">Let me think about how to address that.</div><div class="phrase-cn">让我想想怎么处理这个问题。</div></div>
+    <div class="phrase-card"><div class="phrase-en">I'll take that on board.</div><div class="phrase-cn">我会把这一点纳入考虑。（正式但常用）</div></div>
+  </div>
+
+  <div class="dialogue">
+    <div class="dialogue-label">示例对话 · 给与接受反馈</div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Hey, do you have five minutes? I wanted to share some thoughts on the report. <span class="dl-note">提前预约，不突然</span></span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">Sure, go ahead.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Overall I think the analysis is really solid — the insights on the Q3 data are great. <span class="dl-note">先肯定，找真实亮点</span> One thing I'd consider changing is the structure of the second section. It felt a little hard to follow.</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">OK, can you say more about what felt unclear? <span class="dl-note">接受 + 追问细节，不立刻防御</span></span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Sure — I think leading with the conclusion and then the supporting data might work better. Right now it builds up slowly and the key point comes at the end.</span></div>
+    <div class="dl dl-b"><span class="dl-speaker">B</span><span class="dl-text">That's a fair point — I hadn't thought about it from a reader's perspective. <span class="dl-note">承认对方说得有道理，不抗拒</span> I'll restructure it that way.</span></div>
+    <div class="dl dl-a"><span class="dl-speaker">A</span><span class="dl-text">Great. The content itself is strong — this will just make it land better.</span></div>
+  </div>
+
+  <div class="callout info"><strong>给反馈的结构：</strong>先说一个真实的亮点 → 用 "one thing I'd consider" 或 "my only concern is" 引出问题 → 给具体建议，不只是批评。这个结构在英语职场里通用，不会让对方觉得被攻击。</div>
+</section>
+
+<!-- =================== 综合资源 =================== -->
+<section class="section" id="s-resources">
+  <div class="sec-head"><span class="sec-emoji">📚</span><div class="sec-title"><h2>综合资源总览</h2><p>按用途排列，每个说清楚最适合用它做什么事</p></div></div>
+
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-name">ELLLO</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">音频+文本</span>
+      <div class="res-desc">1500+ 真实日常情景对话，分级清晰，有文本、生词、测验。最适合精听和情景词汇练习。</div>
+      <div class="res-howto">用法：按情景（restaurant/doctor/shopping）搜索，精听 + 跟读 + 提取词块。</div>
+      <a class="res-link" href="https://www.elllo.org/" target="_blank">打开 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">BBC Learning English</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">视频+播客</span>
+      <div class="res-desc">官方 BBC 出品，涵盖 small talk、日常情景、职场英语，每周更新，质量最稳定。</div>
+      <div class="res-howto">订阅 YouTube 频道，每周选 2-3 集主题贴近你需求的集数精听。</div>
+      <a class="res-link" href="https://www.bbc.co.uk/learningenglish" target="_blank">打开 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">SmallTalk2Me</div>
+      <span class="res-tag tag-ai">AI对话</span><span class="res-tag tag-free">免费层</span>
+      <div class="res-desc">专为 small talk 和口语设计的 AI 平台，有即时发音/语法/流利度反馈，最适合日常社交练习。</div>
+      <div class="res-howto">每天 5 分钟，选一个情景，完成对话后看反馈，找出你每次重复犯的错误。</div>
+      <a class="res-link" href="https://smalltalk2.me/" target="_blank">打开 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">Rachel's English</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">YouTube</span>
+      <div class="res-desc">最好的美式口语和发音频道，专注真实对话节奏、连读、填充词，看完会明白"为什么母语者听起来那么自然"。</div>
+      <div class="res-howto">看 "real conversation" 系列，只学节奏和语气，不用管每个词。</div>
+      <a class="res-link" href="https://www.youtube.com/@rachelsenglish" target="_blank">打开 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">Shadow English Podcast</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">播客</span>
+      <div class="res-desc">专为跟读设计的日常对话播客，语速清晰，节奏标准。适合练口腔肌肉记忆和节奏感。</div>
+      <div class="res-howto">听一遍 → 逐句暂停跟读 → 连续跟读一遍。每天 10 分钟。</div>
+      <a class="res-link" href="https://open.spotify.com/show/69oQvsoqtRlIOIj1CTrcoc" target="_blank">打开 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">English with Lucy</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-video">YouTube</span>
+      <div class="res-desc">英式英语，覆盖社交场合、日常表达、礼貌用语，风格轻松，最适合日常社交和文化习惯。</div>
+      <div class="res-howto">按主题找视频（greetings / compliments / party），每集找 3 个你没想到的表达。</div>
+      <a class="res-link" href="https://www.youtube.com/@EnglishwithLucy" target="_blank">打开 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">ESL Fast</div>
+      <span class="res-tag tag-free">免费</span><span class="res-tag tag-audio">音频对话</span>
+      <div class="res-desc">2500+ 日常对话，情景覆盖最广，包括大量口语对话、电话、日常生活场景，配音频。</div>
+      <div class="res-howto">选一个你近期会遇到的场景，听 3 段相关对话，提取 5 个可以当天就用的表达。</div>
+      <a class="res-link" href="https://www.eslfast.com/" target="_blank">打开 →</a>
+    </div>
+    <div class="res-card">
+      <div class="res-name">Tandem / italki</div>
+      <span class="res-tag tag-free">语言交换免费</span><span class="res-tag tag-app">App</span>
+      <div class="res-desc">真人语言交换/课程平台。Tandem 免费找语言伙伴，italki 有付费专业老师。最适合想要真实互动的阶段。</div>
+      <div class="res-howto">在 Tandem 找一个英语母语者，约好每周 30 分钟聊天，各用对方的语言 15 分钟。</div>
+      <a class="res-link" href="https://www.tandem.net/" target="_blank">打开 Tandem →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <a href="english.html">基础手册</a> | <a href="english-advanced.html">进阶实战手册</a> | <a href="english-expert.html">专家图谱 →</a>
+</footer>
+</div></main>
+
+<script>
+const navLinks=document.querySelectorAll('.nav-items a[href^="#"]');
+const sections=document.querySelectorAll('.section');
+sections.forEach(s=>new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.classList.remove('active'));const a=document.querySelector(`.nav-items a[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('prog').style.width=`${Math.min(1,h.scrollTop/(h.scrollHeight-h.clientHeight))*100}%`});
+</script>
+</body>
+</html>

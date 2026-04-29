@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语职场实战手册 · 邮件 会议 谈判 闲聊</title>
+<style>
+:root{--bg:#f8fafc;--surface:#fff;--surface2:#f1f5f9;--border:#e2e8f0;--accent:#0891b2;--accent-light:rgba(8,145,178,.08);--green:#16a34a;--green-light:rgba(22,163,74,.08);--amber:#d97706;--amber-light:rgba(217,119,6,.08);--red:#dc2626;--red-light:rgba(220,38,38,.08);--purple:#7c3aed;--purple-light:rgba(124,58,237,.08);--text:#0f172a;--text-2:#334155;--text-3:#64748b;--nav-w:260px;--nav-bg:#1e293b;--nav-border:#334155;--nav-text:#e2e8f0;--nav-text3:#94a3b8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 system-ui,-apple-system,"Segoe UI","Noto Sans SC",sans-serif}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#67e8f9);z-index:20;width:0}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--nav-w);background:var(--nav-bg);border-right:1px solid var(--nav-border);padding:24px 18px;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
+.brand{color:#fff;font-weight:800;font-size:18px;line-height:1.3}.brand small{display:block;color:var(--nav-text3);font-size:11px;margin-top:6px}
+.nav-items{margin:20px 0;display:grid;gap:2px}
+.nav-items a{color:var(--nav-text);text-decoration:none;padding:7px 10px;border-radius:7px;font-size:13px;display:block}
+.nav-items a.active,.nav-items a:hover{background:#334155;color:#fff}
+.nav-section{color:var(--nav-text3);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;padding:10px 10px 4px}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--nav-border);padding-top:14px;display:grid;gap:6px}
+.sidebar-foot a{color:#a5f3fc;text-decoration:none;font-size:13px}
+.main{margin-left:var(--nav-w);padding:0 44px 80px}.content-wrap{max-width:920px;margin:0 auto}
+.hero{padding:60px 0 32px}
+.hero-eyebrow{color:var(--accent);font-weight:800;letter-spacing:.06em;font-size:12px;text-transform:uppercase}
+h1{font-size:44px;line-height:1.08;margin:14px 0 16px;letter-spacing:-.04em}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:17px;color:var(--text-2);max-width:720px;margin:0 0 18px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.chip{background:var(--accent-light);color:#0e7490;border:1px solid rgba(8,145,178,.2);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.notice{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:14px 16px;color:var(--text-2);font-size:14px;margin-bottom:20px}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;margin:20px 0;box-shadow:0 8px 24px rgba(15,23,42,.04)}
+.sec-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
+.sec-num{background:var(--accent);color:#fff;border-radius:10px;padding:5px 9px;font-weight:900;font-size:14px;flex-shrink:0}
+.sec-title h2{margin:0;font-size:26px;letter-spacing:-.02em}
+.sec-title p{margin:3px 0 0;color:var(--text-3);font-size:14px}
+/* email template */
+.email-block{background:#0f172a;color:#e2e8f0;border-radius:16px;padding:20px 22px;margin:14px 0;font-size:14px;line-height:1.9}
+.email-label{font-size:11px;color:#94a3b8;font-weight:900;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.email-field{color:#94a3b8;margin-bottom:4px;font-size:13px}
+.email-body{border-top:1px solid #334155;padding-top:14px;margin-top:10px}
+.hi-phrase{color:#93c5fd}
+.hi-swap{color:#86efac}
+.hi-note{color:#fcd34d}
+.annotation{display:inline-block;background:#1e3a5f;border-radius:6px;padding:1px 6px;font-size:11px;color:#7dd3fc;margin-left:4px}
+/* register strip */
+.register-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.rs-card{border-radius:14px;padding:14px}
+.rs-formal{background:#f0f9ff;border:1px solid #bae6fd}
+.rs-neutral{background:#f0fdf4;border:1px solid #bbf7d0}
+.rs-casual{background:#faf5ff;border:1px solid #e9d5ff}
+.rs-label{font-size:11px;font-weight:900;margin-bottom:8px}
+.rs-formal .rs-label{color:#0369a1}.rs-neutral .rs-label{color:#15803d}.rs-casual .rs-label{color:#6d28d9}
+.rs-card p{font-size:13px;margin:4px 0;color:var(--text-2)}
+/* compare */
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.wrong-box,.right-box{border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.6}
+.wrong-box{background:var(--red-light);border:1px solid rgba(220,38,38,.2)}
+.right-box{background:var(--green-light);border:1px solid rgba(22,163,74,.2)}
+.box-label{font-size:11px;font-weight:900;margin-bottom:4px}
+.wrong-box .box-label{color:var(--red)}.right-box .box-label{color:var(--green)}
+/* script block */
+.script-block{margin:14px 0}
+.script-line{display:flex;gap:12px;padding:10px 14px;border-radius:12px;margin:6px 0;font-size:14px}
+.script-line.a-line{background:#eff6ff;border:1px solid #bfdbfe}
+.script-line.b-line{background:#f0fdf4;border:1px solid #bbf7d0}
+.script-speaker{font-weight:900;min-width:30px;flex-shrink:0}
+.a-line .script-speaker{color:#1d4ed8}.b-line .script-speaker{color:#15803d}
+.script-cn{font-size:12px;color:var(--text-3);margin-top:2px}
+.script-note{display:inline-block;background:rgba(8,145,178,.12);border-radius:6px;padding:1px 7px;font-size:11px;color:#0891b2;margin-left:6px}
+/* tab */
+.tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);font-size:13px;cursor:pointer;font-weight:700;color:var(--text-2)}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab-content{display:none}.tab-content.active{display:block}
+/* col table */
+.col-table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+.col-table th{background:var(--surface2);padding:8px 10px;text-align:left;border:1px solid var(--border);font-weight:900}
+.col-table td{padding:7px 10px;border:1px solid var(--border);vertical-align:top}
+.col-table tr:nth-child(even){background:#fafafa}
+/* callout */
+.callout{border-radius:12px;padding:12px 14px;margin:12px 0;font-size:14px}
+.callout.tip{background:var(--green-light);border:1px solid rgba(22,163,74,.2)}
+.callout.warn{background:var(--amber-light);border:1px solid rgba(217,119,6,.22)}
+.callout.info{background:var(--accent-light);border:1px solid rgba(8,145,178,.2)}
+.callout strong{display:block;margin-bottom:3px}
+/* phrase grid */
+.phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin:10px 0}
+.phrase-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.phrase-en{font-weight:700;font-size:14px}.phrase-cn{font-size:12px;color:var(--text-3);margin:2px 0}
+.phrase-note{font-size:12px;color:var(--amber)}
+/* register table */
+.reg-table{width:100%;border-collapse:collapse;font-size:13px}
+.reg-table th{background:var(--surface2);padding:8px 10px;text-align:left;border:1px solid var(--border);font-weight:900}
+.reg-table td{padding:7px 10px;border:1px solid var(--border)}
+.reg-table tr:nth-child(even){background:#fafafa}
+/* page footer */
+.page-footer{margin:32px 0 0;color:var(--text-3);font-size:14px}
+.page-footer a{color:var(--accent);font-weight:700;text-decoration:none}
+.menu-btn{display:none;position:fixed;right:16px;bottom:16px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:11px 14px;font-weight:900;z-index:30;font-size:14px}
+@media(max-width:768px){.sidebar{display:none}.sidebar.open{display:flex}.main{margin-left:0;padding:0 18px 60px}h1{font-size:32px}.compare-row,.register-strip{grid-template-columns:1fr}.menu-btn{display:block}}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand">英语日常职场沟通<small>进阶实战手册 · 场景模板与策略</small></div>
+  <nav class="nav-items">
+    <div class="nav-section">邮件</div>
+    <a href="#s01">01 五类工作邮件模板</a>
+    <a href="#s02">02 语域调节指南</a>
+    <div class="nav-section">会议</div>
+    <a href="#s03">03 会议话轮脚本</a>
+    <a href="#s04">04 礼貌打断与追问</a>
+    <div class="nav-section">日常沟通</div>
+    <a href="#s05">05 闲聊与破冰</a>
+    <a href="#s06">06 听不懂时的修复策略</a>
+    <div class="nav-section">写作</div>
+    <a href="#s07">07 中式英语 → 自然英语</a>
+    <a href="#s08">08 语气升降级</a>
+  </nav>
+  <div class="sidebar-foot">
+    <a href="english.html">← 基础手册</a>
+    <a href="english-practice.html">场景练习地图 →</a>
+    <a href="english-expert.html">专家图谱 →</a>
+  </div>
+</aside>
+<button class="menu-btn" id="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">菜单</button>
+
+<main class="main"><div class="content-wrap">
+<header class="hero">
+  <div class="hero-eyebrow">英语沟通 · 进阶实战手册 · 2026</div>
+  <h1>在真实职场场景里，<em>自然说出口、写得体</em></h1>
+  <p class="hero-sub">这页不讲原理，直接给模板、脚本和对照表。适合能用英语做基本沟通、但表达总显得奇怪或太正式/太随意的人。</p>
+  <div class="chip-row"><span class="chip">邮件模板</span><span class="chip">会议话轮</span><span class="chip">语域调节</span><span class="chip">中→自然</span><span class="chip">修复策略</span></div>
+  <div class="notice">用法：找到你今天要用到的场景，直接套用模板，修改蓝色/绿色标记的可替换部分。不需要从头读完。</div>
+</header>
+
+<!-- S01 邮件 -->
+<section class="section" id="s01">
+  <div class="sec-head"><span class="sec-num">01</span><div class="sec-title"><h2>五类工作邮件完整模板</h2><p>每封邮件有注解说明为什么这样写，哪里可以替换。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s01',this,'s01-request')">请求/申请</button>
+    <button class="tab-btn" onclick="st('s01',this,'s01-followup')">跟进</button>
+    <button class="tab-btn" onclick="st('s01',this,'s01-update')">进展更新</button>
+    <button class="tab-btn" onclick="st('s01',this,'s01-decline')">婉拒</button>
+  </div>
+
+  <div id="s01-request" class="tab-content active">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:10px">场景：你需要对方做某件事（提供信息、审批、安排会议等）。</p>
+    <div class="email-block">
+      <div class="email-label">邮件模板 · 请求/申请</div>
+      <div class="email-field">Subject: <span class="hi-swap">Quick question about [X]</span> / <span class="hi-swap">Request: [specific thing]</span></div>
+      <div class="email-body">
+        Hi <span class="hi-swap">[Name]</span>,<br><br>
+        <span class="hi-phrase">I hope you're having a good week.</span> <span class="annotation">开头暖场，一句即可</span><br><br>
+        <span class="hi-phrase">I'm reaching out because</span> <span class="hi-swap">[brief context — one sentence]</span>. <span class="annotation">快速说明原因</span><br><br>
+        <span class="hi-phrase">Would it be possible to</span> <span class="hi-swap">[specific request]</span>? <span class="annotation">礼貌请求句型</span><br>
+        <span class="hi-note">// 如果有期限：</span><br>
+        <span class="hi-phrase">Ideally, I'd need this by</span> <span class="hi-swap">[date/time]</span> — <span class="hi-phrase">but let me know if that's a problem.</span> <span class="annotation">给对方余地，不强迫</span><br><br>
+        <span class="hi-phrase">Please let me know if you need any more context</span> — <span class="hi-phrase">happy to jump on a call if easier.</span> <span class="annotation">提供替代沟通方式</span><br><br>
+        Thanks,<br>
+        <span class="hi-swap">[Your name]</span>
+      </div>
+    </div>
+    <div class="callout warn"><strong>避免：</strong>× "Please kindly provide me with the information at your earliest convenience." — 过于迂腐，显得距离感很强。现代职场邮件要直接但有礼貌。</div>
+  </div>
+
+  <div id="s01-followup" class="tab-content">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:10px">场景：对方没有回复，你需要再次提醒，但不想显得催促或有攻击性。</p>
+    <div class="email-block">
+      <div class="email-label">邮件模板 · 跟进（第一次追）</div>
+      <div class="email-field">Subject: <span class="hi-phrase">Re:</span> <span class="hi-swap">[original subject]</span></div>
+      <div class="email-body">
+        Hi <span class="hi-swap">[Name]</span>,<br><br>
+        <span class="hi-phrase">Just circling back on this</span> — <span class="hi-phrase">I know you're probably busy</span>, <span class="hi-phrase">so no rush</span>, <span class="hi-phrase">but wanted to make sure this didn't get buried.</span> <span class="annotation">不显得催促</span><br><br>
+        <span class="hi-note">// 重申核心请求一句：</span><br>
+        <span class="hi-phrase">Would you be able to</span> <span class="hi-swap">[request]</span> <span class="hi-phrase">when you get a chance?</span><br><br>
+        <span class="hi-phrase">Let me know if you have any questions.</span><br><br>
+        Thanks,<br>
+        <span class="hi-swap">[Your name]</span>
+      </div>
+    </div>
+    <div class="email-block" style="margin-top:12px">
+      <div class="email-label">邮件模板 · 跟进（第二次，需要明确期限）</div>
+      <div class="email-body">
+        Hi <span class="hi-swap">[Name]</span>,<br><br>
+        <span class="hi-phrase">Following up one more time on this</span> — <span class="hi-phrase">we're approaching the deadline and I want to make sure we're on track.</span> <span class="annotation">语气开始明确</span><br><br>
+        <span class="hi-phrase">Could you confirm by</span> <span class="hi-swap">[date]</span> <span class="hi-phrase">whether</span> <span class="hi-swap">[specific question]</span>?<br><br>
+        <span class="hi-phrase">If this has been resolved on your end, please disregard this message.</span> <span class="annotation">给对方台阶下</span><br><br>
+        Thanks,<br>
+        <span class="hi-swap">[Your name]</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="s01-update" class="tab-content">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:10px">场景：主动发邮件告知项目或任务进展。</p>
+    <div class="email-block">
+      <div class="email-label">邮件模板 · 进展更新</div>
+      <div class="email-field">Subject: Update on <span class="hi-swap">[Project/Task Name]</span> — <span class="hi-swap">[Week/Date]</span></div>
+      <div class="email-body">
+        Hi <span class="hi-swap">[Name/team]</span>,<br><br>
+        <span class="hi-phrase">Just a quick update on</span> <span class="hi-swap">[project name]</span>:<br><br>
+        <span class="hi-note">✅ Completed:</span><br>
+        • <span class="hi-swap">[Thing 1]</span><br>
+        • <span class="hi-swap">[Thing 2]</span><br><br>
+        <span class="hi-note">🔄 In progress:</span><br>
+        • <span class="hi-swap">[Current task]</span> — <span class="hi-phrase">on track for</span> <span class="hi-swap">[date]</span><br><br>
+        <span class="hi-note">⚠ Blockers (if any):</span><br>
+        • <span class="hi-swap">[Issue]</span> — <span class="hi-phrase">we're working on a fix and should have an update by</span> <span class="hi-swap">[date]</span><br><br>
+        <span class="hi-phrase">Let me know if you have any questions or concerns.</span><br><br>
+        Best,<br>
+        <span class="hi-swap">[Your name]</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="s01-decline" class="tab-content">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:10px">场景：婉拒请求、邀请或会议，同时保持良好关系。</p>
+    <div class="email-block">
+      <div class="email-label">邮件模板 · 婉拒</div>
+      <div class="email-body">
+        Hi <span class="hi-swap">[Name]</span>,<br><br>
+        <span class="hi-phrase">Thanks so much for thinking of me.</span> <span class="annotation">先道谢，不先说"no"</span><br><br>
+        <span class="hi-phrase">Unfortunately, I won't be able to</span> <span class="hi-swap">[action]</span> <span class="hi-phrase">at this time</span> — <span class="hi-swap">[brief reason, one clause is enough]</span>. <span class="annotation">不需要解释太多</span><br><br>
+        <span class="hi-note">// 如果可以提供替代：</span><br>
+        <span class="hi-phrase">That said,</span> <span class="hi-swap">[alternative offer — e.g., "I could review it next week" or "you might want to check with [person]"]</span>.<br><br>
+        <span class="hi-phrase">I hope you're able to find a good solution!</span><br><br>
+        Best,<br>
+        <span class="hi-swap">[Your name]</span>
+      </div>
+    </div>
+    <div class="callout tip"><strong>关键原则：</strong>婉拒不需要过度道歉（"I'm so sorry, I really really apologize..."），一次 "unfortunately" 就够了。给替代方案比道歉更有价值。</div>
+  </div>
+</section>
+
+<!-- S02 语域 -->
+<section class="section" id="s02">
+  <div class="sec-head"><span class="sec-num">02</span><div class="sec-title"><h2>语域调节：同一件事，三种说法</h2><p>同样的意思，对不同人要换不同的表达方式。</p></div></div>
+
+  <table class="reg-table">
+    <thead><tr><th>意图</th><th>正式（上级/外部/初次联系）</th><th>中性（同级/熟悉同事）</th><th>非正式（好友/随意闲聊）</th></tr></thead>
+    <tbody>
+      <tr><td>问对方方不方便</td><td>Would it be convenient for you to...</td><td>Does that work for you?</td><td>You good with that?</td></tr>
+      <tr><td>请对方等一下</td><td>Could you give me a moment?</td><td>Just a sec.</td><td>Hold on / Gimme a sec.</td></tr>
+      <tr><td>不同意对方</td><td>I would like to respectfully disagree...</td><td>I'm not sure I agree with that.</td><td>Hmm, I don't know about that.</td></tr>
+      <tr><td>说不知道</td><td>I'm afraid I don't have that information at hand.</td><td>I'm not sure, actually.</td><td>No idea, sorry!</td></tr>
+      <tr><td>催促对方</td><td>I wanted to follow up regarding...</td><td>Just checking in on this.</td><td>Hey, any update?</td></tr>
+      <tr><td>道谢</td><td>I greatly appreciate your assistance.</td><td>Thanks for your help!</td><td>You're a lifesaver!</td></tr>
+      <tr><td>说太忙了</td><td>I'm currently at full capacity.</td><td>I've got a lot on my plate right now.</td><td>I'm swamped!</td></tr>
+      <tr><td>提出建议</td><td>I would recommend considering...</td><td>Have you thought about...?</td><td>Why don't you just...?</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><strong>最常见错误：</strong>用正式英语说给认识的同事，或用非正式英语发给客户/上级。判断语域的最快方法：想想对方怎么给你发消息——模仿那个语气。</div>
+</section>
+
+<!-- S03 会议话轮 -->
+<section class="section" id="s03">
+  <div class="sec-head"><span class="sec-num">03</span><div class="sec-title"><h2>会议话轮脚本</h2><p>完整对话脚本，每句都标注了话轮功能。可以在开会前 5 分钟快速复习。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s03',this,'s03-open')">开场 & 发言</button>
+    <button class="tab-btn" onclick="st('s03',this,'s03-update')">汇报进展</button>
+    <button class="tab-btn" onclick="st('s03',this,'s03-qna')">问题与讨论</button>
+    <button class="tab-btn" onclick="st('s03',this,'s03-close')">总结与收尾</button>
+  </div>
+
+  <div id="s03-open" class="tab-content active">
+    <div class="script-block">
+      <div class="script-line a-line"><span class="script-speaker">主持</span><span><span class="hi-phrase">Alright, let's get started.</span> <span class="script-note">开启</span> Thanks everyone for joining. <span class="hi-phrase">We've got a lot to cover today</span>, so let's jump right in. <span class="hi-phrase">We'll start with</span> the project update from the dev team.</span></div>
+      <div class="script-line b-line"><span class="script-speaker">参会</span><span><span class="hi-phrase">Before we start</span>, <span class="script-note">插话</span> I just wanted to <span class="hi-phrase">flag</span> that Maya can't make it today — she sent her notes over, <span class="hi-phrase">so I can speak to her part</span> if needed.</span></div>
+      <div class="script-line a-line"><span class="script-speaker">主持</span><span>Perfect, thanks for the heads up. <span class="hi-phrase">Let's move on then.</span></span></div>
+    </div>
+    <p style="font-size:14px;color:var(--text-2);margin:12px 0 6px"><strong>开场常用句型：</strong></p>
+    <div class="phrase-grid">
+      <div class="phrase-card"><div class="phrase-en">Let's get started / kick things off.</div><div class="phrase-cn">我们开始吧。</div></div>
+      <div class="phrase-card"><div class="phrase-en">Thanks for making the time.</div><div class="phrase-cn">感谢大家抽出时间。</div></div>
+      <div class="phrase-card"><div class="phrase-en">We've got [X] on the agenda today.</div><div class="phrase-cn">今天议程上有[X]项。</div></div>
+      <div class="phrase-card"><div class="phrase-en">Let's start with [person/topic].</div><div class="phrase-cn">我们先从[人/话题]开始。</div></div>
+    </div>
+  </div>
+
+  <div id="s03-update" class="tab-content">
+    <div class="script-block">
+      <div class="script-line a-line"><span class="script-speaker">A</span><span><span class="hi-phrase">So, for my update:</span> <span class="script-note">过渡</span> <span class="hi-phrase">last week we</span> finalized the design spec and <span class="hi-phrase">got sign-off from</span> the product team. <span class="script-note">完成</span></span></div>
+      <div class="script-line a-line"><span class="script-speaker">A</span><span><span class="hi-phrase">We're currently</span> working on the first prototype. <span class="hi-phrase">We're on track to</span> have something to show by Thursday. <span class="script-note">当前</span></span></div>
+      <div class="script-line a-line"><span class="script-speaker">A</span><span><span class="hi-phrase">One thing I want to flag:</span> <span class="script-note">风险</span> <span class="hi-phrase">we ran into some issues with</span> the data pipeline. <span class="hi-phrase">It's not a blocker</span>, but it might slow us down a bit. <span class="hi-phrase">I'll have more clarity on that by</span> end of day.</span></div>
+      <div class="script-line b-line"><span class="script-speaker">B</span><span><span class="hi-phrase">Got it, thanks.</span> <span class="script-note">确认</span> <span class="hi-phrase">What's the impact on the overall timeline?</span></span></div>
+      <div class="script-line a-line"><span class="script-speaker">A</span><span><span class="hi-phrase">Worst case</span>, we're looking at a two-day delay. <span class="hi-phrase">But we're doing everything we can to</span> keep it on schedule.</span></div>
+    </div>
+    <div class="callout info"><strong>结构记忆：</strong>完成 → 当前（+预计） → 风险/问题 → 下一步。每部分一句话，超过两句就可以发书面更新。</div>
+  </div>
+
+  <div id="s03-qna" class="tab-content">
+    <div class="script-block">
+      <div class="script-line b-line"><span class="script-speaker">B</span><span><span class="hi-phrase">Can I ask a quick question?</span> <span class="script-note">礼貌请求发言</span> <span class="hi-phrase">When you say</span> the timeline's shifted — <span class="hi-phrase">are we talking about</span> the whole sprint, or just this one feature?</span></div>
+      <div class="script-line a-line"><span class="script-speaker">A</span><span><span class="hi-phrase">Good question.</span> <span class="hi-phrase">Just the feature.</span> <span class="hi-phrase">The overall sprint is still on schedule.</span></span></div>
+      <div class="script-line b-line"><span class="script-speaker">B</span><span><span class="hi-phrase">OK, that makes sense.</span> <span class="hi-phrase">And just to clarify</span> — <span class="script-note">追问</span> <span class="hi-phrase">by "sign-off", do you mean</span> they approved the whole spec, or just the first section?</span></div>
+      <div class="script-line a-line"><span class="script-speaker">A</span><span><span class="hi-phrase">The whole spec, yes.</span> <span class="hi-phrase">We have written confirmation from</span> the product lead.</span></div>
+    </div>
+    <p style="font-size:14px;color:var(--text-2);margin:12px 0 6px"><strong>提问与追问句型：</strong></p>
+    <table class="col-table">
+      <thead><tr><th>功能</th><th>句型</th></tr></thead>
+      <tbody>
+        <tr><td>礼貌请求发言</td><td>Can I jump in here? / May I ask something?</td></tr>
+        <tr><td>澄清定义</td><td>When you say [X], do you mean [Y]?</td></tr>
+        <tr><td>确认范围</td><td>Are we talking about [A] or [B]?</td></tr>
+        <tr><td>追问细节</td><td>Could you walk us through [X]?</td></tr>
+        <tr><td>挑战假设（温和）</td><td>I wonder if [alternative] might be worth considering?</td></tr>
+        <tr><td>请对方举例</td><td>Could you give us a concrete example of that?</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s03-close" class="tab-content">
+    <div class="script-block">
+      <div class="script-line a-line"><span class="script-speaker">主持</span><span><span class="hi-phrase">OK, we're coming up on time</span>, <span class="script-note">结束提示</span> so let's <span class="hi-phrase">wrap up</span>. <span class="hi-phrase">To summarize what we've agreed on:</span></span></div>
+      <div class="script-line a-line"><span class="script-speaker">主持</span><span><span class="hi-phrase">The prototype is due Thursday</span>. <span class="hi-phrase">Team A will look into</span> the data pipeline issue. <span class="hi-phrase">We'll reconnect</span> on Friday to review.</span></div>
+      <div class="script-line a-line"><span class="script-speaker">主持</span><span><span class="hi-phrase">Is there anything else before we close?</span> <span class="script-note">最后确认</span></span></div>
+      <div class="script-line b-line"><span class="script-speaker">B</span><span><span class="hi-phrase">Nothing from me, thanks.</span></span></div>
+      <div class="script-line a-line"><span class="script-speaker">主持</span><span><span class="hi-phrase">Great, thanks everyone.</span> <span class="hi-phrase">I'll send out a summary</span> <span class="hi-phrase">by end of day.</span> <span class="script-note">后续行动</span></span></div>
+    </div>
+    <div class="phrase-grid" style="margin-top:12px">
+      <div class="phrase-card"><div class="phrase-en">Let's take that offline.</div><div class="phrase-cn">这个不在会议里讨论，之后另外沟通。</div></div>
+      <div class="phrase-card"><div class="phrase-en">I'll send a recap after this.</div><div class="phrase-cn">会后我发总结。</div></div>
+      <div class="phrase-card"><div class="phrase-en">Let's park that for now.</div><div class="phrase-cn">先暂时搁置这个议题。</div></div>
+      <div class="phrase-card"><div class="phrase-en">Any final questions or concerns?</div><div class="phrase-cn">还有什么问题吗？</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S04 打断 -->
+<section class="section" id="s04">
+  <div class="sec-head"><span class="sec-num">04</span><div class="sec-title"><h2>礼貌打断与接话</h2><p>在英语讨论中插话是正常的，关键是用对信号词。</p></div></div>
+
+  <div class="compare-row" style="margin-bottom:16px">
+    <div class="wrong-box"><div class="box-label">× 容易造成尴尬</div>直接说你要说的话，或者保持沉默等到绝对安静。</div>
+    <div class="right-box"><div class="box-label">✓ 有效的插话方式</div>先发一个插话信号，再说内容。母语者对这些信号会自然让步。</div>
+  </div>
+
+  <table class="col-table">
+    <thead><tr><th>打断类型</th><th>句型</th><th>语气</th></tr></thead>
+    <tbody>
+      <tr><td>礼貌打断</td><td>Sorry to jump in, but...</td><td>中性</td></tr>
+      <tr><td>礼貌打断</td><td>Can I just add something here?</td><td>温和</td></tr>
+      <tr><td>紧急打断</td><td>Actually, I need to flag something quickly.</td><td>有目的</td></tr>
+      <tr><td>接上对方</td><td>Building on what [Name] said...</td><td>协作</td></tr>
+      <tr><td>接上对方</td><td>That's a good point — and to add to that...</td><td>友好</td></tr>
+      <tr><td>把话题拉回</td><td>Going back to what we were discussing...</td><td>中性</td></tr>
+      <tr><td>让别人先说</td><td>Sorry, you were saying?</td><td>礼貌</td></tr>
+      <tr><td>请对方先说完</td><td>Let me finish this thought, and then I'd love to hear yours.</td><td>温和但坚定</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip"><strong>在视频会议中：</strong>打断前先说名字——"Sorry, [Name], can I jump in?" — 这比直接插话更清楚，减少尴尬的声音冲突。</div>
+</section>
+
+<!-- S05 闲聊 -->
+<section class="section" id="s05">
+  <div class="sec-head"><span class="sec-num">05</span><div class="sec-title"><h2>闲聊与破冰</h2><p>Small talk 不是浪费时间，是建立信任的基础。这里给真实的话题结构。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s05',this,'s05-starter')">开话题</button>
+    <button class="tab-btn" onclick="st('s05',this,'s05-respond')">接话与延续</button>
+    <button class="tab-btn" onclick="st('s05',this,'s05-exit')">结束闲聊</button>
+  </div>
+
+  <div id="s05-starter" class="tab-content active">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:10px">安全话题（不会得罪人）：天气、周末、工作负担、食物、旅行计划。</p>
+    <table class="col-table">
+      <thead><tr><th>场景</th><th>开场白</th><th>跟进问题</th></tr></thead>
+      <tbody>
+        <tr><td>会议前等待</td><td>How's your week going?</td><td>Busy week? / Anything exciting on your end?</td></tr>
+        <tr><td>周一开始</td><td>How was your weekend?</td><td>Did you get to do anything fun?</td></tr>
+        <tr><td>周五下午</td><td>Any plans for the weekend?</td><td>That sounds great! / Nice — you deserve it.</td></tr>
+        <tr><td>认识新人</td><td>How long have you been with [company]?</td><td>What team are you on? / How are you finding it?</td></tr>
+        <tr><td>共同话题（节日/赛事）</td><td>Did you catch [event] last night?</td><td>What did you think? / I missed it, how was it?</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s05-respond" class="tab-content">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:10px">好的 small talk 是双向的——不只是回答，还要加一点自己的信息，然后反问。</p>
+    <div class="script-block">
+      <div class="script-line a-line"><span class="script-speaker">A</span><span>How was your weekend?</span></div>
+      <div class="script-line b-line"><span class="script-speaker">B</span><span>
+        × <span style="color:var(--red)">Good.</span> <span style="font-size:12px;color:var(--text-3)">（结束对话）</span><br>
+        ✓ <span style="color:var(--green)">Pretty good! I went hiking with some friends — first time in months. It was nice to get out of the city. How about you?</span>
+        <div class="script-cn">模板：[总体评价] + [一个细节] + [转回对方]</div>
+      </span></div>
+    </div>
+    <div class="phrase-grid" style="margin-top:10px">
+      <div class="phrase-card"><div class="phrase-en">Oh nice, how was that?</div><div class="phrase-cn">哦不错，那怎么样？（接话）</div></div>
+      <div class="phrase-card"><div class="phrase-en">I know what you mean.</div><div class="phrase-cn">我明白你的感受。（共鸣）</div></div>
+      <div class="phrase-card"><div class="phrase-en">That's so funny — I was just thinking about [X].</div><div class="phrase-cn">真巧 — 我刚才也在想...（延续话题）</div></div>
+      <div class="phrase-card"><div class="phrase-en">I've been meaning to try that.</div><div class="phrase-cn">我一直想尝试那个。（表达兴趣）</div></div>
+    </div>
+  </div>
+
+  <div id="s05-exit" class="tab-content">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:10px">自然结束闲聊，不显得突兀。</p>
+    <table class="col-table">
+      <thead><tr><th>场景</th><th>结束语</th></tr></thead>
+      <tbody>
+        <tr><td>会议要开始了</td><td>Looks like we're about to start — let's catch up more later!</td></tr>
+        <tr><td>回去工作</td><td>Anyway, I'll let you get back to it. Talk soon!</td></tr>
+        <tr><td>通话结束</td><td>I should let you go — thanks for the chat!</td></tr>
+        <tr><td>分开走</td><td>Good running into you! Have a great rest of your day.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S06 修复策略 -->
+<section class="section" id="s06">
+  <div class="sec-head"><span class="sec-num">06</span><div class="sec-title"><h2>听不懂时的修复策略</h2><p>不是说"Sorry?"——不同情况用不同的修复句，让对方知道你哪里没听清。</p></div></div>
+
+  <table class="col-table">
+    <thead><tr><th>你的问题</th><th>用这个说</th><th>目的</th></tr></thead>
+    <tbody>
+      <tr><td>完全没听清</td><td>Sorry, I didn't quite catch that. Could you say it again?</td><td>请重复</td></tr>
+      <tr><td>听到了但没懂意思</td><td>Sorry, I'm not sure I follow — could you explain what you mean by [X]?</td><td>请解释</td></tr>
+      <tr><td>语速太快</td><td>Could you slow down a little? I want to make sure I get this right.</td><td>降速</td></tr>
+      <tr><td>有噪音/网络问题</td><td>Sorry, the line's a bit choppy on my end — could you repeat the last part?</td><td>技术原因（不让对方觉得是你的问题）</td></tr>
+      <tr><td>某个词没听清</td><td>Sorry, I caught most of that — what was the [first/last] part?</td><td>定位模糊点</td></tr>
+      <tr><td>想确认自己理解对了</td><td>So if I'm understanding correctly, you're saying [restatement] — is that right?</td><td>主动复述确认</td></tr>
+      <tr><td>对方用了不熟悉的词</td><td>Sorry, could you clarify what [term] means in this context?</td><td>问定义</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip"><strong>关键心态：</strong>不懂就问是专业行为，不是软弱。母语者在听不清时也会说 "Sorry, say that again?" — 这是正常沟通，不是丢人的事。</div>
+</section>
+
+<!-- S07 中式英语对照 -->
+<section class="section" id="s07">
+  <div class="sec-head"><span class="sec-num">07</span><div class="sec-title"><h2>中式英语 → 自然英语对照表</h2><p>不是语法错，但母语者不这样说。30 条高频场景对照。</p></div></div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="st('s07',this,'s07-work')">工作沟通</button>
+    <button class="tab-btn" onclick="st('s07',this,'s07-daily')">日常表达</button>
+    <button class="tab-btn" onclick="st('s07',this,'s07-email')">书面文字</button>
+  </div>
+
+  <div id="s07-work" class="tab-content active">
+    <table class="col-table">
+      <thead><tr><th>你可能会说</th><th>更自然的说法</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>× I will discuss about this with you.</td><td>✓ I'll discuss this with you.</td><td>discuss 不需要 about</td></tr>
+        <tr><td>× Let me know your opinion about this.</td><td>✓ Let me know what you think.</td><td>口语更简洁</td></tr>
+        <tr><td>× I need to make a work overtime today.</td><td>✓ I need to work late / work overtime today.</td><td>work overtime 是固定说法</td></tr>
+        <tr><td>× The meeting was very success.</td><td>✓ The meeting went really well.</td><td>success 是名词不是形容词</td></tr>
+        <tr><td>× Can you help me to check this?</td><td>✓ Could you look this over?</td><td>help me check / help me with... 都对，但 look over 更自然</td></tr>
+        <tr><td>× I am very agree with you.</td><td>✓ I completely agree.</td><td>agree 是动词，不用 very 修饰</td></tr>
+        <tr><td>× We should have a meeting to discuss.</td><td>✓ Let's set up a call / meeting.</td><td>更直接，更口语</td></tr>
+        <tr><td>× Please kindly do something.</td><td>✓ Could you please...?</td><td>kindly 在邮件里显得过时</td></tr>
+        <tr><td>× I received your message, noted.</td><td>✓ Got it, thanks! / Understood.</td><td>noted 单独用显得冷</td></tr>
+        <tr><td>× I will reply you later.</td><td>✓ I'll get back to you later.</td><td>reply 不直接接人作宾语</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s07-daily" class="tab-content">
+    <table class="col-table">
+      <thead><tr><th>你可能会说</th><th>更自然的说法</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>× I very like this.</td><td>✓ I really like this.</td><td>very 不修饰动词</td></tr>
+        <tr><td>× How to say this word?</td><td>✓ How do you pronounce this? / How do you say this?</td><td>需要助动词</td></tr>
+        <tr><td>× I am boring.</td><td>✓ I'm bored.</td><td>-ing 形容词描述事物，-ed 描述感受</td></tr>
+        <tr><td>× No problem! (接受感谢时)</td><td>✓ Sure! / Of course! / Happy to help!</td><td>No problem 本身没问题，但以上更温暖</td></tr>
+        <tr><td>× I have no time.</td><td>✓ I don't have time. / I'm swamped.</td><td>have no 用法偏书面</td></tr>
+        <tr><td>× He is very handsome, right?</td><td>✓ He's pretty good-looking, don't you think?</td><td>right 结尾在英语里不如中文常见</td></tr>
+        <tr><td>× I don't mind. (表示"没关系")</td><td>✓ That's fine. / No worries.</td><td>I don't mind 表示"我不介意"，有时会误解</td></tr>
+        <tr><td>× My English is not good.</td><td>✓ Sorry, English isn't my first language.</td><td>更自然，也不需要过度道歉</td></tr>
+        <tr><td>× I study English for 10 years.</td><td>✓ I've been studying English for 10 years.</td><td>持续到现在用现在完成进行时</td></tr>
+        <tr><td>× How much is your salary?</td><td>✓ (避免问！) 或：Are you happy with your package?</td><td>直接问薪资在英语文化中较失礼</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="s07-email" class="tab-content">
+    <table class="col-table">
+      <thead><tr><th>你可能会写</th><th>更自然的写法</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>× Dear Sir/Madam, I am writing to you...</td><td>✓ Hi [Name], / Hello [Name],</td><td>知道对方名字就用名字</td></tr>
+        <tr><td>× Please check and confirm.</td><td>✓ Let me know if this looks right.</td><td>更协作，不那么命令式</td></tr>
+        <tr><td>× Attached please find the document.</td><td>✓ I've attached the document. / See attached.</td><td>现代写法</td></tr>
+        <tr><td>× Looking forward to your reply.</td><td>✓ Looking forward to hearing from you.</td><td>更自然的表达</td></tr>
+        <tr><td>× I hope you can understand.</td><td>✓ I understand this might be inconvenient...</td><td>前者听起来像责备，后者表达同理</td></tr>
+        <tr><td>× Please kindly revert at the earliest.</td><td>✓ Please let me know when you can.</td><td>revert 在亚洲商业英语中有用，国际语境不常见</td></tr>
+        <tr><td>× Thanks for your cooperation.</td><td>✓ Thanks for your help! / Thanks for working on this.</td><td>cooperation 偏正式文件用语</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S08 语气升降级 -->
+<section class="section" id="s08">
+  <div class="sec-head"><span class="sec-num">08</span><div class="sec-title"><h2>语气升降级：同一句话，换结构改语气</h2><p>不需要更多词汇，用句式结构就能调整强硬度和礼貌度。</p></div></div>
+
+  <p style="color:var(--text-2);font-size:14px;margin-bottom:14px">下面每组表达从最直接/强硬（1）到最婉转/礼貌（5）排列。同一个意图，五个强度。</p>
+
+  <div style="margin-bottom:20px">
+    <p style="font-weight:900;margin:0 0 8px">请求对方做某事</p>
+    <table class="col-table">
+      <thead><tr><th>强度</th><th>句型</th><th>适用场景</th></tr></thead>
+      <tbody>
+        <tr><td>1（命令）</td><td>Send me the file now.</td><td>紧急且对方是下属，很少用</td></tr>
+        <tr><td>2（直接）</td><td>I need you to send me the file today.</td><td>明确需求，对同级</td></tr>
+        <tr><td>3（请求）</td><td>Could you send me the file when you get a chance?</td><td>大多数职场场景</td></tr>
+        <tr><td>4（礼貌请求）</td><td>Would it be possible for you to send me the file by Thursday?</td><td>对上级或外部</td></tr>
+        <tr><td>5（间接）</td><td>I was wondering if you might be able to share the file with me at some point.</td><td>非常正式，或想给对方最大余地</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-bottom:20px">
+    <p style="font-weight:900;margin:0 0 8px">表达不同意</p>
+    <table class="col-table">
+      <thead><tr><th>强度</th><th>句型</th></tr></thead>
+      <tbody>
+        <tr><td>1（直接否定）</td><td>That's wrong. / No, that's not right.</td></tr>
+        <tr><td>2（明确不同意）</td><td>I don't agree with that.</td></tr>
+        <tr><td>3（中性）</td><td>I'm not sure I agree — here's my concern...</td></tr>
+        <tr><td>4（承认后转折）</td><td>That's a fair point, but I think [alternative]...</td></tr>
+        <tr><td>5（提问式反对）</td><td>Have you considered what might happen if [X]? I worry it might [consequence].</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info"><strong>判断用哪个强度：</strong>对方的级别？你们的关系熟悉程度？这件事有多紧急？通常，职场中 3 级是默认安全选项；对上级或外部用 4；对非常熟悉的同事可以用 2。</div>
+</section>
+
+<footer class="page-footer">
+  <a href="english.html">← 基础手册</a> | <a href="english-practice.html">场景练习地图</a> | <a href="english-expert.html">专家图谱 →</a>
+</footer>
+</div></main>
+
+<script>
+function st(group,btn,id){
+  const sec=btn.closest('.section');
+  sec.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  sec.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+const navLinks=document.querySelectorAll('.nav-items a[href^="#"]');
+const sections=document.querySelectorAll('.section');
+sections.forEach(s=>new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.classList.remove('active'));const a=document.querySelector(`.nav-items a[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'}).observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('prog').style.width=`${Math.min(1,h.scrollTop/(h.scrollHeight-h.clientHeight))*100}%`});
+</script>
+</body>
+</html>
