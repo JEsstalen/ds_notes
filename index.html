@@ -544,6 +544,7 @@ canvas { display: block; border-radius: 6px; background: var(--surface2); }
         <a href="#ml-overview">ML 概览</a>
         <a href="#supervised">监督学习算法</a>
         <a href="#unsupervised">无监督学习</a>
+        <a href="#anomaly">异常检测</a>
         <a href="#feature-eng">特征工程<span class="tag" style="background:#fffbeb;color:#d97706">核心</span></a>
         <a href="#model-eval">模型评估</a>
         <a href="#hyperparams">超参数调优</a>
@@ -573,6 +574,7 @@ canvas { display: block; border-radius: 6px; background: var(--surface2); }
         <a href="#timeseries">时间序列</a>
         <a href="#simulation">蒙特卡洛模拟</a>
         <a href="#cohort-retention">队列留存预测</a>
+        <a href="#recsys">推荐系统基础</a>
         <a href="#exposure-bias">推荐曝光偏差</a>
         <a href="#spark">Spark 基础</a>
         <a href="#spark-opt">性能优化</a>
@@ -2364,6 +2366,170 @@ print("提示：Elbow Method — 对 k=2..6 分别聚类，画 Inertia 曲线找
       </ul>
       <div class="case-insight">💡 <strong>面试加分：</strong>能把聚类结果翻译成"这4类客户分别应该怎么运营"——将技术输出连接业务价值，是数据科学家区别于数据分析师的关键能力。</div>
     </div>
+  </div>
+</section>
+
+<!-- ════════════ SECTION: 异常检测 ════════════ -->
+<section class="section" id="anomaly">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:#fff7ed">🔍</div>
+    <h2>异常检测：从统计规则到孤立森林</h2>
+  </div>
+  <p class="sec-sub">异常检测是在没有标签（或标签极少）的情况下，找出"和大多数数据明显不同"的点。覆盖场景：欺诈检测、数据质量告警、机器故障预测、用户行为分析。</p>
+
+  <div class="def-block">
+    <div class="def-label">定义 · 异常检测</div>
+    <div class="def-text">异常（anomaly）是与正常模式显著偏离的数据点、序列或子图，通常占比极低（0.1%–5%）。</div>
+    <div class="def-context">和有监督欺诈检测的区别：标注好的"欺诈样本"往往稀缺且概念漂移，异常检测可以在无标签/少标签时工作，也可以和半监督方法结合。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">用 · 不用 · 实践价值</div>
+    <ul>
+      <li><strong>用：</strong>有足够正常样本但标注异常很贵；需要实时监控系统健康度；探索性分析发现数据质量问题。</li>
+      <li><strong>不用：</strong>异常定义非常明确且标签充足时，直接用有监督分类更准；异常比例超过 30% 时无法再称之为"异常"，要重新定义问题。</li>
+      <li><strong>实践价值：</strong>数据监控是 DS 的隐形日常工作——特征分布漂移、模型输出突变、数据管道错误，本质都是异常检测。理解这些方法才能设计稳健的生产告警。</li>
+    </ul>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('anomaly',this,'ano-t1')">统计方法</button>
+    <button class="tab-btn" onclick="switchTab('anomaly',this,'ano-t2')">孤立森林</button>
+    <button class="tab-btn" onclick="switchTab('anomaly',this,'ano-t3')">LOF 局部密度</button>
+    <button class="tab-btn" onclick="switchTab('anomaly',this,'ano-t4')">自编码器</button>
+  </div>
+
+  <div id="ano-t1" class="tab-content active">
+    <h3>统计方法：Z-Score 和 IQR</h3>
+    <p>最简单但实际最常用——生产系统的告警 90% 还是统计阈值，因为可解释、可调、运行快。</p>
+    <div class="code-block"><span class="lang">🐍 Z-Score & IQR 异常检测</span><pre>import numpy as np
+import pandas as pd
+
+np.random.seed(42)
+# 模拟一批 KPI 数据（如每日 DAU），故意注入 5 个异常点
+data = np.concatenate([np.random.normal(50000, 3000, 360),
+                       [10000, 8000, 120000, 130000, 9500]])
+df = pd.DataFrame({'dau': np.random.permutation(data)})
+
+# ── 方法 1：Z-Score（适合正态分布）──
+df['zscore'] = (df['dau'] - df['dau'].mean()) / df['dau'].std()
+df['z_anomaly'] = df['zscore'].abs() > 3
+
+# ── 方法 2：IQR（鲁棒，适合偏态分布）──
+Q1, Q3 = df['dau'].quantile(0.25), df['dau'].quantile(0.75)
+IQR = Q3 - Q1
+df['iqr_anomaly'] = (df['dau'] < Q1 - 1.5*IQR) | (df['dau'] > Q3 + 1.5*IQR)
+
+print("Z-Score 检出异常：", df['z_anomaly'].sum())
+print("IQR 检出异常：  ", df['iqr_anomaly'].sum())
+print("\n两种方法都标记的：", (df['z_anomaly'] & df['iqr_anomaly']).sum())</pre></div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>选择原则：</strong>数据接近正态用 Z-Score（3σ）；偏态、有长尾用 IQR；时序数据要先做季节性分解再检测残差，否则正常的周期波动也会被误报。</span></div>
+  </div>
+
+  <div id="ano-t2" class="tab-content">
+    <h3>孤立森林（Isolation Forest）：越容易被隔离就越异常</h3>
+    <p>孤立森林通过随机切分特征空间：异常点由于"离群"，只需要几刀就能把它单独隔离；正常点密集，需要很多刀。分数 = 平均隔离深度的函数，越小越异常。</p>
+    <div class="code-block"><span class="lang">🐍 孤立森林 — 多维异常检测</span><pre>from sklearn.ensemble import IsolationForest
+import numpy as np
+
+np.random.seed(42)
+# 正常数据：二维高斯分布
+X_normal = np.random.multivariate_normal([0, 0], [[1, 0.5],[0.5, 1]], 500)
+# 注入异常点
+X_anomaly = np.random.uniform(-6, 6, (20, 2))
+X = np.vstack([X_normal, X_anomaly])
+
+clf = IsolationForest(n_estimators=200, contamination=0.04, random_state=42)
+preds = clf.fit_predict(X)      # -1 = 异常, 1 = 正常
+scores = clf.decision_function(X)  # 越小越异常
+
+n_detected = (preds == -1).sum()
+print(f"检出异常数：{n_detected}")
+print(f"分数范围：{scores.min():.3f} ~ {scores.max():.3f}")
+
+# 业务场景：对每行交易打异常分数
+# 然后取 top-1% 人工复核，而不是设置固定阈值</pre></div>
+    <div class="when-block">
+      <div class="w-head">孤立森林 vs 统计方法</div>
+      <ul>
+        <li><strong>孤立森林优势：</strong>天然支持多维度特征，不依赖分布假设，高维场景更有优势。</li>
+        <li><strong>统计方法优势：</strong>可解释，容易调阈值，监控单个指标时往往够用。</li>
+        <li><strong>实践建议：</strong>先用 IQR/Z-Score 给业务一个基线告警；再用孤立森林做多维综合异常评分，两者互补。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="ano-t3" class="tab-content">
+    <h3>LOF（Local Outlier Factor）：和邻居比较的局部密度</h3>
+    <p>LOF 的直觉是：一个点的"正常度"要和它的邻居相比，而不是全局相比。在稠密区域中出现的低密度点才是异常，全局稀疏的区域不算。</p>
+    <div class="code-block"><span class="lang">🐍 LOF — 用于局部密度异常</span><pre>from sklearn.neighbors import LocalOutlierFactor
+import numpy as np
+
+np.random.seed(42)
+# 两个不同密度的正常簇 + 异常点
+cluster1 = np.random.normal([2, 2], 0.3, (100, 2))
+cluster2 = np.random.normal([8, 8], 1.5, (100, 2))  # 这个簇更稀疏
+outliers  = np.array([[0, 8], [10, 2], [5, 5]])       # 真正的异常
+
+X = np.vstack([cluster1, cluster2, outliers])
+
+lof = LocalOutlierFactor(n_neighbors=20, contamination=0.03)
+preds = lof.fit_predict(X)   # -1 = 异常
+
+print("LOF 检出异常数：", (preds == -1).sum())
+print("异常 LOF 分数：", lof.negative_outlier_factor_[-3:])</pre></div>
+    <div class="callout warn"><span class="icon">⚠️</span><span><strong>LOF 的问题：</strong>高维效果差（距离集中效应）；不能直接对新数据预测，只能批量标注。生产环境实时打分用孤立森林更合适。</span></div>
+    <div class="table-wrap"><table><thead><tr><th>方法</th><th>适合场景</th><th>高维</th><th>在线预测</th></tr></thead><tbody>
+      <tr><td>Z-Score / IQR</td><td>单指标监控</td><td>❌</td><td>✅</td></tr>
+      <tr><td>Isolation Forest</td><td>多维特征，大数据量</td><td>✅</td><td>✅</td></tr>
+      <tr><td>LOF</td><td>局部密度不均匀，小数据</td><td>❌</td><td>❌</td></tr>
+      <tr><td>自编码器</td><td>时序/图像，重构误差</td><td>✅</td><td>✅</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div id="ano-t4" class="tab-content">
+    <h3>自编码器：用重构误差衡量异常程度</h3>
+    <p>训练自编码器只学"正常数据"的压缩–解压。测试时异常数据无法被正常重构，重构误差高 = 异常。适合时序异常、图像缺陷检测、日志异常。</p>
+    <div class="code-block"><span class="lang">🐍 自编码器异常检测（PyTorch 概念实现）</span><pre>import torch
+import torch.nn as nn
+import numpy as np
+
+# 简单自编码器
+class AE(nn.Module):
+    def __init__(self, in_dim, latent):
+        super().__init__()
+        self.enc = nn.Sequential(nn.Linear(in_dim, 32), nn.ReLU(),
+                                 nn.Linear(32, latent))
+        self.dec = nn.Sequential(nn.Linear(latent, 32), nn.ReLU(),
+                                 nn.Linear(32, in_dim))
+    def forward(self, x):
+        return self.dec(self.enc(x))
+
+model = AE(in_dim=20, latent=4)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+# 只用正常数据训练
+for epoch in range(50):
+    X_normal = torch.FloatTensor(np.random.normal(0, 1, (256, 20)))
+    recon = model(X_normal)
+    loss = nn.MSELoss()(recon, X_normal)
+    optimizer.zero_grad(); loss.backward(); optimizer.step()
+
+# 推断：高重构误差 = 异常
+def anomaly_score(x):
+    with torch.no_grad():
+        recon = model(torch.FloatTensor(x))
+        return nn.MSELoss(reduction='none')(recon, torch.FloatTensor(x)).mean(dim=1).numpy()
+
+X_test_normal  = np.random.normal(0, 1, (50, 20))
+X_test_anomaly = np.random.uniform(-5, 5, (10, 20))
+print("正常数据平均误差：", anomaly_score(X_test_normal).mean().round(4))
+print("异常数据平均误差：", anomaly_score(X_test_anomaly).mean().round(4))</pre></div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>生产实践：</strong>阈值通常取正常数据重构误差的 95–99 分位数。不要追求"检出所有异常"，而是"检出的都值得人工看"——精确率比召回率更重要，除非是安全场景。</span></div>
+  </div>
+
+  <div class="hands-on">
+    <span class="ho-label">动手练习</span>
+    <a href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud" target="_blank" class="ho-link">Kaggle — Credit Card Fraud Detection：极不平衡数据集，试用 IsolationForest + Autoencoder</a>
   </div>
 </section>
 
@@ -4254,6 +4420,102 @@ print(f"鲸鱼 1% 用户贡献：{whale_ltv/total_ltv_weighted:.0%} 的总 LTV")
   <div class="hands-on">
     <span class="ho-label">动手练习</span>
     <a href="https://www.kaggle.com/datasets/aakashnain/building-a-better-mobile-game" target="_blank" class="ho-link">Kaggle — Mobile Game Analytics：用真实数据拟合留存曲线，实现 DAU 叠加预测</a>
+  </div>
+</section>
+
+<!-- ════════════ SECTION: 推荐系统基础 ════════════ -->
+<section class="section" id="recsys">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:#f0fdf4">🎯</div>
+    <h2>推荐系统基础：从协同过滤到 Two-Tower</h2>
+  </div>
+  <p class="sec-sub">推荐系统不是"猜你喜欢"四个字，而是一条候选召回、粗排、精排、重排的工业流水线；DS 至少要能解释为什么推荐会越来越偏，以及怎么评价它。</p>
+
+  <div class="def-block">
+    <div class="def-label">定义 · 推荐系统</div>
+    <div class="def-text">推荐系统是在海量 item 中为每个 user 选择最可能产生价值的少量 item，本质是一个带约束的排序问题。</div>
+    <div class="def-context">业务上常见于电商商品、短视频、音乐、广告、招聘匹配。它和普通分类模型最大的不同是：模型输出会反过来改变用户行为数据，形成反馈循环。</div>
+  </div>
+  <div class="when-block">
+    <div class="w-head">用 · 不用 · 实践价值</div>
+    <ul>
+      <li><strong>用：</strong>item 数量很大、用户兴趣个性化明显、靠人工规则无法覆盖长尾时。</li>
+      <li><strong>不用：</strong>item 很少、强业务规则主导（如合规审核）、或冷启动阶段完全没有行为数据时，先用规则/热门榜/编辑精选更稳。</li>
+      <li><strong>实践价值：</strong>推荐系统直接影响点击率、留存、GMV 和内容生态；理解基础架构后，才能判断曝光偏差、冷启动、探索利用这些真实业务问题。</li>
+    </ul>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('recsys',this,'rec-t1')">协同过滤</button>
+    <button class="tab-btn" onclick="switchTab('recsys',this,'rec-t2')">矩阵分解</button>
+    <button class="tab-btn" onclick="switchTab('recsys',this,'rec-t3')">Two-Tower</button>
+    <button class="tab-btn" onclick="switchTab('recsys',this,'rec-t4')">工业流水线</button>
+  </div>
+
+  <div id="rec-t1" class="tab-content active">
+    <h3>协同过滤：相似的人喜欢相似的东西</h3>
+    <p>协同过滤不关心 item 内容，只看行为矩阵：谁点击、购买、收藏过什么。它的直觉是：如果 A 和 B 历史行为相似，A 喜欢的新物品也可能推荐给 B。</p>
+    <div class="table-wrap"><table><thead><tr><th>方法</th><th>核心想法</th><th>优点</th><th>问题</th></tr></thead><tbody>
+      <tr><td>User-CF</td><td>找相似用户</td><td>直觉强，容易解释</td><td>用户多时计算贵，兴趣变化快</td></tr>
+      <tr><td>Item-CF</td><td>找相似物品</td><td>更稳定，电商常用</td><td>新 item 冷启动困难</td></tr>
+      <tr><td>基于内容</td><td>用 item/user 特征匹配</td><td>可处理冷启动</td><td>容易只推荐相似内容，缺少惊喜</td></tr>
+    </tbody></table></div>
+    <div class="callout tip"><span class="icon">💡</span><span><strong>面试回答：</strong>如果问"为什么 Item-CF 比 User-CF 更常见"，重点答 item 的相似性比用户兴趣更稳定，离线预计算也更容易。</span></div>
+  </div>
+
+  <div id="rec-t2" class="tab-content">
+    <h3>矩阵分解：把用户和物品映射到同一个隐空间</h3>
+    <p>用户-物品交互矩阵通常极稀疏。矩阵分解把每个 user 和 item 都表示成低维 embedding，点击概率近似为两者向量点积。</p>
+    <div class="code-block"><span class="lang">🐍 隐式反馈 ALS / Matrix Factorization 直觉</span><pre>import numpy as np
+
+# R[u, i] = 用户 u 是否点击/购买过 item i
+# 目标：学习 user_emb 和 item_emb，让 dot(user, item) 高的 item 更可能被推荐
+n_users, n_items, k = 1000, 5000, 32
+user_emb = np.random.normal(0, 0.01, (n_users, k))
+item_emb = np.random.normal(0, 0.01, (n_items, k))
+
+# 预测分数：越大越推荐
+scores = user_emb[42] @ item_emb.T
+top_items = np.argsort(scores)[-20:][::-1]
+print(top_items)</pre></div>
+    <div class="when-block">
+      <div class="w-head">什么时候用矩阵分解</div>
+      <ul>
+        <li><strong>用：</strong>有足够交互数据，item/user 特征不完整，但行为信号丰富。</li>
+        <li><strong>不用：</strong>新用户/新 item 很多，行为矩阵太冷；这时要结合内容特征或 Two-Tower。</li>
+        <li><strong>实践价值：</strong>embedding 是现代推荐系统的底座，后续召回、相似 item、用户画像都可以复用。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="rec-t3" class="tab-content">
+    <h3>Two-Tower：工业推荐召回的主流结构</h3>
+    <p>Two-Tower 用一个 user tower 编码用户特征，用一个 item tower 编码物品特征，两边输出 embedding 后做点积。好处是 item embedding 可以离线建索引，线上只算 user embedding，再用 ANN 快速召回。</p>
+    <div class="table-wrap"><table><thead><tr><th>模块</th><th>输入</th><th>输出</th><th>作用</th></tr></thead><tbody>
+      <tr><td>User Tower</td><td>年龄、地区、历史点击、最近行为序列</td><td>user embedding</td><td>表达当前兴趣</td></tr>
+      <tr><td>Item Tower</td><td>类目、文本、图片 embedding、作者、价格</td><td>item embedding</td><td>表达 item 内容与质量</td></tr>
+      <tr><td>ANN 检索</td><td>user embedding + item index</td><td>Top-K 候选</td><td>毫秒级召回百万级 item</td></tr>
+    </tbody></table></div>
+    <div class="callout warn"><span class="icon">⚠️</span><span><strong>常见坑：</strong>离线训练样本是"用户看过的 item"，不是全量 item。负采样如果只随机抽冷门 item，模型会学会区分热门/冷门，而不是学兴趣匹配。</span></div>
+  </div>
+
+  <div id="rec-t4" class="tab-content">
+    <h3>工业推荐流水线：召回不是排序，排序不是最终展示</h3>
+    <div class="case-steps">
+      <ul>
+        <li data-n="1"><strong>候选召回：</strong>从百万 item 中快速取几百到几千个候选，方法包括热门召回、Item-CF、Two-Tower、规则召回。</li>
+        <li data-n="2"><strong>粗排：</strong>用轻量模型过滤明显不合适的 item，控制延迟和成本。</li>
+        <li data-n="3"><strong>精排：</strong>用复杂模型预测 CTR/CVR/观看时长等目标，通常融合用户、item、上下文、交叉特征。</li>
+        <li data-n="4"><strong>重排：</strong>加入多样性、去重、业务规则、探索流量、广告约束，避免最终列表全是同类内容。</li>
+        <li data-n="5"><strong>评估：</strong>离线看 AUC/NDCG/Recall@K，线上看 CTR、留存、GMV、投诉率、内容生态指标。</li>
+      </ul>
+    </div>
+    <div class="case-insight">💡 <strong>核心认知：</strong>推荐系统的难点不只是模型，而是目标冲突。短期点击率可能伤害长期留存，热门内容可能压死长尾创作者，所以必须把业务指标和护栏指标一起设计。</div>
+  </div>
+
+  <div class="hands-on">
+    <span class="ho-label">动手练习</span>
+    <a href="https://www.kaggle.com/code/ibtesama/getting-started-with-a-movie-recommendation-system" target="_blank" class="ho-link">Kaggle — Movie Recommendation System：从相似度到协同过滤</a>
   </div>
 </section>
 
@@ -6964,7 +7226,7 @@ function toggleGroup(el) {
 
 // ── Code block collapse (>18 lines auto-fold) ────────────────
 (function() {
-  const THRESHOLD = 18;
+  const THRESHOLD = 28;
   document.querySelectorAll('pre').forEach(function(pre) {
     var lines = pre.textContent.split('\n').length;
     if (lines <= THRESHOLD) return;
