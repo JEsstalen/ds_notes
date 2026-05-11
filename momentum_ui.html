@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股工具</title>
+<style>
+:root{
+  --bg:#f5f6f8;--surface:#fff;--surface2:#f0f2f5;--border:#e4e7ec;
+  --accent:#2563eb;--green:#16a34a;--red:#dc2626;--amber:#d97706;
+  --text:#111827;--text2:#6b7280;--text3:#9ca3af;
+  --radius:8px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px}
+body{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ── header ── */
+.header{background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:50px}
+.logo{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.logo em{font-style:normal;color:var(--accent)}
+
+/* strategy tabs */
+.strategy-bar{
+  display:flex;align-items:center;gap:0;padding:0 20px;
+  border-bottom:1px solid var(--border);overflow-x:auto;
+}
+.stab{
+  height:38px;padding:0 16px;border:none;background:none;
+  font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;
+  border-bottom:2px solid transparent;white-space:nowrap;transition:.12s;
+  display:flex;align-items:center;gap:6px;
+}
+.stab:hover{color:var(--text)}
+.stab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.stab-badge{
+  font-size:10px;padding:1px 6px;border-radius:999px;font-weight:700;
+  background:var(--surface2);color:var(--text3);
+}
+.stab.active .stab-badge{background:rgba(37,99,235,.1);color:var(--accent)}
+
+/* filter bar */
+.filter-bar{display:flex;align-items:center;gap:6px;padding:8px 20px 10px;flex-wrap:wrap}
+.filter-group{display:flex;align-items:center;gap:6px}
+.filter-label{font-size:11px;color:var(--text3);font-weight:600;white-space:nowrap}
+.fsep{width:1px;height:20px;background:var(--border);margin:0 4px;flex-shrink:0}
+
+select{
+  appearance:none;-webkit-appearance:none;
+  background:var(--surface2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E") no-repeat right 8px center;
+  border:1px solid var(--border);color:var(--text);padding:5px 26px 5px 10px;
+  border-radius:var(--radius);font-size:13px;outline:none;height:32px;cursor:pointer;
+}
+select:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.1)}
+
+.preset-group{display:flex;gap:3px}
+.pbtn{
+  height:28px;padding:0 11px;border-radius:6px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:.12s;
+}
+.pbtn:hover{border-color:var(--accent);color:var(--accent)}
+.pbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.custom-date{
+  display:none;align-items:center;gap:6px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:4px 10px;
+}
+.custom-date.show{display:flex}
+.custom-date input[type=month]{
+  border:none;background:transparent;color:var(--text);font-size:13px;
+  outline:none;height:24px;padding:0;font-family:var(--font);
+}
+.custom-date .arrow{color:var(--text3);font-size:12px}
+
+.btn-run{
+  height:32px;padding:0 18px;border-radius:var(--radius);border:none;
+  background:var(--accent);color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;
+}
+.btn-run:hover{background:#1d4ed8}
+.btn-run:disabled{opacity:.45;cursor:not-allowed}
+
+/* ── view tabs (top level) ── */
+.view-bar{
+  display:flex;align-items:center;gap:0;padding:0 20px;
+  border-bottom:2px solid var(--border);background:var(--surface);
+}
+.vtab{
+  height:42px;padding:0 18px;border:none;background:none;
+  font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  white-space:nowrap;transition:.12s;display:flex;align-items:center;gap:6px;
+}
+.vtab:hover{color:var(--text)}
+.vtab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* ── market dashboard ── */
+#viewDashboard{display:none;flex:1;overflow-y:auto;padding:20px 24px;flex-direction:column;gap:20px}
+#viewDashboard.active{display:flex}
+
+/* summary bar */
+.dash-summary{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 22px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.temp-ring{
+  width:72px;height:72px;border-radius:50%;border:4px solid var(--amber);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;
+}
+.temp-ring .tnum{font-size:26px;font-weight:900;color:var(--amber);line-height:1}
+.temp-ring .tsub{font-size:10px;color:var(--text3);font-weight:600;margin-top:1px}
+.temp-info{min-width:120px}
+.temp-info strong{display:block;font-size:18px;font-weight:800;color:var(--amber);margin-bottom:3px}
+.temp-info span{font-size:12px;color:var(--text2)}
+.warn-pills{display:flex;gap:7px;flex-wrap:wrap;margin-left:4px}
+.wpill{
+  display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:999px;font-size:12px;font-weight:700;
+}
+.wp-red{background:rgba(220,38,38,.1);color:#b91c1c;border:1px solid rgba(220,38,38,.2)}
+.wp-amber{background:rgba(217,119,6,.1);color:#b45309;border:1px solid rgba(217,119,6,.2)}
+.wp-green{background:rgba(22,163,74,.08);color:#15803d;border:1px solid rgba(22,163,74,.18)}
+.wp-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* section title */
+.dash-section-title{
+  font-size:11px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.07em;padding:2px 0 8px;
+  border-bottom:1px solid var(--border);margin-bottom:2px;
+}
+
+/* cards grid — 最小宽度 320px，保证数字有空间 */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+
+/* indicator card */
+.icard{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px 18px;display:flex;flex-direction:column;gap:10px;
+  border-left:4px solid var(--border);transition:border-color .15s;
+}
+.icard:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.icard.c-red{border-left-color:var(--red)}
+.icard.c-amber{border-left-color:var(--amber)}
+.icard.c-green{border-left-color:var(--green)}
+
+/* card header */
+.icard-top{display:flex;justify-content:space-between;align-items:center}
+.icard-name{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.02em}
+.ibadge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+.ib-red{background:rgba(220,38,38,.1);color:#b91c1c}
+.ib-amber{background:rgba(217,119,6,.1);color:#b45309}
+.ib-green{background:rgba(22,163,74,.08);color:#15803d}
+.ib-na{background:var(--surface2);color:var(--text3)}
+
+/* value row */
+.icard-val{display:flex;align-items:baseline;gap:8px}
+.icard-val .iv-main{font-size:32px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
+.icard-val .iv-unit{font-size:13px;color:var(--text3);font-weight:600}
+.icard-val .iv-chg{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.iv-up{color:var(--red)}.iv-dn{color:var(--green)}.iv-neu{color:var(--text3)}
+
+/* percentile bar */
+.pct-row{display:flex;flex-direction:column;gap:5px}
+.pct-header{display:flex;justify-content:space-between;align-items:center}
+.pct-title{font-size:11px;color:var(--text3)}
+.pct-value{font-size:12px;font-weight:700;color:var(--text2)}
+.pct-track{
+  height:8px;border-radius:4px;overflow:hidden;position:relative;
+  background:linear-gradient(90deg,rgba(22,163,74,.15) 0%,rgba(217,119,6,.2) 45%,rgba(220,38,38,.2) 100%);
+  border:1px solid var(--border);
+}
+.pct-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1);opacity:.9}
+.pf-red{background:var(--red)}.pf-amber{background:var(--amber)}.pf-green{background:var(--green)}
+.pct-tick{
+  position:absolute;top:50%;transform:translateY(-50%) translateX(-50%);
+  width:3px;height:14px;background:#fff;border-radius:2px;opacity:.8;
+}
+
+/* sparkline */
+.spark-wrap{height:64px;position:relative;border-radius:4px;overflow:hidden}
+.spark-wrap canvas{position:absolute;inset:0;width:100%;height:100%}
+
+/* note */
+.icard-note{font-size:11px;color:var(--text3);line-height:1.6;padding-top:2px;border-top:1px solid var(--border)}
+
+/* spark tooltip */
+.spark-tooltip{
+  position:fixed;pointer-events:none;z-index:100;
+  background:var(--text);color:#fff;font-size:11px;font-weight:600;
+  padding:4px 8px;border-radius:5px;white-space:nowrap;
+  transform:translate(-50%,-110%);display:none;
+}
+.strat-desc{
+  padding:6px 20px;background:rgba(37,99,235,.04);border-bottom:1px solid var(--border);
+  font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;
+}
+.strat-desc .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+/* progress */
+.progress-wrap{height:2px;background:transparent;flex-shrink:0}
+.progress-bar{height:100%;background:var(--accent);width:0;transition:width .3s}
+
+/* ── main ── */
+.main{display:flex;flex:1;overflow:hidden}
+.table-panel{flex:1;overflow-y:auto;overflow-x:auto;display:flex;flex-direction:column;min-width:0}
+.status-bar{
+  padding:5px 20px;background:var(--surface);border-bottom:1px solid var(--border);
+  color:var(--text3);font-size:11px;display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0}
+.status-dot.running{background:#f59e0b;animation:pulse 1s infinite}
+.status-dot.done{background:var(--green)}
+.status-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{position:sticky;top:0;z-index:2}
+th{
+  background:var(--surface);padding:8px 12px;text-align:left;
+  border-bottom:2px solid var(--border);color:var(--text2);font-weight:600;font-size:11px;
+  white-space:nowrap;cursor:pointer;user-select:none;text-transform:uppercase;letter-spacing:.04em;
+}
+th:hover{color:var(--text)}
+th .si{margin-left:3px;opacity:.3;font-size:10px}
+th.sorted .si{opacity:1;color:var(--accent)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+tr:hover td{background:#fafbfc}
+tr.selected td{background:rgba(37,99,235,.05)!important}
+tr.selected td:first-child{border-left:2px solid var(--accent);padding-left:10px}
+
+.rank{color:var(--text3);font-size:12px;font-variant-numeric:tabular-nums}
+.ticker-cell{display:flex;flex-direction:column;gap:1px}
+.ticker-sym{font-weight:700;font-size:13px;cursor:pointer;letter-spacing:.01em}
+.ticker-sym:hover{color:var(--accent);text-decoration:underline}
+.ticker-name{color:var(--text3);font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.sec-tag{
+  display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;
+  background:var(--surface2);color:var(--text2);border:1px solid var(--border);
+  max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.pos{color:#15803d}.neg{color:#b91c1c}.neu{color:var(--text2)}
+.num{font-variant-numeric:tabular-nums}
+.bar-cell{display:flex;align-items:center;gap:6px}
+.bar-bg{width:64px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:3px}
+.bar-pos{background:var(--green)}.bar-neg{background:var(--red)}
+
+/* f-score */
+.fscore-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:6px;font-weight:800;font-size:14px;
+}
+.fs-hi{background:rgba(22,163,74,.12);color:#15803d}
+.fs-md{background:rgba(217,119,6,.1);color:#92400e}
+.fs-lo{background:rgba(220,38,38,.1);color:#b91c1c}
+.fs-na{background:var(--surface2);color:var(--text3)}
+.fsub{display:flex;gap:3px;margin-top:2px}
+.fpip{width:8px;height:8px;border-radius:2px;background:var(--surface2);border:1px solid var(--border)}
+.fpip.on{background:var(--green);border-color:var(--green)}
+
+/* composite score bar */
+.composite-bar{display:flex;align-items:center;gap:6px}
+.cbar-bg{width:64px;height:5px;background:var(--surface2);border-radius:3px;border:1px solid var(--border);overflow:hidden}
+.cbar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#60a5fa);border-radius:3px}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;gap:10px;color:var(--text3);padding:60px 20px;text-align:center}
+.empty-state .icon{font-size:32px;opacity:.3}
+
+/* ── detail panel ── */
+.detail-panel{
+  width:430px;flex-shrink:0;background:var(--surface);
+  border-left:1px solid var(--border);display:flex;flex-direction:column;
+  overflow:hidden;transition:width .2s;
+}
+.detail-panel.hidden{width:0;border-left:none}
+.detail-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;
+}
+.d-ticker{font-size:20px;font-weight:800}
+.d-name{font-size:12px;color:var(--text2);margin-top:2px}
+.d-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.d-tag{font-size:11px;padding:1px 6px;border-radius:3px;background:var(--surface2);
+  color:var(--text2);border:1px solid var(--border)}
+.close-btn{background:none;border:none;color:var(--text3);cursor:pointer;
+  font-size:15px;padding:2px 5px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.close-btn:hover{background:var(--surface2)}
+
+.detail-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:13px}
+.chart-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px;position:relative;height:185px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px}
+.stat-lbl{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.stat-val{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.stat-val.g{color:var(--green)}.stat-val.r{color:var(--red)}.stat-val.a{color:var(--amber)}
+.sec-head{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.06em;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.kv-list{display:flex;flex-direction:column}
+.kv{display:flex;justify-content:space-between;align-items:center;
+  padding:4px 0;border-bottom:1px solid var(--border)}
+.kv:last-child{border-bottom:none}
+.kv .k{font-size:12px;color:var(--text2)}.kv .v{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.rec{padding:2px 7px;border-radius:3px;font-size:11px;font-weight:700}
+.rc-buy{background:rgba(22,163,74,.1);color:#15803d}
+.rc-hold{background:rgba(180,120,0,.08);color:#92400e}
+.rc-sell{background:rgba(220,38,38,.1);color:#b91c1c}
+
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-wrap{display:none;position:absolute;inset:0;background:var(--surface2);
+  align-items:center;justify-content:center;border-radius:var(--radius)}
+.ld-wrap.show{display:flex}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+@media(max-width:860px){
+  .detail-panel{position:fixed;inset:0;width:100%!important;z-index:30}
+  .detail-panel.hidden{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <!-- row 1 -->
+  <div class="header-top">
+    <div class="logo">美股<em>工具箱</em></div>
+    <button class="btn-run" id="runBtn" onclick="runCalc()" style="display:none">
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor"><path d="M2 1l8 4.5-8 4.5V1z"/></svg>
+      开始计算
+    </button>
+  </div>
+
+  <!-- view tabs -->
+  <div class="view-bar">
+    <button class="vtab active" id="vtab-dashboard" onclick="setView('dashboard')">🌡 市场温度</button>
+    <button class="vtab" id="vtab-strategy" onclick="setView('strategy')">📊 策略排序</button>
+  </div>
+
+  <!-- strategy tabs (only in strategy view) -->
+  <div class="strategy-bar" id="strategyBar">
+    <button class="stab active" id="stab-momentum" onclick="setStrategy('momentum')">
+      📈 纯动量 <span class="stab-badge">Momentum</span>
+    </button>
+    <button class="stab" id="stab-momentum_quality" onclick="setStrategy('momentum_quality')">
+      ⚡ 动量+质量 <span class="stab-badge">Quality Filter</span>
+    </button>
+    <button class="stab" id="stab-low_vol" onclick="setStrategy('low_vol')">
+      🛡 低波动率 <span class="stab-badge">Low Vol</span>
+    </button>
+    <button class="stab" id="stab-piotroski" onclick="setStrategy('piotroski')">
+      📋 F-Score <span class="stab-badge">Piotroski</span>
+    </button>
+    <button class="stab" id="stab-dual_momentum" onclick="setStrategy('dual_momentum')">
+      🔁 双动量 <span class="stab-badge">Dual Momentum</span>
+    </button>
+    <button class="stab" id="stab-multifactor" onclick="setStrategy('multifactor')">
+      🧮 多因子 <span class="stab-badge">Z-Score</span>
+    </button>
+  </div>
+
+  <!-- filter bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">股票池</span>
+      <select id="universe" onchange="onUniverseChange()">
+        <option value="nasdaq100" selected>NASDAQ-100</option>
+        <option value="sp500">S&amp;P 500</option>
+        <option value="both">两者合并</option>
+      </select>
+    </div>
+    <div class="fsep"></div>
+    <div class="filter-group">
+      <span class="filter-label">板块</span>
+      <select id="sector_filter"><option value="all">全部板块</option></select>
+    </div>
+    <div class="fsep"></div>
+    <div class="filter-group">
+      <span class="filter-label">区间</span>
+      <div class="preset-group">
+        <button class="pbtn" onclick="setPreset(3)">3M</button>
+        <button class="pbtn active" onclick="setPreset(6)">6M</button>
+        <button class="pbtn" onclick="setPreset(12)">1Y</button>
+        <button class="pbtn" onclick="setPreset(24)">2Y</button>
+        <button class="pbtn" id="customBtn" onclick="toggleCustom()">自定义</button>
+      </div>
+      <div class="custom-date" id="customDate">
+        <input type="month" id="start_ym">
+        <span class="arrow">→</span>
+        <input type="month" id="end_ym">
+      </div>
+    </div>
+  </div>
+
+  <!-- strategy description -->
+  <div class="strat-desc" id="stratDesc">
+    <div class="dot"></div>
+    <span id="stratDescText"></span>
+  </div>
+</div>
+
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- ── dashboard view ── -->
+<div id="viewDashboard" class="active">
+  <div class="dash-summary">
+    <div class="temp-ring" id="tempRing">
+      <span class="tnum" id="tempNum">—</span>
+      <span class="tsub">/ 100</span>
+    </div>
+    <div class="temp-info">
+      <strong id="tempText">加载中…</strong>
+      <span>市场综合温度 · 越高越危险</span>
+    </div>
+    <div class="warn-pills" id="warnPills">
+      <span class="wpill" style="background:var(--surface2);color:var(--text3)">
+        <span class="wp-dot"></span>加载中…
+      </span>
+    </div>
+  </div>
+
+  <div>
+    <div class="dash-section-title">情绪 &amp; 广度</div>
+    <div class="dash-grid" id="dg-sentiment">
+      <div class="dash-loading"><div class="spinner"></div>加载中…</div>
+    </div>
+  </div>
+  <div>
+    <div class="dash-section-title">估值 &amp; 利率</div>
+    <div class="dash-grid" id="dg-valuation">
+      <div class="dash-loading"><div class="spinner"></div>加载中…</div>
+    </div>
+  </div>
+  <div>
+    <div class="dash-section-title">资金 &amp; 流动性</div>
+    <div class="dash-grid" id="dg-flow">
+      <div class="dash-loading"><div class="spinner"></div>加载中…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── strategy view ── -->
+<div id="viewStrategy" style="display:none;flex:1;overflow:hidden;flex-direction:row" class="main">
+  <div class="table-panel">
+    <div class="status-bar">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">就绪 — 选择策略后点击「开始计算」</span>
+    </div>
+    <div id="tableWrap" style="display:flex;flex-direction:column;flex:1">
+      <div class="empty-state">
+        <div class="icon">📊</div>
+        <p>暂无数据</p>
+        <small>选择策略和股票池后点击「开始计算」</small>
+      </div>
+    </div>
+  </div>
+
+  <aside class="detail-panel hidden" id="detailPanel">
+    <div class="detail-header">
+      <div>
+        <div class="d-ticker" id="dTicker">—</div>
+        <div class="d-name" id="dName"></div>
+        <div class="d-tags" id="dTags"></div>
+      </div>
+      <button class="close-btn" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-body" id="detailBody">
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:13px">
+        点击股票代码查看详情
+      </div>
+    </div>
+  </aside>
+</div><!-- /viewStrategy -->
+
+<script>
+// ── config ────────────────────────────────────────────────────────────────────
+const STRAT_META = {
+  momentum: {
+    desc: "月度收益率算术均值，捕捉持续上涨趋势；适合趋势明确的牛市行情",
+    sortKey: "mom_mean", sortAsc: false,
+    cols: ["rank","ticker","sector","price","mom_mean","total_ret","sharpe","max_dd"],
+  },
+  momentum_quality: {
+    desc: "动量(50%) + ROE(30%) + 净利润率(20%) 综合打分，过滤基本面差的动量股",
+    sortKey: "composite", sortAsc: false,
+    cols: ["rank","ticker","sector","price","composite","mom_mean","roe","profit_margin","max_dd"],
+  },
+  low_vol: {
+    desc: "以 Beta 和年化波动率升序排列，优先低风险品种；适合震荡市或防御配置",
+    sortKey: "beta", sortAsc: true,
+    cols: ["rank","ticker","sector","price","beta","ann_vol","total_ret","mom_mean","max_dd"],
+  },
+  piotroski: {
+    desc: "Piotroski F-Score：9项财务健康指标（盈利/杠杆/效率各3项），满分9分",
+    sortKey: "fscore", sortAsc: false,
+    cols: ["rank","ticker","sector","price","fscore","f_profit","f_leverage","f_efficiency","roa","gross_margin"],
+  },
+  dual_momentum: {
+    desc: "两层过滤：① 绝对动量 — 总收益 > 3M国债收益率，不过线的排到末尾；② 剩余按相对动量排序",
+    sortKey: "mom_mean", sortAsc: false,
+    cols: ["rank","ticker","sector","price","abs_pass","mom_mean","rf_hurdle","total_ret","sharpe","max_dd"],
+  },
+  multifactor: {
+    desc: "多因子 Z-Score 合成：动量35% + ROE25% + 净利润率15% + 低Beta15% + 低PS10%",
+    sortKey: "mf_score", sortAsc: false,
+    cols: ["rank","ticker","sector","price","mf_score","mom_mean","roe","profit_margin","beta","ps"],
+  },
+};
+
+const COL_DEF = {
+  rank:         { label:"#",           fmt:(v)=>`<span class="rank num">${v}</span>` },
+  ticker:       { label:"代码 / 公司", fmt:(v,r)=>`
+    <div class="ticker-cell">
+      <span class="ticker-sym" onclick="loadDetail('${esc(v)}')">${esc(v)}</span>
+      <span class="ticker-name" title="${esc(r.name)}">${esc(r.name||'')}</span>
+    </div>` },
+  sector:       { label:"板块",        fmt:(v)=>`<span class="sec-tag" title="${esc(v)}">${esc(v||'—')}</span>` },
+  price:        { label:"现价",        fmt:(v)=>`<span class="num">$${v}</span>` },
+  mom_mean:     { label:"月均动量%",   fmt:(v,r,all)=>{
+    const mx=Math.max(...all.map(x=>Math.abs(x.mom_mean||0)));
+    const pct=mx?Math.abs(v||0)/mx*100:0, c=v>=0?'pos':'neg', b=v>=0?'bar-pos':'bar-neg';
+    return `<div class="bar-cell"><span class="${c} num" style="min-width:50px">${v>0?'+':''}${v??'—'}%</span>
+      <div class="bar-bg"><div class="bar-fill ${b}" style="width:${pct.toFixed(0)}%"></div></div></div>`;
+  }},
+  total_ret:    { label:"总收益%",     fmt:(v)=>`<span class="${v>=0?'pos':'neg'} num">${v>0?'+':''}${v??'—'}%</span>` },
+  sharpe:       { label:"Sharpe",      fmt:(v)=>v!=null?`<span class="${v>=0?'pos':'neg'} num">${v}</span>`:'<span class="neu">—</span>' },
+  max_dd:       { label:"最大回撤%",   fmt:(v)=>`<span class="neg num">${v??'—'}%</span>` },
+  composite:    { label:"综合评分",    fmt:(v,r,all)=>{
+    const mx=Math.max(...all.map(x=>x.composite||0));
+    const pct=mx?(v||0)/mx*100:0;
+    return `<div class="composite-bar"><span class="num" style="min-width:36px;color:var(--accent);font-weight:700">${v??'—'}</span>
+      <div class="cbar-bg"><div class="cbar-fill" style="width:${pct.toFixed(0)}%"></div></div></div>`;
+  }},
+  roe:          { label:"ROE%",        fmt:(v)=>v!=null?`<span class="${v>=0?'pos':'neg'} num">${v}%</span>`:'<span class="neu">—</span>' },
+  profit_margin:{ label:"净利润率%",   fmt:(v)=>v!=null?`<span class="${v>=0?'pos':'neg'} num">${v}%</span>`:'<span class="neu">—</span>' },
+  beta:         { label:"Beta",        fmt:(v)=>v!=null?`<span class="num ${v<0.8?'pos':v>1.2?'neg':'neu'}">${v}</span>`:'<span class="neu">—</span>' },
+  ann_vol:      { label:"年化波动%",   fmt:(v)=>v!=null?`<span class="num ${v<20?'pos':v>35?'neg':'neu'}">${v}%</span>`:'<span class="neu">—</span>' },
+  fscore:       { label:"F-Score",     fmt:(v)=>{
+    if(v==null) return '<span class="fscore-badge fs-na">—</span>';
+    const cls=v>=7?'fs-hi':v>=4?'fs-md':'fs-lo';
+    return `<span class="fscore-badge ${cls}">${v}</span>`;
+  }},
+  f_profit:     { label:"盈利(4)",     fmt:(v)=>fPips(v,4) },
+  f_leverage:   { label:"杠杆(3)",     fmt:(v)=>fPips(v,3) },
+  f_efficiency: { label:"效率(2)",     fmt:(v)=>fPips(v,2) },
+  roa:          { label:"ROA%",        fmt:(v)=>v!=null?`<span class="${v>=0?'pos':'neg'} num">${v}%</span>`:'<span class="neu">—</span>' },
+  gross_margin: { label:"毛利率%",     fmt:(v)=>v!=null?`<span class="pos num">${v}%</span>`:'<span class="neu">—</span>' },
+  // dual momentum
+  abs_pass:     { label:"绝对动量",    fmt:(v)=>v===true
+    ? '<span style="color:var(--green);font-weight:700;font-size:12px">✓ 通过</span>'
+    : '<span style="color:var(--red);font-size:12px">✗ 未通过</span>' },
+  rf_hurdle:    { label:"国债门槛%",   fmt:(v)=>v!=null?`<span class="num neu">${v}%</span>`:'—' },
+  // multifactor
+  mf_score:     { label:"综合Z分",     fmt:(v,r,all)=>{
+    const mx=Math.max(...all.map(x=>x.mf_score||0));
+    const mn=Math.min(...all.map(x=>x.mf_score||0));
+    const rng=mx-mn||1, pct=(((v||0)-mn)/rng*100).toFixed(0);
+    const c=(v||0)>=0?'pos':'neg';
+    return `<div class="composite-bar"><span class="num ${c}" style="min-width:44px;font-weight:700">${v??'—'}</span>
+      <div class="cbar-bg"><div class="cbar-fill" style="width:${pct}%"></div></div></div>`;
+  }},
+  ps:           { label:"P/S",          fmt:(v)=>v!=null?`<span class="num neu">${v}</span>`:'<span class="neu">—</span>' },
+};
+
+function fPips(v, total) {
+  if (v==null) return '<span class="neu">—</span>';
+  let html = `<div style="display:flex;flex-direction:column;gap:2px">
+    <span class="num ${v>=total*0.7?'pos':v<=total*0.3?'neg':'neu'}" style="font-size:12px">${v}/${total}</span>
+    <div class="fsub">`;
+  for(let i=0;i<total;i++) html+=`<div class="fpip ${i<v?'on':''}"></div>`;
+  html += '</div></div>';
+  return html;
+}
+
+// ── view switching ────────────────────────────────────────────────────────────
+function setView(v) {
+  const isDash = v === 'dashboard';
+  document.getElementById('viewDashboard').style.display = isDash ? 'flex' : 'none';
+  document.getElementById('viewStrategy').style.display  = isDash ? 'none' : 'flex';
+  document.getElementById('strategyBar').style.display   = isDash ? 'none' : 'flex';
+  document.getElementById('runBtn').style.display        = isDash ? 'none' : 'flex';
+  document.querySelectorAll('.vtab').forEach(b => b.classList.toggle('active', b.id === 'vtab-' + v));
+  // hide filter/desc bars when on dashboard
+  document.querySelector('.filter-bar').style.display   = isDash ? 'none' : 'flex';
+  document.querySelector('.strat-desc').style.display   = isDash ? 'none' : 'flex';
+  document.querySelector('.progress-wrap').style.display = isDash ? 'none' : 'block';
+  if (isDash && !dashLoaded) loadDashboard();
+}
+
+// ── dashboard data & render ───────────────────────────────────────────────────
+let dashLoaded = false;
+
+const INDICATORS = [
+  { key:'vix',         name:'VIX 恐慌指数',         unit:'',    group:'sentiment', warn:'high',
+    note:'>30 恐慌区（反向低吸），<15 过度乐观' },
+  { key:'put_call',    name:'Put/Call Ratio',        unit:'',    group:'sentiment', warn:'low',
+    note:'<0.7 过度乐观预警，>1.2 恐慌底部区' },
+  { key:'aaii_bull',   name:'AAII 散户看多%',        unit:'%',   group:'sentiment', warn:'high',
+    note:'>55% ���史高位，反向止盈信号' },
+  { key:'ad_ratio',    name:'涨跌家数比（5日均）',   unit:'',    group:'sentiment', warn:'low',
+    note:'<0.8 市场内部走弱，>1.2 强势扩散' },
+  { key:'mcclell',     name:'McClellan Oscillator',  unit:'',    group:'sentiment', warn:'both',
+    note:'>100 短期超买，<-100 短期超卖' },
+  { key:'nh_nl',       name:'52周新高/新低比',       unit:'',    group:'sentiment', warn:'low',
+    note:'持续<1 说明市场内部已恶化' },
+  { key:'ndx_pe',      name:'纳指 PE（TTM）',        unit:'x',   group:'valuation', warn:'high',
+    note:'>35x 历史偏贵，<20x 相对低估' },
+  { key:'cape',        name:'标普500 CAPE',          unit:'x',   group:'valuation', warn:'high',
+    note:'>35 历史极值区，Shiller PE' },
+  { key:'yield_spread',name:'10Y-2Y 利差',           unit:'%',   group:'valuation', warn:'low',
+    note:'倒挂修复过程常伴随衰退风险' },
+  { key:'pct200',      name:'标普500>200均线占比',   unit:'%',   group:'valuation', warn:'low',
+    note:'<40% 市场内部显著走弱' },
+  { key:'qqq_flow',    name:'QQQ 3日资金净流向',     unit:'亿$', group:'flow',      warn:'both',
+    note:'持续流出预警，持续流入确认趋势' },
+  { key:'hy_spread',   name:'垃圾债信用利差',         unit:'bps', group:'flow',      warn:'high',
+    note:'>500bps 信用市场压力' },
+  { key:'margin_debt', name:'保证金债务余额',         unit:'亿$', group:'flow',      warn:'high',
+    note:'快速下降常领先大盘下跌（月度）' },
+];
+
+function pctColor(pct, warn) {
+  if (warn === 'high') return pct > 70 ? 'red' : pct > 40 ? 'amber' : 'green';
+  if (warn === 'low')  return pct < 30 ? 'red' : pct < 60 ? 'amber' : 'green';
+  return (pct > 70 || pct < 30) ? 'amber' : 'green';
+}
+
+// ── shared tooltip ───────────────────────────────────────────────────────────
+const tooltip = document.createElement('div');
+tooltip.className = 'spark-tooltip';
+document.body.appendChild(tooltip);
+
+function drawSpark(canvas, values, color, dates) {
+  if (!values?.length || values.length < 2) return;
+  const dpr = devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth || 240, H = 64;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  const mn = Math.min(...values), mx = Math.max(...values), rng = mx - mn || 1;
+  const PAD_B = 18; // bottom padding for date labels
+  const cH = H - PAD_B;
+  const xf = i => i / (values.length - 1) * W;
+  const yf = v => (1 - (v - mn) / rng) * (cH - 6) + 3;
+  const lc = color==='red'?'#dc2626':color==='amber'?'#d97706':'#16a34a';
+  const fillTop = color==='red'?'rgba(220,38,38,.12)':color==='amber'?'rgba(217,119,6,.12)':'rgba(22,163,74,.10)';
+
+  // fill
+  const grad = ctx.createLinearGradient(0,0,0,cH);
+  grad.addColorStop(0, fillTop); grad.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.beginPath();
+  values.forEach((v,i)=>i===0?ctx.moveTo(xf(i),yf(v)):ctx.lineTo(xf(i),yf(v)));
+  ctx.lineTo(xf(values.length-1),cH); ctx.lineTo(0,cH); ctx.closePath();
+  ctx.fillStyle=grad; ctx.fill();
+
+  // line
+  ctx.beginPath();
+  values.forEach((v,i)=>i===0?ctx.moveTo(xf(i),yf(v)):ctx.lineTo(xf(i),yf(v)));
+  ctx.strokeStyle=lc; ctx.lineWidth=2; ctx.stroke();
+
+  // last dot
+  ctx.beginPath();
+  ctx.arc(xf(values.length-1),yf(values[values.length-1]),3,0,Math.PI*2);
+  ctx.fillStyle=lc; ctx.fill();
+
+  // date axis — show ~3 labels
+  if (dates?.length) {
+    ctx.fillStyle='#9ca3af'; ctx.font=`${9*dpr/dpr}px system-ui`; ctx.textAlign='center';
+    const step = Math.max(1, Math.floor(dates.length / 3));
+    for (let i=0; i<dates.length; i+=step) {
+      const label = dates[i].slice(5); // MM-DD
+      ctx.fillText(label, xf(i), H - 4);
+    }
+    // always show last date
+    ctx.textAlign='right';
+    ctx.fillText(dates[dates.length-1].slice(5), W-2, H-4);
+  }
+
+  // hover interaction
+  canvas._sparkData = {values, dates, xf, yf, lc, mn, mx, W, cH};
+  canvas.onmousemove = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx_ = e.clientX - rect.left;
+    const d = canvas._sparkData;
+    const idx = Math.round(mx_ / d.W * (d.values.length-1));
+    const i = Math.max(0, Math.min(d.values.length-1, idx));
+    const date = d.dates?.[i] ?? '';
+    const val  = d.values[i];
+    tooltip.textContent = `${date}  ${val}`;
+    tooltip.style.display = 'block';
+    tooltip.style.left = e.clientX + 'px';
+    tooltip.style.top  = e.clientY + 'px';
+    // crosshair
+    const ctx2 = canvas.getContext('2d');
+    ctx2.clearRect(0,0,d.W,d.cH);
+    // re-draw (lightweight: just line & fill)
+    const grad2 = ctx2.createLinearGradient(0,0,0,d.cH);
+    grad2.addColorStop(0,fillTop); grad2.addColorStop(1,'rgba(255,255,255,0)');
+    ctx2.beginPath();
+    d.values.forEach((v,j)=>j===0?ctx2.moveTo(d.xf(j),d.yf(v)):ctx2.lineTo(d.xf(j),d.yf(v)));
+    ctx2.lineTo(d.xf(d.values.length-1),d.cH); ctx2.lineTo(0,d.cH); ctx2.closePath();
+    ctx2.fillStyle=grad2; ctx2.fill();
+    ctx2.beginPath();
+    d.values.forEach((v,j)=>j===0?ctx2.moveTo(d.xf(j),d.yf(v)):ctx2.lineTo(d.xf(j),d.yf(v)));
+    ctx2.strokeStyle=d.lc; ctx2.lineWidth=2; ctx2.stroke();
+    // vertical line
+    const px = d.xf(i);
+    ctx2.beginPath(); ctx2.moveTo(px,0); ctx2.lineTo(px,d.cH);
+    ctx2.strokeStyle='rgba(0,0,0,.15)'; ctx2.lineWidth=1; ctx2.stroke();
+    // dot
+    ctx2.beginPath(); ctx2.arc(px,d.yf(val),4,0,Math.PI*2);
+    ctx2.fillStyle=d.lc; ctx2.fill();
+  };
+  canvas.onmouseleave = function() {
+    tooltip.style.display='none';
+    // redraw clean
+    drawSpark(canvas, values, color, dates);
+  };
+}
+
+function renderDashCard(ind, d) {
+  const pct   = d?.percentile ?? null;
+  const val   = d?.value ?? null;
+  const chg   = d?.change ?? null;
+  const hist  = d?.history ?? [];
+  const color = pct != null ? pctColor(pct, ind.warn) : 'na';
+  const bCls  = color==='red'?'ib-red':color==='amber'?'ib-amber':color==='green'?'ib-green':'ib-na';
+  const cCls  = color==='red'?'c-red':color==='amber'?'c-amber':color==='green'?'c-green':'';
+  const pfCls = color==='red'?'pf-red':color==='amber'?'pf-amber':'pf-green';
+  const label = color==='red'?'高风险':color==='amber'?'需关注':color==='green'?'正常':'—';
+  const valColor = color==='red'?'style="color:var(--red)"':color==='amber'?'style="color:var(--amber)"':color==='green'?'style="color:var(--green)"':'';
+  const chgHtml = chg!=null
+    ? `<span class="iv-chg ${chg>0?'iv-up':chg<0?'iv-dn':'iv-neu'}">${chg>0?'+':''}${chg}</span>` : '';
+  const pctBar = pct!=null ? `
+    <div class="pct-row">
+      <div class="pct-header">
+        <span class="pct-title">历史分位</span>
+        <span class="pct-value">${pct}%</span>
+      </div>
+      <div class="pct-track">
+        <div class="pct-fill ${pfCls}" style="width:${pct}%"></div>
+        <div class="pct-tick" style="left:${pct}%"></div>
+      </div>
+    </div>` : '';
+  const spark = hist.length >= 2 ? `<div class="spark-wrap"><canvas id="sp-${ind.key}"></canvas></div>` : '';
+  return `
+    <div class="icard ${cCls}">
+      <div class="icard-top">
+        <span class="icard-name">${ind.name}</span>
+        <span class="ibadge ${bCls}">${label}</span>
+      </div>
+      <div class="icard-val">
+        <span class="iv-main" ${valColor}>${val??'—'}</span>
+        ${ind.unit?`<span class="iv-unit">${ind.unit}</span>`:''}
+        ${chgHtml}
+      </div>
+      ${pctBar}
+      ${spark}
+      <div class="icard-note">${ind.note}${d?.note_extra ? `<br><span style="color:var(--text2);font-weight:600">${d.note_extra}</span>` : ''}</div>
+    </div>`;
+}
+
+function renderDashboard(data) {
+  const groups = {sentiment:'', valuation:'', flow:''};
+  INDICATORS.forEach(ind => { groups[ind.group] += renderDashCard(ind, data[ind.key]); });
+  document.getElementById('dg-sentiment').innerHTML = groups.sentiment;
+  document.getElementById('dg-valuation').innerHTML = groups.valuation;
+  document.getElementById('dg-flow').innerHTML      = groups.flow;
+  INDICATORS.forEach(ind => {
+    const c = document.getElementById('sp-' + ind.key);
+    const d = data[ind.key];
+    if (c && d?.history?.length) {
+      const color = d.percentile != null ? pctColor(d.percentile, ind.warn) : 'na';
+      drawSpark(c, d.history, color, d.dates || null);
+    }
+  });
+  // summary
+  let score=0, cnt=0, reds=[], ambers=[];
+  INDICATORS.forEach(ind => {
+    const d = data[ind.key]; if (!d || d.percentile==null) return;
+    const c = pctColor(d.percentile, ind.warn);
+    score += c==='red'?100:c==='amber'?55:15; cnt++;
+    const short = ind.name.split('（')[0].split(' ')[0];
+    if (c==='red') reds.push(short);
+    else if (c==='amber') ambers.push(short);
+  });
+  const avg = cnt ? Math.round(score/cnt) : null;
+  const col = avg>70?'var(--red)':avg>45?'var(--amber)':'var(--green)';
+  const ring = document.getElementById('tempRing');
+  ring.style.borderColor = col;
+  document.getElementById('tempNum').textContent = avg??'—';
+  document.getElementById('tempNum').style.color = col;
+  const txt = document.getElementById('tempText');
+  txt.textContent = avg>70?'高位预警':avg>45?'中性偏险':'相对安全';
+  txt.style.color = col;
+  const pills = document.getElementById('warnPills');
+  pills.innerHTML = '';
+  if (reds.length)   pills.innerHTML += `<span class="wpill wp-red"><span class="wp-dot"></span>${reds.length}项高风险：${reds.slice(0,3).join('、')}${reds.length>3?'…':''}</span>`;
+  if (ambers.length) pills.innerHTML += `<span class="wpill wp-amber"><span class="wp-dot"></span>${ambers.length}项需关注：${ambers.slice(0,3).join('、')}${ambers.length>3?'…':''}</span>`;
+  if (!reds.length && !ambers.length && cnt>0) pills.innerHTML = `<span class="wpill wp-green"><span class="wp-dot"></span>当前无预警指标</span>`;
+}
+
+async function loadDashboard() {
+  dashLoaded = true;
+  try {
+    const res = await fetch('/api/market');
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    renderDashboard(data);
+  } catch(e) {
+    ['dg-sentiment','dg-valuation','dg-flow'].forEach(id => {
+      document.getElementById(id).innerHTML =
+        `<div style="color:var(--red);font-size:12px;padding:10px 0">获取失败：${e.message}</div>`;
+    });
+  }
+}
+
+// init to dashboard view
+setView('dashboard');
+
+
+let allRows=[], strategy='momentum', sortCol=null, sortAsc=false;
+let selectedTicker=null, currentRange={start:null,end:null};
+let activePreset=6, isCustom=false, evtSource=null;
+
+// ── strategy ──────────────────────────────────────────────────────────────────
+function setStrategy(s) {
+  strategy = s;
+  sortCol = STRAT_META[s].sortKey;
+  sortAsc = STRAT_META[s].sortAsc ?? false;
+  document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active', b.id==='stab-'+s));
+  document.getElementById('stratDescText').textContent = STRAT_META[s].desc;
+  if (allRows.length) renderTable();
+}
+
+// init
+setStrategy('momentum');
+
+// ── presets ───────────────────────────────────────────────────────────────────
+function setPreset(m) {
+  activePreset=m; isCustom=false;
+  document.querySelectorAll('.pbtn').forEach(b=>{
+    const match = b.textContent===m+'M'||(m===12&&b.textContent==='1Y')||(m===24&&b.textContent==='2Y');
+    b.classList.toggle('active', match);
+  });
+  document.getElementById('customDate').classList.remove('show');
+  document.getElementById('customBtn').classList.remove('active');
+}
+function toggleCustom() {
+  isCustom=!isCustom;
+  document.getElementById('customDate').classList.toggle('show',isCustom);
+  document.getElementById('customBtn').classList.toggle('active',isCustom);
+  if(isCustom){
+    document.querySelectorAll('.pbtn:not(#customBtn)').forEach(b=>b.classList.remove('active'));
+    const now=new Date(), prev=new Date(now.getFullYear(),now.getMonth()-6,1);
+    document.getElementById('end_ym').value=now.toISOString().slice(0,7);
+    document.getElementById('start_ym').value=prev.toISOString().slice(0,7);
+  }
+}
+setPreset(6);
+
+// ── sectors ───────────────────────────────────────────────────────────────────
+async function loadSectors(universe) {
+  try {
+    const d = await (await fetch(`/api/sectors?universe=${universe}`)).json();
+    const sel = document.getElementById('sector_filter');
+    const prev = sel.value;
+    sel.innerHTML = '<option value="all">全部板块</option>';
+    d.sectors.forEach(s=>{ const o=document.createElement('option'); o.value=s;o.textContent=s;if(s===prev)o.selected=true; sel.appendChild(o); });
+  } catch(_){}
+}
+function onUniverseChange(){ loadSectors(document.getElementById('universe').value); }
+loadSectors('nasdaq100');
+
+// ── SSE ───────────────────────────────────────────────────────────────────────
+function connectSSE() {
+  if(evtSource) evtSource.close();
+  evtSource = new EventSource('/events');
+  evtSource.addEventListener('log', e=>{
+    const d=JSON.parse(e.data); setStatus('running',d.msg); if(d.pct>=0) setProgress(d.pct);
+  });
+  evtSource.addEventListener('done', e=>{
+    try {
+      const d=JSON.parse(e.data);
+      currentRange={start:d.start,end:d.end};
+      allRows=d.rows;
+      const sm = STRAT_META[d.strategy] || STRAT_META[strategy] || STRAT_META['momentum'];
+      sortCol = sm.sortKey;
+      sortAsc = sm.sortAsc ?? false;
+      if (d.strategy && STRAT_META[d.strategy]) {
+        strategy = d.strategy;
+        document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active', b.id==='stab-'+strategy));
+        document.getElementById('stratDescText').textContent = sm.desc;
+      }
+      renderTable();
+      setStatus('done',`完成 · ${d.rows.length} 只 · ${d.start} → ${d.end}`);
+      setProgress(100);
+    } catch(err) {
+      setStatus('error','渲染出错：'+err.message);
+    } finally {
+      document.getElementById('runBtn').disabled=false;
+      setTimeout(()=>setProgress(0),1500);
+    }
+  });
+  evtSource.addEventListener('error', e=>{
+    try{setStatus('error','错误：'+JSON.parse(e.data).msg);}catch(_){}
+    document.getElementById('runBtn').disabled=false;
+    setProgress(0);
+  });
+  evtSource.onerror = ()=>{
+    // SSE 连接断开时恢复按钮，避免永久灰
+    document.getElementById('runBtn').disabled=false;
+  };
+}
+connectSSE();
+
+// ── run ───────────────────────────────────────────────────────────────────────
+async function runCalc() {
+  const btn=document.getElementById('runBtn');
+  btn.disabled=true; setStatus('running','启动中…'); setProgress(2);
+  const body={
+    universe:      document.getElementById('universe').value,
+    sector_filter: document.getElementById('sector_filter').value,
+    strategy,
+    months:        isCustom?6:activePreset,
+    start:         isCustom?(document.getElementById('start_ym').value||null):null,
+    end:           isCustom?(document.getElementById('end_ym').value||null):null,
+  };
+  try{
+    const d=await (await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+    if(d.error){setStatus('error',d.error);btn.disabled=false;}
+  }catch(e){setStatus('error','连接失败：'+e.message);btn.disabled=false;}
+}
+
+// ── table ─────────────────────────────────────────────────────────────────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function sortedRows(){
+  return [...allRows].sort((a,b)=>{
+    let va=a[sortCol]??-Infinity, vb=b[sortCol]??-Infinity;
+    if(strategy==='piotroski'&&sortCol==='fscore'){va=a.fscore??-1;vb=b.fscore??-1;}
+    return sortAsc?va-vb:vb-va;
+  });
+}
+
+function renderTable() {
+  const wrap=document.getElementById('tableWrap');
+  if(!allRows.length){
+    wrap.innerHTML='<div class="empty-state"><div class="icon">📊</div><p>无数据</p></div>';return;
+  }
+  const cols=STRAT_META[strategy].cols;
+  const rows=sortedRows();
+  let h='<table><thead><tr>';
+  for(const k of cols){
+    const def=COL_DEF[k]||{label:k};
+    const on=k===sortCol, ic=on?(sortAsc?'↑':'↓'):'↕';
+    h+=`<th class="${on?'sorted':''}" onclick="doSort('${k}')">${def.label}<span class="si">${ic}</span></th>`;
+  }
+  h+='</tr></thead><tbody>';
+  for(const r of rows){
+    h+=`<tr class="${r.ticker===selectedTicker?'selected':''}">`;
+    for(const k of cols){
+      const def=COL_DEF[k];
+      h+=`<td>${def?.fmt?def.fmt(r[k],r,rows):(r[k]??'—')}</td>`;
+    }
+    h+='</tr>';
+  }
+  h+='</tbody></table>';
+  wrap.innerHTML=h;
+}
+
+function doSort(col){
+  const naturalAsc = ['beta','ann_vol','rank','rf_hurdle','ps'].includes(col);
+  sortAsc = sortCol===col ? !sortAsc : naturalAsc;
+  sortCol=col; renderTable();
+}
+
+// ── detail ────────────────────────────────────────────────────────────────────
+async function loadDetail(ticker) {
+  selectedTicker=ticker; renderTable();
+  document.getElementById('detailPanel').classList.remove('hidden');
+  document.getElementById('dTicker').textContent=ticker;
+  document.getElementById('dName').textContent='';
+  document.getElementById('dTags').innerHTML='';
+  document.getElementById('detailBody').innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:center;gap:8px;flex:1;color:var(--text3)"><div class="spinner"></div><span>加载中…</span></div>';
+
+  const p=new URLSearchParams({months:activePreset});
+  if(currentRange.start) p.set('start',currentRange.start.slice(0,7));
+  if(currentRange.end)   p.set('end',  currentRange.end.slice(0,7));
+  const data=await (await fetch(`/api/detail/${ticker}?${p}`)).json();
+  const row=allRows.find(r=>r.ticker===ticker)||{};
+
+  document.getElementById('dName').textContent=row.name||(data.info.short_name||'');
+  document.getElementById('dTags').innerHTML=[row.sector,row.index].filter(Boolean).map(t=>`<span class="d-tag">${esc(t)}</span>`).join('');
+  renderDetail(data, row);
+}
+
+function renderDetail({info,prices}, row) {
+  const body=document.getElementById('detailBody');
+  const cid='c'+Date.now();
+  const fp=v=>v!=null?(v*100).toFixed(1)+'%':'—';
+  const fb=v=>v!=null?'$'+(v/1e9).toFixed(2)+'B':'—';
+  const f1=v=>v!=null?v.toFixed(1):'—';
+  const f2=v=>v!=null?v.toFixed(2):'—';
+  const fd=v=>v!=null?'$'+v.toFixed(2):'—';
+
+  let recHtml='—';
+  if(info.recommendation){
+    const k=info.recommendation.toLowerCase();
+    const c=k.includes('buy')||k.includes('strong')?'rc-buy':k.includes('sell')?'rc-sell':'rc-hold';
+    recHtml=`<span class="rec ${c}">${info.recommendation.toUpperCase()}</span>`;
+  }
+  const mc=(row.mom_mean||0)>=0?'g':'r', rc=(row.total_ret||0)>=0?'g':'r';
+
+  // strategy-specific stat cards
+  let stratCards='';
+  if(strategy==='momentum'||strategy==='momentum_quality'){
+    stratCards=`
+      <div class="stat-card"><div class="stat-lbl">月均动量</div>
+        <div class="stat-val ${mc}">${(row.mom_mean||0)>0?'+':''}${row.mom_mean??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">总收益率</div>
+        <div class="stat-val ${rc}">${(row.total_ret||0)>0?'+':''}${row.total_ret??'—'}%</div></div>
+      ${strategy==='momentum_quality'?`
+      <div class="stat-card"><div class="stat-lbl">综合评分</div>
+        <div class="stat-val" style="color:var(--accent)">${row.composite??'—'}</div></div>
+      <div class="stat-card"><div class="stat-lbl">ROE</div>
+        <div class="stat-val ${(row.roe||0)>=0?'g':'r'}">${row.roe??'—'}%</div></div>`:''}
+      <div class="stat-card"><div class="stat-lbl">Sharpe</div>
+        <div class="stat-val ${(row.sharpe||0)>=0?'g':'r'}">${row.sharpe??'—'}</div></div>
+      <div class="stat-card"><div class="stat-lbl">最大回撤</div>
+        <div class="stat-val r">${row.max_dd??'—'}%</div></div>`;
+  } else if(strategy==='low_vol'){
+    stratCards=`
+      <div class="stat-card"><div class="stat-lbl">Beta</div>
+        <div class="stat-val ${(row.beta??1)<0.8?'g':(row.beta??1)>1.2?'r':'a'}">${row.beta??'—'}</div></div>
+      <div class="stat-card"><div class="stat-lbl">年化波动</div>
+        <div class="stat-val ${(row.ann_vol??30)<20?'g':(row.ann_vol??30)>35?'r':'a'}">${row.ann_vol??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">月均动量</div>
+        <div class="stat-val ${mc}">${(row.mom_mean||0)>0?'+':''}${row.mom_mean??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">总收益率</div>
+        <div class="stat-val ${rc}">${(row.total_ret||0)>0?'+':''}${row.total_ret??'—'}%</div></div>`;
+  } else if(strategy==='dual_momentum'){
+    const passed = row.abs_pass;
+    stratCards=`
+      <div class="stat-card" style="grid-column:span 2">
+        <div class="stat-lbl">绝对动量过滤</div>
+        <div class="stat-val ${passed?'g':'r'}" style="font-size:15px">
+          ${passed?'✓ 通过 — 高于无风险利率':'✗ 未通过 — 低于无风险利率'}
+        </div>
+      </div>
+      <div class="stat-card"><div class="stat-lbl">月均动量</div>
+        <div class="stat-val ${mc}">${(row.mom_mean||0)>0?'+':''}${row.mom_mean??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">国债门槛</div>
+        <div class="stat-val n">${row.rf_hurdle??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">Sharpe</div>
+        <div class="stat-val ${(row.sharpe||0)>=0?'g':'r'}">${row.sharpe??'—'}</div></div>
+      <div class="stat-card"><div class="stat-lbl">最大回撤</div>
+        <div class="stat-val r">${row.max_dd??'—'}%</div></div>`;
+  } else if(strategy==='piotroski'){
+    const pioSc=row.fscore; const pioFc=pioSc>=7?'g':pioSc>=4?'a':'r';
+    stratCards=`
+      <div class="stat-card" style="grid-column:span 2">
+        <div class="stat-lbl">Piotroski F-Score</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <div class="stat-val ${pioFc}">${pioSc??'—'}</div>
+          <span style="color:var(--text3);font-size:12px">/ 9</span>
+        </div>
+      </div>
+      <div class="stat-card"><div class="stat-lbl">盈利 (4项)</div>
+        <div class="stat-val ${(row.f_profit??0)>=3?'g':(row.f_profit??0)<=1?'r':'a'}">${row.f_profit??'—'}/4</div></div>
+      <div class="stat-card"><div class="stat-lbl">杠杆 (3项)</div>
+        <div class="stat-val ${(row.f_leverage??0)>=2?'g':(row.f_leverage??0)===0?'r':'a'}">${row.f_leverage??'—'}/3</div></div>
+      <div class="stat-card"><div class="stat-lbl">ROA</div>
+        <div class="stat-val ${(row.roa??0)>=0?'g':'r'}">${row.roa??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">毛利率</div>
+        <div class="stat-val g">${row.gross_margin??'—'}%</div></div>`;
+  } else if(strategy==='multifactor'){
+    const mfSc=row.mf_score; const mfFc=mfSc>0.3?'g':mfSc<-0.3?'r':'a';
+    stratCards=`
+      <div class="stat-card" style="grid-column:span 2">
+        <div class="stat-lbl">综合 Z-Score</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <div class="stat-val ${mfFc}">${mfSc??'—'}</div>
+          <span style="color:var(--text3);font-size:11px">动量35% · ROE25% · 利润率15% · 低Beta15% · 低PS10%</span>
+        </div>
+      </div>
+      <div class="stat-card"><div class="stat-lbl">月均动量</div>
+        <div class="stat-val ${mc}">${(row.mom_mean||0)>0?'+':''}${row.mom_mean??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">ROE</div>
+        <div class="stat-val ${(row.roe||0)>=0?'g':'r'}">${row.roe??'—'}%</div></div>
+      <div class="stat-card"><div class="stat-lbl">Beta</div>
+        <div class="stat-val ${(row.beta??1)<0.8?'g':(row.beta??1)>1.2?'r':'a'}">${row.beta??'—'}</div></div>
+      <div class="stat-card"><div class="stat-lbl">P/S</div>
+        <div class="stat-val n">${row.ps??'—'}</div></div>`;
+  }
+
+  body.innerHTML=`
+    <div>
+      <div class="sec-head">价格走势</div>
+      <div class="chart-box"><canvas id="${cid}"></canvas>
+        <div class="ld-wrap show" id="cl"><div class="spinner"></div></div></div>
+    </div>
+    <div>
+      <div class="sec-head">${STRAT_META[strategy].desc.split('；')[0].slice(0,20)}…</div>
+      <div class="stat-grid">${stratCards}</div>
+    </div>
+    <div>
+      <div class="sec-head">估值</div>
+      <div class="kv-list">
+        ${kv('P/E (TTM)',f1(info.pe),null,false)}
+        ${kv('P/E Forward',f1(info.forward_pe),null,false)}
+        ${kv('P/B',f2(info.pb),null,false)}
+        ${kv('EV/EBITDA',f1(info.ev_ebitda),null,false)}
+        ${kv('市值',fb(info.market_cap),null,false)}
+      </div>
+    </div>
+    <div>
+      <div class="sec-head">基本面</div>
+      <div class="kv-list">
+        ${kv('营收增长 YoY',fp(info.revenue_growth),info.revenue_growth,true)}
+        ${kv('净利润增长',fp(info.earnings_growth),info.earnings_growth,true)}
+        ${kv('净利润率',fp(info.profit_margin),info.profit_margin,true)}
+        ${kv('ROE',fp(info.roe),info.roe,true)}
+        ${kv('Beta',f2(info.beta),null,false)}
+        ${kv('股息率',fp(info.dividend_yield),null,false)}
+      </div>
+    </div>
+    <div>
+      <div class="sec-head">分析师</div>
+      <div class="kv-list">
+        <div class="kv"><span class="k">评级</span><span class="v">${recHtml}</span></div>
+        ${kv('目标价',fd(info.analyst_target),null,false)}
+        ${kv('52W 高',fd(info['52w_high']),null,false)}
+        ${kv('52W 低',fd(info['52w_low']),null,false)}
+        ${kv('行业',esc(info.industry||'—'),null,false)}
+      </div>
+    </div>`;
+
+  drawChart(cid, prices, document.getElementById('cl'));
+}
+
+function kv(label,val,raw,colorize){
+  let style='';
+  if(colorize&&raw!=null) style=`style="color:${raw>0?'var(--green)':'var(--red)'}"`;
+  return `<div class="kv"><span class="k">${label}</span><span class="v" ${style}>${val}</span></div>`;
+}
+
+// ── chart ─────────────────────────────────────────────────────────────────────
+function drawChart(id, prices, loader) {
+  if(!prices?.length){loader?.classList.remove('show');return;}
+  const canvas=document.getElementById(id);
+  if(!canvas) return;
+  const dpr=devicePixelRatio||1, W=canvas.parentElement.clientWidth-24, H=155;
+  canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  const closes=prices.map(p=>p.close);
+  const mn=Math.min(...closes),mx=Math.max(...closes),rng=mx-mn||1;
+  const pL=8,pR=48,pT=8,pB=20,cW=W-pL-pR,cH=H-pT-pB;
+  const xf=i=>pL+i/(closes.length-1||1)*cW, yf=v=>pT+(1-(v-mn)/rng)*cH;
+  ctx.strokeStyle='#e9ebee';ctx.lineWidth=.5;
+  for(let i=0;i<=3;i++){
+    const y=pT+i/3*cH;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(pL+cW,y);ctx.stroke();
+    ctx.fillStyle='#9ca3af';ctx.font='9px system-ui';ctx.textAlign='left';
+    ctx.fillText('$'+(mx-(mx-mn)*i/3).toFixed(0),pL+cW+4,y+3);
+  }
+  const up=closes[closes.length-1]>=closes[0], lc=up?'#16a34a':'#dc2626';
+  const grad=ctx.createLinearGradient(0,pT,0,pT+cH);
+  grad.addColorStop(0,up?'rgba(22,163,74,.13)':'rgba(220,38,38,.13)');
+  grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.beginPath();ctx.moveTo(xf(0),yf(closes[0]));
+  for(let i=1;i<closes.length;i++) ctx.lineTo(xf(i),yf(closes[i]));
+  ctx.lineTo(xf(closes.length-1),pT+cH);ctx.lineTo(xf(0),pT+cH);ctx.closePath();
+  ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();ctx.moveTo(xf(0),yf(closes[0]));
+  for(let i=1;i<closes.length;i++) ctx.lineTo(xf(i),yf(closes[i]));
+  ctx.strokeStyle=lc;ctx.lineWidth=1.5;ctx.stroke();
+  ctx.fillStyle='#9ca3af';ctx.font='9px system-ui';ctx.textAlign='center';
+  const step=Math.max(1,Math.floor(prices.length/5));
+  for(let i=0;i<prices.length;i+=step) ctx.fillText(prices[i].date.slice(0,7),xf(i),H-4);
+  loader?.classList.remove('show');
+}
+
+function closeDetail(){
+  document.getElementById('detailPanel').classList.add('hidden');
+  selectedTicker=null; renderTable();
+}
+function setStatus(state,msg){
+  document.getElementById('statusDot').className='status-dot '+(state||'');
+  document.getElementById('statusText').textContent=msg;
+}
+function setProgress(p){document.getElementById('progressBar').style.width=p+'%';}
+</script>
+</body>
+</html>
